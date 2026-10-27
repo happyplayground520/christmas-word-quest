@@ -11,7 +11,7 @@ body { margin: 0; }
 <title>聖誕單字大冒險</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Iansui&family=Nunito:wght@700;800;900&family=Sniglet:wght@400;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Iansui&family=Huninn&family=LXGW+WenKai+TC&family=Chiron+GoRound+TC:wght@700&family=Nunito:wght@700;800;900&family=Sniglet:wght@400;800&display=swap">
 <style>
 /* Layout: one-screen tablet game on a snowy night — world maps with lantern paths, chunky toy-like buttons, a cosy cabin to decorate. */
 :root {
@@ -765,6 +765,11 @@ button.chip:active { background: var(--night-2); }
 .msgs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 .msg { border: 3px solid var(--frost); border-radius: 999px; padding: 6px 14px; background: #fff; color: var(--ink); font-family: var(--f-word); font-weight: 700; font-size: 18px; }
 .msg.on { border-color: var(--berry); background: #ffe9ea; }
+.pctext { width: min(100%, 520px); font-size: 22px; padding: 10px 16px; border-radius: 14px; border: 3px solid var(--frost); font-family: "Huninn", var(--f-body); }
+.pctext:focus { outline: none; border-color: var(--berry); }
+.fpicks { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.fpick { border: 3px solid var(--frost); border-radius: 14px; padding: 6px 16px; background: #fff; color: #a8272c; font-size: 30px; }
+.fpick.on { border-color: var(--berry); background: #ffe9ea; }
 .pchelp { margin: 0; font-size: 19px; color: #3f4f73; }
 .pchelp.warn { background: var(--gold-l); border: 3px solid var(--gold); border-radius: 16px; padding: 10px 14px; color: var(--ink); font-weight: 700; }
 .pcimg { width: 100%; max-width: 640px; border-radius: 14px; box-shadow: 0 6px 16px rgba(0,0,0,.25); -webkit-touch-callout: default; -webkit-user-select: auto; user-select: auto; }
@@ -1344,7 +1349,7 @@ const ZHUYIN = {
   角:'ㄐㄧㄠˇ',話:'ㄏㄨㄚˋ',誰:'ㄕㄟˊ',請:'ㄑㄧㄥˇ',讓:'ㄖㄤˋ',貓:'ㄇㄠ',車:'ㄔㄜ',迪:'ㄉㄧˊ',送:'ㄙㄨㄥˋ',進:'ㄐㄧㄣˋ',
   遞:'ㄉㄧˋ',配:'ㄆㄟˋ',重:'ㄔㄨㄥˊ',金:'ㄐㄧㄣ',鈴:'ㄌㄧㄥˊ',錯:'ㄘㄨㄛˋ',鎮:'ㄓㄣˋ',鐺:'ㄉㄤ',長:'ㄓㄤˇ',門:'ㄇㄣˊ',
   閉:'ㄅㄧˋ',間:'ㄐㄧㄢ',降:'ㄐㄧㄤˋ',限:'ㄒㄧㄢˋ',階:'ㄐㄧㄝ',面:'ㄇㄧㄢˋ',頁:'ㄧㄝˋ',頭:'ㄊㄡˊ',餅:'ㄅㄧㄥˇ',首:'ㄕㄡˇ',
-  住:'ㄓㄨˋ',躲:'ㄉㄨㄛˇ',站:'ㄓㄢˋ',賽:'ㄙㄞˋ',跑:'ㄆㄠˇ',往:'ㄨㄤˇ',衝:'ㄔㄨㄥ',釣:'ㄉㄧㄠˋ',魚:'ㄩˊ',遊:'ㄧㄡˊ',戲:'ㄒㄧˋ',檔:'ㄉㄤˇ',度:'ㄉㄨˋ',備:'ㄅㄟˋ',份:'ㄈㄣˋ',從:'ㄘㄨㄥˊ',著:'˙ㄓㄜ',掉:'ㄉㄧㄠˋ',怪:'ㄍㄨㄞˋ',器:'ㄑㄧˋ',機:'ㄐㄧ',零:'ㄌㄧㄥˊ',件:'ㄐㄧㄢˋ',修:'ㄒㄧㄡ',理:'ㄌㄧˇ',賓:'ㄅㄧㄣ',連:'ㄌㄧㄢˊ',條:'ㄊㄧㄠˊ',丟:'ㄉㄧㄡ',敗:'ㄅㄞˋ',穿:'ㄔㄨㄢ',衣:'ㄧ',服:'˙ㄈㄨ',身:'ㄕㄣ',泡:'ㄆㄠˋ',像:'ㄒㄧㄤˋ',和:'ㄏㄜˊ',圍:'ㄨㄟˊ',水:'ㄕㄨㄟˇ',旋:'ㄒㄩㄢˊ',木:'ㄇㄨˋ',馬:'ㄇㄚˇ',偶:'ㄡˇ',胡:'ㄏㄨˊ',桃:'ㄊㄠˊ',鉗:'ㄑㄧㄢˊ',箱:'ㄒㄧㄤ',戴:'ㄉㄞˋ',巾:'ㄐㄧㄣ',桶:'ㄊㄨㄥˇ',塗:'ㄊㄨˊ',顯:'ㄒㄧㄢˇ',示:'ㄕˋ',拖:'ㄊㄨㄛ',或:'ㄏㄨㄛˋ',男:'ㄋㄢˊ',女:'ㄋㄩˇ',生:'ㄕㄥ',還:'ㄏㄞˊ',分:'ㄈㄣ',享:'ㄒㄧㄤˇ',螢:'ㄧㄥˊ',幕:'ㄇㄨˋ',轉:'ㄓㄨㄢˇ',橫:'ㄏㄥˊ',製:'ㄓˋ',貼:'ㄊㄧㄝ',框:'ㄎㄨㄤ',綠:'ㄌㄩˋ',白:'ㄅㄞˊ',典:'ㄉㄧㄢˇ',棵:'ㄎㄜ',紅:'ㄏㄨㄥˊ',藍:'ㄌㄢˊ',蝴:'ㄏㄨˊ',蝶:'ㄉㄧㄝˊ',結:'ㄐㄧㄝˊ',跳:'ㄊㄧㄠˋ',視:'ㄕˋ',窗:'ㄔㄨㄤ',辦:'ㄅㄢˋ',法:'ㄈㄚˇ',直:'ㄓˊ',接:'ㄐㄧㄝ',影:'ㄧㄥˇ',像:'ㄒㄧㄤˋ',電:'ㄉㄧㄢˋ',腦:'ㄋㄠˇ',右:'ㄧㄡˋ',鍵:'ㄐㄧㄢˋ',另:'ㄌㄧㄥˋ',移:'ㄧˊ',動:'ㄉㄨㄥˋ',高:'ㄍㄠ',鵝:'ㄜˊ',鷹:'ㄧㄥ',鹿:'ㄌㄨˋ',麋:'ㄇㄧˊ'
+  住:'ㄓㄨˋ',去:'ㄑㄩˋ',紋:'ㄨㄣˊ',粉:'ㄈㄣˇ',愛:'ㄞˋ',心:'ㄒㄧㄣ',吊:'ㄉㄧㄠˋ',拐:'ㄍㄨㄞˇ',杖:'ㄓㄤˋ',杯:'ㄅㄟ',蛋:'ㄉㄢˋ',糕:'ㄍㄠ',甜:'ㄊㄧㄢˊ',兔:'ㄊㄨˋ',狗:'ㄍㄡˇ',狐:'ㄏㄨˊ',狸:'˙ㄌㄧ',牆:'ㄑㄧㄤˊ',雙:'ㄕㄨㄤ',華:'ㄏㄨㄚˊ',麗:'ㄌㄧˋ',盒:'ㄏㄜˊ',俄:'ㄜˊ',羅:'ㄌㄨㄛˊ',斯:'ㄙ',鐘:'ㄓㄨㄥ',婆:'ㄆㄛˊ',鋼:'ㄍㄤ',琴:'ㄑㄧㄣˊ',所:'ㄙㄨㄛˇ',怎:'ㄗㄣˇ',麼:'˙ㄇㄜ',自:'ㄗˋ',己:'ㄐㄧˇ',寫:'ㄒㄧㄝˇ',種:'ㄓㄨㄥˇ',體:'ㄊㄧˇ',躲:'ㄉㄨㄛˇ',站:'ㄓㄢˋ',賽:'ㄙㄞˋ',跑:'ㄆㄠˇ',往:'ㄨㄤˇ',衝:'ㄔㄨㄥ',釣:'ㄉㄧㄠˋ',魚:'ㄩˊ',遊:'ㄧㄡˊ',戲:'ㄒㄧˋ',檔:'ㄉㄤˇ',度:'ㄉㄨˋ',備:'ㄅㄟˋ',份:'ㄈㄣˋ',從:'ㄘㄨㄥˊ',著:'˙ㄓㄜ',掉:'ㄉㄧㄠˋ',怪:'ㄍㄨㄞˋ',器:'ㄑㄧˋ',機:'ㄐㄧ',零:'ㄌㄧㄥˊ',件:'ㄐㄧㄢˋ',修:'ㄒㄧㄡ',理:'ㄌㄧˇ',賓:'ㄅㄧㄣ',連:'ㄌㄧㄢˊ',條:'ㄊㄧㄠˊ',丟:'ㄉㄧㄡ',敗:'ㄅㄞˋ',穿:'ㄔㄨㄢ',衣:'ㄧ',服:'˙ㄈㄨ',身:'ㄕㄣ',泡:'ㄆㄠˋ',像:'ㄒㄧㄤˋ',和:'ㄏㄜˊ',圍:'ㄨㄟˊ',水:'ㄕㄨㄟˇ',旋:'ㄒㄩㄢˊ',木:'ㄇㄨˋ',馬:'ㄇㄚˇ',偶:'ㄡˇ',胡:'ㄏㄨˊ',桃:'ㄊㄠˊ',鉗:'ㄑㄧㄢˊ',箱:'ㄒㄧㄤ',戴:'ㄉㄞˋ',巾:'ㄐㄧㄣ',桶:'ㄊㄨㄥˇ',塗:'ㄊㄨˊ',顯:'ㄒㄧㄢˇ',示:'ㄕˋ',拖:'ㄊㄨㄛ',或:'ㄏㄨㄛˋ',男:'ㄋㄢˊ',女:'ㄋㄩˇ',生:'ㄕㄥ',還:'ㄏㄞˊ',分:'ㄈㄣ',享:'ㄒㄧㄤˇ',螢:'ㄧㄥˊ',幕:'ㄇㄨˋ',轉:'ㄓㄨㄢˇ',橫:'ㄏㄥˊ',製:'ㄓˋ',貼:'ㄊㄧㄝ',框:'ㄎㄨㄤ',綠:'ㄌㄩˋ',白:'ㄅㄞˊ',典:'ㄉㄧㄢˇ',棵:'ㄎㄜ',紅:'ㄏㄨㄥˊ',藍:'ㄌㄢˊ',蝴:'ㄏㄨˊ',蝶:'ㄉㄧㄝˊ',結:'ㄐㄧㄝˊ',跳:'ㄊㄧㄠˋ',視:'ㄕˋ',窗:'ㄔㄨㄤ',辦:'ㄅㄢˋ',法:'ㄈㄚˇ',直:'ㄓˊ',接:'ㄐㄧㄝ',影:'ㄧㄥˇ',像:'ㄒㄧㄤˋ',電:'ㄉㄧㄢˋ',腦:'ㄋㄠˇ',右:'ㄧㄡˋ',鍵:'ㄐㄧㄢˋ',另:'ㄌㄧㄥˋ',移:'ㄧˊ',動:'ㄉㄨㄥˋ',高:'ㄍㄠ',鵝:'ㄜˊ',鷹:'ㄧㄥ',鹿:'ㄌㄨˋ',麋:'ㄇㄧˊ'
 };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 function zy(text) {
@@ -1474,13 +1479,13 @@ function daily(key) {
   }
   save();
 }
-const ADVENT_DECO = { 5: 'angel', 10: 'snowflake', 15: 'owl', 20: 'penguin', 25: 'santa' };
+
 const adventReady = () => { const a = P().advent; return a.opened < 25 && a.last !== todayStr(); };
-const adventPrize = d => ADVENT_DECO[d] ? { deco: ADVENT_DECO[d] } : { bells: d % 2 ? 1 : 2 };
+const adventPrize = d => ({ bells: d % 5 === 0 ? 5 : d % 2 ? 1 : 2 });
 
 /* ================= star chest: every 5 stars (all versions together) opens one ================= */
 const CHEST_EVERY = 5;
-const CHEST_DECO = { 3: 'globe', 6: 'carousel', 9: 'deerdoll', 12: 'nutcracker' };
+const CHEST_BELLS = 5;
 function chestState() {
   // stars earned stay on the stages; "left" is what is still unspent after the chests opened so far
   const p = P(), opened = p.chests || 0, stars = allStars(), left = stars - opened * CHEST_EVERY;
@@ -1628,7 +1633,7 @@ function renderHome() {
   $('#chestBtn').innerHTML = `<span class="ci">${chest.ready ? '🎁' : '🧰'}</span>
     <span class="ct"><b>${chest.ready ? zy('星星寶箱可以打開了！點我打開') : zy(`再拿 ${chest.need} 顆星，就能打開星星寶箱`)}</b>
       <span class="bar-prog"><i style="width:${R(chest.into / CHEST_EVERY * 100)}%"></i></span>
-      <small>${zy('打開一個寶箱要用 5 顆星。星星也會讓麋鹿戴上圍巾、鈴鐺、蝴蝶結。')}</small></span>
+      <small>${zy('打開一個寶箱要用 5 顆星，裡面有 🔔 5，可以去聖誕小屋換裝飾。')}</small></span>
     <span class="cs">⭐ ${chest.left}</span>`;
   const c = buddyState().cur;
   $('#buddyPet').innerHTML = `<span class="bw" style="--s:${(.78 + c.idx * .08).toFixed(2)}">${curBuddySVG()}</span>`;
@@ -1665,11 +1670,9 @@ $('#chestBtn').onclick = () => {
   const c = chestState(), p = P();
   if (!c.ready) { speak('Collect more stars!', 0.9); toast(`再拿 ${c.need} 顆星就能打開寶箱`); return; }
   p.chests = c.opened + 1;
-  const deco = CHEST_DECO[p.chests];
-  let text;
-  if (deco && !p.owned.includes(deco)) { p.owned.push(deco); const d = DECOS.find(x => x.id === deco); text = `🎁 寶箱裡有「${d.zh}」！放在聖誕小屋了`; speak(d.en); }
-  else { p.bells += 3; text = '🎁 寶箱裡有 🔔 3！'; speak('Surprise!', 0.9); }
-  text += '（用掉 ⭐ 5）';
+  p.bells += CHEST_BELLS;
+  const text = `🎁 寶箱裡有 🔔 ${CHEST_BELLS}！可以去聖誕小屋換裝飾（用掉 ⭐ 5）`;
+  speak('Surprise!', 0.9);
   save(); sfx.win(); toast(text); renderHome();
 };
 $('#whoBtn').onclick = () => show('profiles');
@@ -1823,7 +1826,6 @@ function finish(mistakes, learned) {
     if (prev && !bells && replayOk()) { bells++; why.push('今天的重玩獎勵'); }
     l.stars[s.id] = Math.max(prev, stars);
     daily('played'); if (stars === 3) daily('three');
-    if (totalStars() >= 60 && !p.owned.includes('star')) { p.owned.push('star'); why.push('拿到發光星星'); }
   } else {
     const prev = l.sides[cur.def.id] || 0;
     if (!prev) { bells += 2; why.push('第一次完成支線'); }
@@ -3133,49 +3135,81 @@ function playReward(onEnd) {
 }
 
 /* ================= Christmas cabin ================= */
-// [id, 中文名, English, tier (s/m/l: bells, a: advent, x: special), cost, emoji or null (drawn), x, y, size, layer]
+// [id, 中文名, English, tier (s/m/l: bought with bells), cost, emoji or null (drawn), x, y, size, layer]
 const DECOS = [
-  ['stocking', '聖誕襪', 'stocking', 's', 3, '🧦', 690, 470, 80, 3],
-  ['candle', '蠟燭', 'candle', 's', 3, '🕯️', 270, 520, 80, 3],
-  ['lollipop', '棒棒糖', 'lollipop', 's', 3, '🍭', 450, 525, 70, 3],
-  ['bell', '鈴鐺', 'bell', 's', 3, '🔔', 1010, 150, 80, 3],
-  ['cookie', '餅乾', 'cookie', 's', 3, '🍪', 760, 890, 70, 4],
-  ['cocoa', '熱可可', 'hot cocoa', 's', 3, '☕', 860, 890, 70, 4],
-  ['teddy', '泰迪熊', 'teddy bear', 's', 3, '🧸', 560, 880, 110, 3],
-  ['mittens', '手套', 'mittens', 's', 3, '🧤', 1520, 420, 80, 3],
+  // 小裝飾 🔔 3
   ['redball', '紅色彩球', 'red ball', 's', 3, null, 1110, 540, 70, 4],
   ['goldball', '金色彩球', 'gold ball', 's', 3, null, 1255, 650, 70, 4],
   ['blueball', '藍色彩球', 'blue ball', 's', 3, null, 1095, 770, 70, 4],
+  ['stripeball', '條紋彩球', 'striped ball', 's', 3, null, 1180, 700, 72, 4],
+  ['dotball', '點點彩球', 'polka dot ball', 's', 3, null, 1330, 780, 72, 4],
+  ['silverball', '亮晶晶彩球', 'glitter ball', 's', 3, null, 1075, 665, 66, 4],
+  ['pinkball', '粉紅雪花球', 'pink ball', 's', 3, null, 1290, 570, 64, 4],
+  ['heart', '愛心吊飾', 'heart', 's', 3, null, 1185, 455, 72, 4],
+  ['candycane', '拐杖糖', 'candy cane', 's', 3, null, 1360, 850, 100, 4],
+  ['gingerman', '薑餅人', 'gingerbread man', 's', 3, null, 1240, 800, 100, 4],
   ['ribbon', '蝴蝶結', 'ribbon', 's', 3, '🎀', 1265, 455, 72, 4],
+  ['bell', '鈴鐺', 'bell', 's', 3, '🔔', 1010, 150, 80, 3],
+  ['stocking', '聖誕襪', 'stocking', 's', 3, '🧦', 690, 470, 80, 3],
+  ['candle', '蠟燭', 'candle', 's', 3, '🕯️', 270, 520, 80, 3],
+  ['lollipop', '棒棒糖', 'lollipop', 's', 3, '🍭', 450, 525, 70, 3],
+  ['cookie', '餅乾', 'cookie', 's', 3, '🍪', 760, 890, 70, 4],
+  ['cocoa', '熱可可', 'hot cocoa', 's', 3, '☕', 860, 890, 70, 4],
+  ['cupcake', '杯子蛋糕', 'cupcake', 's', 3, '🧁', 640, 345, 64, 4],
+  ['donut', '甜甜圈', 'donut', 's', 3, '🍩', 960, 345, 64, 4],
+  ['teddy', '泰迪熊', 'teddy bear', 's', 3, '🧸', 560, 880, 110, 3],
+  ['mittens', '手套', 'mittens', 's', 3, '🧤', 1520, 420, 80, 3],
+  ['snowflake', '雪花', 'snowflake', 's', 3, '❄️', 560, 160, 80, 3],
+  ['angel', '小天使', 'angel', 's', 3, '👼', 960, 230, 90, 3],
+  ['bunny', '兔子', 'bunny', 's', 3, '🐰', 1510, 960, 80, 4],
+  ['kitty', '小貓', 'kitty', 's', 3, '🐱', 430, 940, 80, 4],
+  ['puppy', '小狗', 'puppy', 's', 3, '🐶', 250, 950, 80, 4],
+  ['fox', '狐狸', 'fox', 's', 3, '🦊', 1400, 960, 80, 4],
+  // 中裝飾 🔔 8
+  ['lights', '牆上燈串', 'string lights', 'm', 8, null, 800, 70, 0, 2],
+  ['treelights', '樹上燈串', 'tree lights', 'm', 8, null, 1180, 610, 0, 3],
+  ['goldbells', '金色雙鈴鐺', 'golden bells', 'm', 8, null, 640, 230, 150, 3],
+  ['crystal', '水晶雪花', 'crystal snowflake', 'm', 8, null, 270, 250, 110, 3],
+  ['poinsettia', '聖誕紅', 'poinsettia', 'm', 8, null, 520, 690, 140, 3],
+  ['giftbox', '華麗禮物盒', 'fancy gift box', 'm', 8, null, 1330, 925, 120, 4],
   ['wreath', '花圈', 'wreath', 'm', 8, null, 800, 290, 170, 2],
-  ['lights', '燈串', 'lights', 'm', 8, null, 800, 70, 0, 2],
   ['rug', '地毯', 'rug', 'm', 8, null, 800, 900, 0, 1],
   ['snowman', '雪人娃娃', 'snowman', 'm', 8, '⛄', 990, 870, 120, 3],
   ['train', '小火車', 'toy train', 'm', 8, '🚂', 680, 935, 100, 4],
   ['plant', '盆栽', 'plant', 'm', 8, '🪴', 110, 820, 150, 2],
+  ['owl', '貓頭鷹', 'owl', 'm', 8, '🦉', 1500, 260, 90, 3],
+  ['penguin', '企鵝', 'penguin', 'm', 8, '🐧', 1440, 870, 100, 4],
+  ['polarbear', '北極熊', 'polar bear', 'm', 8, '🐻‍❄️', 160, 935, 100, 4],
+  ['deerdoll', '麋鹿玩偶', 'reindeer toy', 'm', 8, '🦌', 1050, 885, 100, 4],
+  ['globe', '水晶球', 'snow globe', 'm', 8, '🔮', 300, 900, 90, 4],
+  ['dolls', '俄羅斯娃娃', 'nesting dolls', 'm', 8, '🪆', 860, 345, 70, 4],
+  ['clock', '時鐘', 'clock', 'm', 8, '🕰️', 1320, 160, 100, 3],
+  // 大裝飾 🔔 20
   ['tree', '聖誕樹', 'Christmas tree', 'start', 0, null, 1180, 610, 0, 2],
+  ['star', '金色大星星', 'star', 'l', 20, null, 1180, 290, 130, 5],
   ['fireplace', '壁爐', 'fireplace', 'l', 20, null, 800, 560, 0, 1],
   ['presents', '禮物堆', 'presents', 'l', 20, '🎁', 1180, 915, 100, 3],
   ['sofa', '沙發', 'sofa', 'l', 20, '🛋️', 330, 800, 250, 2],
   ['sleigh', '麋鹿雪橇', 'sleigh', 'l', 20, null, 350, 340, 0, 1],
-  ['angel', '小天使', 'angel', 'a', 0, '👼', 960, 230, 90, 3],
-  ['snowflake', '雪花', 'snowflake', 'a', 0, '❄️', 560, 160, 80, 3],
-  ['owl', '貓頭鷹', 'owl', 'a', 0, '🦉', 1500, 260, 90, 3],
-  ['penguin', '企鵝', 'penguin', 'a', 0, '🐧', 1440, 880, 100, 4],
-  ['santa', '聖誕老人', 'Santa', 'a', 0, '🎅', 1540, 820, 170, 4],
-  ['star', '發光星星', 'star', 'x', 0, '⭐', 1180, 290, 110, 5],
-  ['globe', '水晶球', 'snow globe', 'x', 0, '🔮', 300, 900, 90, 4],
-  ['carousel', '旋轉木馬', 'carousel', 'x', 0, '🎠', 470, 640, 110, 3],
-  ['deerdoll', '麋鹿玩偶', 'reindeer toy', 'x', 0, '🦌', 1050, 885, 100, 4],
-  ['nutcracker', '胡桃鉗娃娃', 'nutcracker', 'x', 0, '💂', 130, 640, 120, 3]
+  ['santa', '聖誕老人', 'Santa', 'l', 20, '🎅', 1540, 820, 170, 4],
+  ['mrsclaus', '聖誕老婆婆', 'Mrs. Claus', 'l', 20, '🤶', 1530, 620, 150, 4],
+  ['elf', '小精靈朋友', 'elf', 'l', 20, '🧝', 900, 790, 140, 4],
+  ['carousel', '旋轉木馬', 'carousel', 'l', 20, '🎠', 470, 640, 110, 3],
+  ['nutcracker', '胡桃鉗娃娃', 'nutcracker', 'l', 20, '💂', 130, 640, 120, 3],
+  ['piano', '鋼琴', 'piano', 'l', 20, '🎹', 700, 820, 150, 3]
 ].map(([id, zh, en, tier, cost, emo, x, y, size, layer]) => ({ id, zh, en, tier, cost, emo, x, y, size, layer }));
-const DECO_ICON = { wreath: '🎀', lights: '💡', rug: '🟥', fireplace: '🔥', sleigh: '🛷', tree: '🎄', redball: '🔴', goldball: '🟡', blueball: '🔵' };
-const BALL = { redball: '#e5484d', goldball: '#ffc53d', blueball: '#3b82f6' };
+const DECO_ICON = { sleigh: '🛷' };
+// glass ornaments: [light, dark, pattern]
+const BALL = { redball: ['#ff8a8e', '#b3141d', 'band'], goldball: ['#fff1a8', '#c98a12', 'glitter'], blueball: ['#9cc8ff', '#1f4fb8', 'snow'],
+  stripeball: ['#ff8a8e', '#c21d27', 'stripe'], dotball: ['#7fe0a8', '#16794a', 'dots'], silverball: ['#ffffff', '#8b98ad', 'glitter'], pinkball: ['#ffc2e0', '#d6338a', 'snow'] };
 const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
 const bounce = {};
-const MOVABLE = d => d.id !== 'lights' && d.id !== 'sleigh';
+// the tree lights hang on the tree and go wherever it goes; they are never grabbed on their own
+const MOVABLE = d => d.id !== 'lights' && d.id !== 'sleigh' && d.id !== 'treelights';
+const GRABBABLE = d => d.id !== 'treelights';
 function decoPos(d) {
   const pos = P().pos || {}, q = pos[d.id];
+  if (d.id === 'treelights') return pos.tree || { x: d.x, y: d.y };
   if (q && MOVABLE(d)) return q;
   // the special star sits on top of the tree until it is moved by itself
   if (d.id === 'star' && pos.tree) return { x: pos.tree.x, y: pos.tree.y - 320 };
@@ -3188,7 +3222,12 @@ function baseBox(d) {
   if (d.id === 'fireplace') return [600, 380, 400, 340];
   if (d.id === 'sleigh') return [200, 280, 300, 120];
   if (d.id === 'presents') return [d.x - 130, d.y - 100, 260, 170];
-  if (d.id === 'tree') return [910, 280, 540, 670];
+  if (d.id === 'tree' || d.id === 'treelights') return [910, 280, 540, 670];
+  if (d.id === 'goldbells') return [d.x - 90, d.y - 90, 180, 190];
+  if (d.id === 'poinsettia') return [d.x - 90, d.y - 90, 180, 190];
+  if (d.id === 'giftbox') return [d.x - 75, d.y - 85, 150, 160];
+  if (d.id === 'candycane') return [d.x - 40, d.y - 60, 80, 120];
+  if (d.id === 'gingerman') return [d.x - 50, d.y - 60, 100, 120];
   if (d.id === 'wreath') return [700, 195, 200, 200];
   return [d.x - d.size / 2, d.y - d.size / 2, d.size, d.size];
 }
@@ -3277,8 +3316,184 @@ function drawCabin(g, owned) {
     g.restore();
   }
 }
+// a small fixed random sequence, so glitter and sparkles do not jump around between frames
+const seeded = n => () => (n = (n * 16807) % 2147483647) / 2147483647;
+function goldGrad(g, x0, y0, x1, y1) {
+  const gr = g.createLinearGradient(x0, y0, x1, y1);
+  gr.addColorStop(0, '#fff3b0'); gr.addColorStop(.45, '#f2b822'); gr.addColorStop(.7, '#b07a0c'); gr.addColorStop(1, '#ffe27a');
+  return gr;
+}
+function sparkle(g, x, y, r, col = '#fff') {
+  g.save(); g.fillStyle = col; g.beginPath();
+  g.moveTo(x, y - r); g.quadraticCurveTo(x, y, x + r, y); g.quadraticCurveTo(x, y, x, y + r); g.quadraticCurveTo(x, y, x - r, y); g.quadraticCurveTo(x, y, x, y - r);
+  g.fill(); g.restore();
+}
+function bauble(g, x, y, r, [light, dark, pattern]) {
+  // gold cap and hanging loop
+  g.strokeStyle = '#d9a520'; g.lineWidth = 4; g.beginPath(); g.arc(x, y - r - r * .3, r * .14, 0, 6.283); g.stroke();
+  g.fillStyle = goldGrad(g, x - r * .3, 0, x + r * .3, 0); g.fillRect(x - r * .3, y - r - r * .2, r * .6, r * .3);
+  const body = g.createRadialGradient(x - r * .35, y - r * .4, r * .1, x, y, r);
+  body.addColorStop(0, light); body.addColorStop(.55, dark); body.addColorStop(1, dark);
+  g.fillStyle = body; g.beginPath(); g.arc(x, y, r, 0, 6.283); g.fill();
+  g.save(); g.beginPath(); g.arc(x, y, r, 0, 6.283); g.clip();
+  const rnd = seeded(Math.round(x * 7 + y));
+  if (pattern === 'stripe') {
+    g.strokeStyle = 'rgba(255,255,255,.9)'; g.lineWidth = r * .22;
+    for (let k = -3; k <= 3; k++) { g.beginPath(); g.moveTo(x + k * r * .55 - r, y - r); g.lineTo(x + k * r * .55 + r, y + r); g.stroke(); }
+  } else if (pattern === 'dots') {
+    g.fillStyle = '#ffd34d';
+    for (let k = 0; k < 9; k++) { const a = k * 2.4, d2 = (k % 3 + 1) * r * .3; g.beginPath(); g.arc(x + Math.cos(a) * d2, y + Math.sin(a) * d2, r * .12, 0, 6.283); g.fill(); }
+  } else if (pattern === 'band') {
+    g.fillStyle = goldGrad(g, 0, y - r * .2, 0, y + r * .2); g.fillRect(x - r, y - r * .18, r * 2, r * .36);
+    g.fillStyle = '#fff'; for (let k = -2; k <= 2; k++) { g.beginPath(); g.arc(x + k * r * .4, y, r * .07, 0, 6.283); g.fill(); }
+  } else if (pattern === 'glitter') {
+    for (let k = 0; k < 40; k++) { g.fillStyle = k % 3 ? 'rgba(255,255,255,.85)' : '#fff3b0'; g.beginPath(); g.arc(x + (rnd() - .5) * 2 * r, y + (rnd() - .5) * 2 * r, r * (.02 + rnd() * .04), 0, 6.283); g.fill(); }
+  } else if (pattern === 'snow') {
+    g.strokeStyle = 'rgba(255,255,255,.95)'; g.lineWidth = r * .07; g.lineCap = 'round';
+    for (let k = 0; k < 6; k++) { const a = k * Math.PI / 3; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * r * .55, y + Math.sin(a) * r * .55); g.stroke(); }
+  }
+  g.restore();
+  g.fillStyle = 'rgba(255,255,255,.6)'; g.beginPath(); g.ellipse(x - r * .38, y - r * .42, r * .22, r * .13, -.7, 0, 6.283); g.fill();
+  sparkle(g, x + r * .45, y - r * .55, r * .22);
+}
+function bulb(g, x, y, col, ang = 0, s = 1) {
+  g.save(); g.translate(x, y); g.rotate(ang); g.scale(s, s);
+  const glow = g.createRadialGradient(0, 16, 2, 0, 16, 34); glow.addColorStop(0, col); glow.addColorStop(1, 'rgba(0,0,0,0)');
+  g.globalAlpha = .45; g.fillStyle = glow; g.beginPath(); g.arc(0, 16, 34, 0, 6.283); g.fill(); g.globalAlpha = 1;
+  g.fillStyle = '#3a4a3a'; g.fillRect(-6, 0, 12, 9);
+  const gl = g.createRadialGradient(-3, 12, 1, 0, 16, 13); gl.addColorStop(0, '#fff'); gl.addColorStop(.35, col); gl.addColorStop(1, col);
+  g.fillStyle = gl; g.beginPath(); g.ellipse(0, 19, 8, 13, 0, 0, 6.283); g.fill();
+  g.restore();
+}
+const BULB_COLS = ['#ff5a5f', '#ffc53d', '#3ddc84', '#5aa9ff', '#ff8fd0'];
+function drawStar(g, x, y, R) {
+  g.save();
+  g.shadowColor = '#ffd34d'; g.shadowBlur = 50;
+  g.strokeStyle = 'rgba(255,230,140,.75)'; g.lineWidth = 5; g.lineCap = 'round';
+  for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4 + Math.PI / 8; g.beginPath(); g.moveTo(x + Math.cos(a) * R * 1.05, y + Math.sin(a) * R * 1.05); g.lineTo(x + Math.cos(a) * R * 1.45, y + Math.sin(a) * R * 1.45); g.stroke(); }
+  g.beginPath();
+  for (let k = 0; k < 10; k++) { const a = -Math.PI / 2 + k * Math.PI / 5, rr = k % 2 ? R * .45 : R; g.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+  g.closePath(); g.fillStyle = goldGrad(g, x - R, y - R, x + R, y + R); g.fill();
+  g.shadowBlur = 0; g.strokeStyle = '#a8740a'; g.lineWidth = 4; g.stroke();
+  g.fillStyle = 'rgba(255,255,255,.65)'; g.beginPath(); g.moveTo(x, y - R * .8); g.lineTo(x + R * .16, y - R * .2); g.lineTo(x - R * .16, y - R * .2); g.fill();
+  sparkle(g, x + R * .9, y - R * .75, R * .22); sparkle(g, x - R * .95, y + R * .2, R * .15);
+  g.restore();
+}
+function drawBellShape(g, x, y, sz, ang) {
+  g.save(); g.translate(x, y); g.rotate(ang);
+  g.fillStyle = goldGrad(g, -sz, 0, sz, 0);
+  g.beginPath(); g.moveTo(0, -sz); g.bezierCurveTo(sz * .7, -sz, sz * .6, sz * .3, sz, sz * .75); g.lineTo(-sz, sz * .75); g.bezierCurveTo(-sz * .6, sz * .3, -sz * .7, -sz, 0, -sz); g.fill();
+  g.fillStyle = '#a8740a'; g.fillRect(-sz, sz * .68, sz * 2, sz * .14);
+  g.fillStyle = '#c98a12'; g.beginPath(); g.arc(0, sz * .9, sz * .2, 0, 6.283); g.fill();
+  g.fillStyle = 'rgba(255,255,255,.55)'; g.beginPath(); g.ellipse(-sz * .3, -sz * .2, sz * .12, sz * .4, .2, 0, 6.283); g.fill();
+  g.restore();
+}
+function drawBow(g, x, y, s) {
+  g.fillStyle = '#d1222c';
+  g.beginPath(); g.ellipse(x - s * .55, y, s * .55, s * .32, -.35, 0, 6.283); g.fill();
+  g.beginPath(); g.ellipse(x + s * .55, y, s * .55, s * .32, .35, 0, 6.283); g.fill();
+  g.beginPath(); g.moveTo(x - 8, y); g.lineTo(x - s * .5, y + s * .9); g.lineTo(x - s * .2, y + s * .8); g.lineTo(x, y + 4); g.lineTo(x + s * .2, y + s * .8); g.lineTo(x + s * .5, y + s * .9); g.lineTo(x + 8, y); g.fill();
+  g.fillStyle = '#ff6b73'; g.beginPath(); g.arc(x, y, s * .22, 0, 6.283); g.fill();
+}
 // one decoration at its unmoved spot (callers translate/scale the context)
 function drawDeco(g, d) {
+  if (d.id === 'treelights') {
+    // strands swooping across each tier of the tree
+    [[650, 880, 262], [530, 780, 225], [410, 660, 182], [290, 530, 130]].forEach(([t, b, hw], ti) => {
+      const y0 = t + (b - t) * .42, y1 = t + (b - t) * .5, cx = 1180;
+      const pt = u => { const x0 = cx - hw * .78, x2 = cx + hw * .78; return [(1 - u) ** 2 * x0 + 2 * (1 - u) * u * cx + u * u * x2, (1 - u) ** 2 * y0 + 2 * (1 - u) * u * (b - 4) + u * u * y1]; };
+      g.strokeStyle = '#123'; g.lineWidth = 3; g.beginPath();
+      for (let k = 0; k <= 20; k++) { const [x, y] = pt(k / 20); k ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke();
+      const n = Math.round(hw / 32);
+      for (let k = 0; k <= n; k++) { const [x, y] = pt(k / n); bulb(g, x, y - 4, BULB_COLS[(k + ti) % BULB_COLS.length], 0, .8); }
+    });
+    return;
+  }
+  if (d.id === 'star') { drawStar(g, d.x, d.y, d.size / 2); return; }
+  if (d.id === 'heart') {
+    const x = d.x, y = d.y, s = d.size / 2;
+    g.strokeStyle = '#d9a520'; g.lineWidth = 3; g.beginPath(); g.moveTo(x, y - s * .55); g.lineTo(x, y - s * 1.1); g.stroke();
+    g.beginPath(); g.moveTo(x, y + s * .9);
+    g.bezierCurveTo(x - s * 1.4, y - s * .1, x - s * .7, y - s * 1.1, x, y - s * .45);
+    g.bezierCurveTo(x + s * .7, y - s * 1.1, x + s * 1.4, y - s * .1, x, y + s * .9);
+    const hg = g.createRadialGradient(x - s * .3, y - s * .4, 2, x, y, s * 1.1); hg.addColorStop(0, '#ff9aa0'); hg.addColorStop(1, '#c0112b');
+    g.fillStyle = hg; g.fill(); g.strokeStyle = goldGrad(g, x - s, y - s, x + s, y + s); g.lineWidth = 5; g.stroke();
+    sparkle(g, x - s * .35, y - s * .35, s * .2); return;
+  }
+  if (d.id === 'candycane') {
+    const x = d.x, y = d.y;
+    const path = () => { g.beginPath(); g.moveTo(x + 10, y + 55); g.lineTo(x + 10, y - 20); g.arc(x - 10, y - 20, 20, 0, Math.PI, true); g.lineTo(x - 30, y - 6); };
+    g.lineCap = 'round'; g.lineWidth = 22; g.strokeStyle = '#ffffff'; path(); g.stroke();
+    g.save(); g.setLineDash([12, 12]); g.strokeStyle = '#e01b2a'; g.lineWidth = 22; g.lineCap = 'butt'; path(); g.stroke(); g.restore();
+    g.strokeStyle = 'rgba(255,255,255,.6)'; g.lineWidth = 4; g.beginPath(); g.moveTo(x + 5, y + 50); g.lineTo(x + 5, y - 18); g.stroke();
+    return;
+  }
+  if (d.id === 'gingerman') {
+    const x = d.x, y = d.y;
+    g.lineCap = 'round'; g.strokeStyle = '#b5652b'; g.lineWidth = 22;
+    g.beginPath(); g.moveTo(x - 34, y - 6); g.lineTo(x + 34, y - 6); g.moveTo(x - 10, y + 22); g.lineTo(x - 24, y + 50); g.moveTo(x + 10, y + 22); g.lineTo(x + 24, y + 50); g.stroke();
+    g.fillStyle = '#b5652b'; g.beginPath(); g.ellipse(x, y + 8, 22, 30, 0, 0, 6.283); g.fill();
+    g.beginPath(); g.arc(x, y - 34, 22, 0, 6.283); g.fill();
+    g.strokeStyle = '#fff'; g.lineWidth = 3; g.setLineDash([5, 5]);
+    g.beginPath(); g.moveTo(x - 40, y - 6); g.lineTo(x - 28, y - 6); g.moveTo(x + 28, y - 6); g.lineTo(x + 40, y - 6); g.stroke(); g.setLineDash([]);
+    g.fillStyle = '#2b1a10'; g.beginPath(); g.arc(x - 8, y - 38, 3.5, 0, 6.283); g.arc(x + 8, y - 38, 3.5, 0, 6.283); g.fill();
+    g.strokeStyle = '#fff'; g.lineWidth = 3; g.beginPath(); g.arc(x, y - 32, 9, .3, Math.PI - .3); g.stroke();
+    ['#e5484d', '#2fb36b', '#e5484d'].forEach((c, k) => { g.fillStyle = c; g.beginPath(); g.arc(x, y - 4 + k * 14, 5, 0, 6.283); g.fill(); });
+    g.fillStyle = '#e5484d'; g.beginPath(); g.moveTo(x - 12, y - 14); g.lineTo(x + 12, y - 8); g.lineTo(x + 12, y - 20); g.lineTo(x - 12, y - 14); g.lineTo(x - 12, y - 8); g.lineTo(x + 12, y - 20); g.fill();
+    return;
+  }
+  if (d.id === 'goldbells') {
+    drawBellShape(g, d.x - 30, d.y + 20, 44, -.3); drawBellShape(g, d.x + 30, d.y + 20, 44, .3);
+    g.fillStyle = '#2f7d4f'; [[-50, -40, -.6], [50, -40, .6]].forEach(([dx, dy, a]) => { g.save(); g.translate(d.x + dx, d.y + dy); g.rotate(a); g.beginPath(); g.ellipse(0, 0, 34, 14, 0, 0, 6.283); g.fill(); g.restore(); });
+    drawBow(g, d.x, d.y - 40, 46);
+    return;
+  }
+  if (d.id === 'crystal') {
+    const x = d.x, y = d.y, R = d.size / 2;
+    g.save(); g.shadowColor = '#bfe6ff'; g.shadowBlur = 24; g.lineCap = 'round';
+    const cg = g.createLinearGradient(x - R, y - R, x + R, y + R); cg.addColorStop(0, '#ffffff'); cg.addColorStop(.5, '#a9dcff'); cg.addColorStop(1, '#ffffff');
+    g.strokeStyle = cg;
+    for (let k = 0; k < 6; k++) {
+      const a = k * Math.PI / 3, c = Math.cos(a), sn = Math.sin(a);
+      g.lineWidth = 7; g.beginPath(); g.moveTo(x, y); g.lineTo(x + c * R, y + sn * R); g.stroke();
+      g.lineWidth = 5;
+      [.45, .72].forEach(f => { const bx = x + c * R * f, by = y + sn * R * f, l = R * (f > .5 ? .2 : .28);
+        g.beginPath(); g.moveTo(bx, by); g.lineTo(bx + Math.cos(a + .7) * l, by + Math.sin(a + .7) * l); g.moveTo(bx, by); g.lineTo(bx + Math.cos(a - .7) * l, by + Math.sin(a - .7) * l); g.stroke(); });
+    }
+    g.fillStyle = '#fff'; g.beginPath(); g.arc(x, y, 9, 0, 6.283); g.fill();
+    g.restore(); sparkle(g, x + R * .7, y - R * .7, 12);
+    return;
+  }
+  if (d.id === 'poinsettia') {
+    const x = d.x, y = d.y;
+    g.fillStyle = goldGrad(g, x - 50, 0, x + 50, 0); g.beginPath(); g.moveTo(x - 52, y + 30); g.lineTo(x + 52, y + 30); g.lineTo(x + 40, y + 92); g.lineTo(x - 40, y + 92); g.fill();
+    g.fillStyle = '#c41a28'; g.fillRect(x - 56, y + 26, 112, 14);
+    g.fillStyle = '#1f7a44';
+    for (let k = 0; k < 6; k++) { const a = k * Math.PI / 3 + .5; g.save(); g.translate(x + Math.cos(a) * 46, y - 6 + Math.sin(a) * 34); g.rotate(a); g.beginPath(); g.ellipse(0, 0, 30, 13, 0, 0, 6.283); g.fill(); g.restore(); }
+    for (let k = 0; k < 8; k++) {
+      const a = k * Math.PI / 4;
+      g.save(); g.translate(x + Math.cos(a) * 30, y - 10 + Math.sin(a) * 26); g.rotate(a);
+      const pg = g.createLinearGradient(-30, 0, 30, 0); pg.addColorStop(0, '#ff4d5a'); pg.addColorStop(1, '#a50f1f');
+      g.fillStyle = pg; g.beginPath(); g.ellipse(0, 0, 34, 14, 0, 0, 6.283); g.fill(); g.restore();
+    }
+    g.fillStyle = '#ffd34d'; for (let k = 0; k < 5; k++) { g.beginPath(); g.arc(x + Math.cos(k * 1.26) * 8, y - 10 + Math.sin(k * 1.26) * 8, 5, 0, 6.283); g.fill(); }
+    return;
+  }
+  if (d.id === 'giftbox') {
+    const x = d.x, y = d.y;
+    const bg = g.createLinearGradient(x - 60, 0, x + 60, 0); bg.addColorStop(0, '#7b3fd1'); bg.addColorStop(1, '#4b1f94');
+    g.fillStyle = bg; g.fillRect(x - 60, y - 20, 120, 95);
+    g.fillStyle = '#9b5de5'; g.fillRect(x - 68, y - 40, 136, 26);
+    g.fillStyle = 'rgba(255,255,255,.25)'; for (let k = 0; k < 6; k++) { g.beginPath(); g.arc(x - 40 + (k % 3) * 40, y + 10 + Math.floor(k / 3) * 36, 6, 0, 6.283); g.fill(); }
+    g.fillStyle = goldGrad(g, x - 14, 0, x + 14, 0); g.fillRect(x - 12, y - 40, 24, 115);
+    g.fillStyle = goldGrad(g, 0, y - 32, 0, y - 18); g.fillRect(x - 68, y - 33, 136, 12);
+    g.fillStyle = '#f2b822';
+    g.beginPath(); g.ellipse(x - 26, y - 56, 28, 16, -.5, 0, 6.283); g.fill();
+    g.beginPath(); g.ellipse(x + 26, y - 56, 28, 16, .5, 0, 6.283); g.fill();
+    g.fillStyle = '#fff3b0'; g.beginPath(); g.arc(x, y - 46, 11, 0, 6.283); g.fill();
+    sparkle(g, x + 50, y - 60, 14); sparkle(g, x - 52, y + 50, 9);
+    return;
+  }
   if (d.id === 'rug') {
     g.fillStyle = '#b8323a'; g.beginPath(); g.ellipse(800, 900, 280, 60, 0, 0, 6.283); g.fill();
     g.strokeStyle = '#ffc53d'; g.lineWidth = 8; g.beginPath(); g.ellipse(800, 900, 240, 44, 0, 0, 6.283); g.stroke();
@@ -3294,24 +3509,24 @@ function drawDeco(g, d) {
     g.fillStyle = '#e5484d'; for (let a = 0; a < 6.28; a += .9) { g.beginPath(); g.arc(800 + Math.cos(a) * 62, 290 + Math.sin(a) * 62, 8, 0, 6.283); g.fill(); }
     emojiAt(g, '🎀', 800, 360, 70);
   } else if (d.id === 'lights') {
-    const cols = ['#ff5a5f', '#ffc53d', '#3ddc84', '#5aa9ff'];
-    g.strokeStyle = '#1b1b2e'; g.lineWidth = 4; g.beginPath(); g.moveTo(80, 40); g.quadraticCurveTo(800, 170, 1520, 40); g.stroke();
-    for (let i = 0; i <= 24; i++) {
-      const u = i / 24, x = (1 - u) ** 2 * 80 + 2 * (1 - u) * u * 800 + u * u * 1520, y = (1 - u) ** 2 * 40 + 2 * (1 - u) * u * 170 + u * u * 40;
-      g.fillStyle = cols[i % 4]; g.globalAlpha = .3; g.beginPath(); g.arc(x, y + 14, 20, 0, 6.283); g.fill();
-      g.globalAlpha = 1; g.beginPath(); g.arc(x, y + 14, 9, 0, 6.283); g.fill();
+    // one long string of bulbs, hung in three swags across the wall
+    const pins = [80, 560, 1040, 1520];
+    g.strokeStyle = '#1b2a1b'; g.lineWidth = 4;
+    for (let s2 = 0; s2 < 3; s2++) {
+      const x0 = pins[s2], x1 = pins[s2 + 1], mx = (x0 + x1) / 2;
+      const pt = u => [(1 - u) ** 2 * x0 + 2 * (1 - u) * u * mx + u * u * x1, (1 - u) ** 2 * 36 + 2 * (1 - u) * u * 150 + u * u * 36];
+      g.beginPath(); for (let k = 0; k <= 20; k++) { const [x, y] = pt(k / 20); k ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke();
+      for (let k = 1; k < 9; k++) { const [x, y] = pt(k / 9); bulb(g, x, y, BULB_COLS[(k + s2 * 3) % BULB_COLS.length], (k - 4.5) * .05); }
+      g.fillStyle = goldGrad(g, x0 - 12, 0, x0 + 12, 0); g.beginPath(); g.arc(x0, 36, 10, 0, 6.283); g.fill();
     }
+    g.fillStyle = goldGrad(g, 1508, 0, 1532, 0); g.beginPath(); g.arc(1520, 36, 10, 0, 6.283); g.fill();
   } else if (d.id === 'tree') {
     drawTreeShape(g);
   } else if (BALL[d.id]) {
-    const r = d.size / 2;
-    g.fillStyle = '#c9a43a'; g.fillRect(d.x - 9, d.y - r - 10, 18, 14);
-    g.fillStyle = BALL[d.id]; g.beginPath(); g.arc(d.x, d.y, r, 0, 6.283); g.fill();
-    g.fillStyle = 'rgba(255,255,255,.55)'; g.beginPath(); g.arc(d.x - r * .32, d.y - r * .32, r * .26, 0, 6.283); g.fill();
+    bauble(g, d.x, d.y, d.size / 2, BALL[d.id]);
   } else if (d.id === 'presents') {
     emojiAt(g, '🎁', d.x - 70, d.y + 10, d.size); emojiAt(g, '🎁', d.x + 70, d.y + 14, d.size); emojiAt(g, '🎁', d.x, d.y - 40, d.size);
   } else {
-    if (d.id === 'star') { g.shadowColor = '#ffc53d'; g.shadowBlur = 40; }
     emojiAt(g, d.emo, d.x, d.y, d.size);
   }
 }
@@ -3342,11 +3557,12 @@ $('#treePick').addEventListener('click', e => {
 function renderCabin() {
   const p = P();
   renderTreePick();
-  if (allStars() >= 60 && !p.owned.includes('star')) { p.owned.push('star'); save(); }
   paintCabin();
   $('#cabinTip').innerHTML = zy('按住裝飾可以移動，點一下可以聽英文！');
-  const tiers = [['s', '小裝飾', '每天玩就能換一個'], ['m', '中裝飾', '存兩三天'], ['l', '大裝飾', '存一個星期'], ['a', '降臨曆限定', '打開降臨曆就會拿到'], ['x', '星星獎勵', '星星寶箱和拿滿 60 顆星']];
-  $('#shop').innerHTML = `<p class="ctip">${zy(`你有 🔔 ${p.bells}。已經有的裝飾，按「👀 顯示」可以收起來，不會出現在明信片上。`)}</p>` + tiers.map(([t, name, note]) =>
+  const tiers = [['s', '小裝飾 🔔 3', '每天玩就能換一個'], ['m', '中裝飾 🔔 8', '存兩三天'], ['l', '大裝飾 🔔 20', '存一個星期']];
+  $('#shop').innerHTML = `<p class="ctip">${zy(`你有 🔔 ${p.bells}。所有裝飾都用鈴鐺換！`)}</p>
+    <p class="ctip">${zy('🔔 怎麼拿：過關、每日任務、降臨曆、星星寶箱。')}</p>
+    <p class="ctip">${zy('已經有的裝飾，按「👀 顯示」可以收起來，不會出現在明信片上。')}</p>` + tiers.map(([t, name, note]) =>
     `<h3>${zy(name)}　<small style="font-weight:400;color:var(--frost);font-size:15px">${zy(note)}</small></h3>` +
     DECOS.filter(d => d.tier === t).map(d => {
       let btn;
@@ -3357,14 +3573,16 @@ function renderCabin() {
       }
       else if (d.cost) btn = `<button class="sbuy ${confirmId === d.id ? 'confirm' : ''}" data-buy="${d.id}" ${p.bells < d.cost ? 'disabled' : ''}>${confirmId === d.id ? zy('確定？') : `🔔 ${d.cost}`}</button>`;
       else btn = `<button class="sbuy" disabled>🔒</button>`;
-      const icon = d.emo ? d.emo : d.id === 'sleigh' || d.id === 'lights' ? DECO_ICON[d.id] : `<canvas class="sicv" data-d="${d.id}" width="104" height="104"></canvas>`;
+      const icon = d.emo ? d.emo : DECO_ICON[d.id] || `<canvas class="sicv" data-d="${d.id}" width="104" height="104"></canvas>`;
       return `<div class="sitem"><span class="si">${icon}</span><span class="sn"><b>${zy(d.zh)}</b><small>${esc(d.en)}</small></span>${btn}</div>`;
     }).join('')).join('');
   // small pictures of the drawn decorations, so the wreath no longer borrows the bow emoji
   $('#shop').querySelectorAll('.sicv').forEach(cv => {
-    const d = DECOS.find(x => x.id === cv.dataset.d), [bx, by, bw, bh] = baseBox(d), k = 92 / Math.max(bw, bh);
-    const g = cv.getContext('2d');
+    const d = DECOS.find(x => x.id === cv.dataset.d), g = cv.getContext('2d');
+    // the wall lights show one swag, the tree lights show on a tree, so the picture says what you get
+    const [bx, by, bw, bh] = d.id === 'lights' ? [60, 0, 520, 200] : baseBox(d), k = 92 / Math.max(bw, bh);
     g.setTransform(k, 0, 0, k, 52 - (bx + bw / 2) * k, 52 - (by + bh / 2) * k);
+    if (d.id === 'treelights') drawTreeShape(g);
     drawDeco(g, d);
   });
 }
@@ -3393,7 +3611,7 @@ function cabinPoint(e) {
 }
 $('#cabinCv').addEventListener('pointerdown', e => {
   const { x, y } = cabinPoint(e);
-  const hit = DECOS.filter(d => shownDecos().includes(d.id)).sort((a, b) => b.layer - a.layer)
+  const hit = DECOS.filter(d => shownDecos().includes(d.id) && GRABBABLE(d)).sort((a, b) => b.layer - a.layer)
     .find(d => { const [bx, by, bw, bh] = decoBox(d); return x >= bx && x <= bx + bw && y >= by && y <= by + bh; });
   if (!hit) return;
   const q = decoPos(hit);
@@ -3433,7 +3651,22 @@ async function shareCard(blob) {
     return true;
   } catch (e) { return !!(e && e.name === 'AbortError'); }
 }
-function drawPostcard(msg) {
+const PC_FONTS = ['Huninn', 'Chiron GoRound TC', 'LXGW WenKai TC', 'Iansui'];
+// only the round font comes in bold; the others are drawn at their real weight so they keep their look
+const pcWeight = f => f.startsWith('Chiron') ? 700 : 400;
+const pcFont = f => `"${f}", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif`;
+// break a line of Chinese anywhere, English only between words
+function wrapText(g, text, maxW) {
+  const units = /\s/.test(text) && !/[\u4e00-\u9fff]/.test(text) ? text.split(/(\s+)/) : [...text];
+  const lines = []; let cur = '';
+  for (const u of units) {
+    if (g.measureText(cur + u).width > maxW && cur.trim()) { lines.push(cur.trim()); cur = u.trimStart(); }
+    else cur += u;
+  }
+  if (cur.trim()) lines.push(cur.trim());
+  return lines;
+}
+function drawPostcard(msg, own = '', font = PC_FONTS[0]) {
   const cv = document.createElement('canvas'); cv.width = 1200; cv.height = 900;
   const g = cv.getContext('2d');
   g.fillStyle = '#fff8e8'; g.fillRect(0, 0, 1200, 900);
@@ -3445,29 +3678,51 @@ function drawPostcard(msg) {
   g.restore();
   g.strokeStyle = '#6e4529'; g.lineWidth = 6; g.strokeRect(50, 50, 1100, 687.5);
   g.fillStyle = '#a8272c'; g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.font = '800 58px "Sniglet", "Trebuchet MS", sans-serif'; g.fillText(msg, 600, 800);
-  g.fillStyle = '#4a5a7d'; g.font = '34px "Iansui", "PingFang TC", "Microsoft JhengHei", sans-serif';
-  g.fillText(`From ${P().name}`, 600, 856);
+  if (own) {
+    // the child's own words: shrink until they fit on two lines
+    let size = 62, lines;
+    // one line can be big; two lines must fit between the picture and the "From" line
+    for (;;) { g.font = `${pcWeight(font)} ${size}px ${pcFont(font)}`; lines = wrapText(g, own, 960); if (size <= 30 || (lines.length === 1 || (lines.length === 2 && size <= 44))) break; size -= 2; }
+    lines = lines.slice(0, 2);
+    const lh = size + 8, top = lines.length > 1 ? 772 : 798;
+    lines.forEach((ln, k) => g.fillText(ln, 600, top + k * lh));
+  } else {
+    g.font = '800 58px "Sniglet", "Trebuchet MS", sans-serif'; g.fillText(msg, 600, 800);
+  }
+  g.fillStyle = '#4a5a7d'; g.font = `30px ${pcFont(font)}`;
+  g.fillText(`From ${P().name}`, 600, 862);
   emojiAt(g, '❄️', 90, 800, 48); emojiAt(g, '❄️', 1110, 800, 48);
   return cv;
 }
 function openPostcard() {
-  let msg = GREETINGS[0], blobP = null;
+  let msg = GREETINGS[0], own = '', font = PC_FONTS[0], blobP = null, tok = 0;
   const render = () => {
-    const cv = drawPostcard(msg);
-    $('#pcImg').src = cv.toDataURL('image/png');
-    // make the file now, so the save button can hand it over right away
-    blobP = new Promise(r => cv.toBlob(r, 'image/png'));
-    document.querySelectorAll('.msg').forEach(b => b.classList.toggle('on', b.dataset.m === msg));
+    const my = ++tok;
+    document.querySelectorAll('.msg').forEach(b => b.classList.toggle('on', !own && b.dataset.m === msg));
+    document.querySelectorAll('.fpick').forEach(b => b.classList.toggle('on', b.dataset.f === font));
+    // make the file now, so the save button can hand it over right away; Chinese glyphs load first
+    blobP = (async () => {
+      try { await withinMs(document.fonts.load(`${pcWeight(font)} 40px "${font}"`, (own || '聖誕快樂') + P().name), 4000); } catch (e) {}
+      const cv = drawPostcard(msg, own, font);
+      if (my === tok) $('#pcImg').src = cv.toDataURL('image/png');
+      return new Promise(r => cv.toBlob(r, 'image/png'));
+    })();
   };
   openModal(`<h2>${zy('💌 做明信片')}</h2>
     <p>${zy('選一句祝福的話：')}</p>
     <div class="msgs">${GREETINGS.map(m => `<button class="msg" data-m="${esc(m)}">${esc(m)}</button>`).join('')}</div>
+    <p>${zy('或是自己寫一句話（中文、英文都可以）：')}</p>
+    <input type="text" id="pcText" class="pctext" maxlength="30" autocomplete="off" placeholder="例如：阿嬤，聖誕快樂！" aria-label="自己寫的話">
+    <p>${zy('選一種字體：')}</p>
+    <div class="fpicks">${PC_FONTS.map(f => `<button class="fpick" data-f="${f}" style="font-family:${esc(pcFont(f))};font-weight:${pcWeight(f)}">聖誕快樂</button>`).join('')}</div>
     <img class="pcimg" id="pcImg" alt="明信片">
     <p id="pcHelp" class="pchelp">${zy('存成圖片後，請爸爸媽媽用 LINE 傳給家人。')}</p>
     <div class="row"><button class="btn alt" data-close>${zy('關閉')}</button><button class="btn alt" id="pcCopy">📋 ${zy('複製圖片')}</button><button class="btn" id="pcSave">${zy('儲存／分享')}</button></div>`, true);
   render();
-  $('#mpanel').querySelector('.msgs').onclick = e => { const b = e.target.closest('.msg'); if (b) { msg = b.dataset.m; speak(msg, 0.9); render(); } };
+  $('#mpanel').querySelector('.msgs').onclick = e => { const b = e.target.closest('.msg'); if (b) { msg = b.dataset.m; own = ''; $('#pcText').value = ''; speak(msg, 0.9); render(); } };
+  let typing = 0;
+  $('#pcText').oninput = e => { own = e.target.value.trim(); clearTimeout(typing); typing = setTimeout(render, 350); };
+  $('#mpanel').querySelector('.fpicks').onclick = e => { const b = e.target.closest('.fpick'); if (b) { font = b.dataset.f; sfx.flip(); render(); } };
   // copy the card so it can be pasted straight into a LINE chat (works where saving files is blocked)
   $('#pcCopy').onclick = async () => {
     const help = $('#pcHelp');
@@ -3530,7 +3785,7 @@ function renderAdvent() {
     : ready ? '今天可以打開一格！點一下發光的門。' : '今天的已經打開了，明天再來開下一格喔！');
   $('#agrid').innerHTML = Array.from({ length: 25 }, (_, k) => {
     const d = k + 1, pr = adventPrize(d);
-    if (d <= a.opened) return `<button class="adoor open" disabled aria-label="${d}">${pr.deco ? DECOS.find(x => x.id === pr.deco).emo : '🔔'}</button>`;
+    if (d <= a.opened) return `<button class="adoor open" disabled aria-label="${d}">🔔</button>`;
     if (d === a.opened + 1 && ready) return `<button class="adoor ready" data-d="${d}">${d}</button>`;
     return `<button class="adoor later" disabled>${d}</button>`;
   }).join('');
@@ -3540,8 +3795,7 @@ $('#agrid').addEventListener('click', e => {
   const p = P(), a = p.advent; a.opened++; a.last = todayStr();
   const pr = adventPrize(a.opened);
   let text;
-  if (pr.deco) { const d = DECOS.find(x => x.id === pr.deco); p.owned.push(d.id); text = `🎁 拿到「${d.zh}」！放在聖誕小屋裡了`; speak(d.en); }
-  else { p.bells += pr.bells; text = `🔔 +${pr.bells}`; speak('Surprise!', 0.9); }
+  p.bells += pr.bells; text = `🔔 +${pr.bells}`; speak('Surprise!', 0.9);
   save(); sfx.coin();
   b.classList.add('flip');
   setTimeout(() => { renderAdvent(); $('#bellCount').textContent = p.bells; toast(text); }, 320);
