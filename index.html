@@ -578,6 +578,49 @@ button.chip:active { background: var(--night-2); }
 .flake.bub { background: radial-gradient(circle at 30% 28%, #fff 0 12%, #bfe3ff 13%, #7cc0f5 70%); box-shadow: 0 7px 0 #4f8fc4; color: var(--ink); }
 .flake.bub::before { content: none; }
 
+/* ---------- hide and seek, sentence order, sled race, ice fishing ---------- */
+.hidegame, .orderg, .fishing { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(10px, 3cqh, 26px); }
+.woods { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(8px, 2cqh, 18px) clamp(16px, 5vw, 60px); }
+.htree { position: relative; width: clamp(120px, 26cqh, 200px); aspect-ratio: 1; border: none; background: none; padding: 0; overflow: visible; }
+.htree .tr { position: absolute; inset: 0; z-index: 2; font-size: clamp(110px, 25cqh, 190px); line-height: 1; filter: drop-shadow(0 6px 4px rgba(0,0,0,.35)); }
+.htree .hani { position: absolute; left: 50%; top: 30%; z-index: 1; font-size: clamp(44px, 9cqh, 70px); line-height: 1; animation: peek 3.2s ease-in-out var(--d) infinite; }
+@keyframes peek { 0%, 100% { transform: translate(-50%, 0); } 35%, 65% { transform: translate(-125%, -10%) rotate(-12deg); } }
+.htree.found .hani { animation: none; z-index: 3; transform: translate(-50%, -75%) scale(1.15); transition: transform .4s cubic-bezier(.3,1.7,.5,1); }
+.htree.found .tr { opacity: .55; }
+.htree.wrong .tr { animation: shake .4s; }
+.orderg .pic, .fishing .pic { font-size: clamp(60px, 14cqh, 100px); }
+.oslots { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: 10px; }
+.oslot { min-width: clamp(70px, 12vw, 120px); height: clamp(52px, 10cqh, 70px); border-radius: 14px; border: 3px dashed rgba(245,248,255,.6);
+  display: grid; place-items: center; padding: 0 14px; font-family: var(--f-word); font-weight: 700; font-size: clamp(24px, 5.5cqh, 38px); }
+.oslot.filled { border: 3px solid var(--gold); background: var(--snow); color: var(--ink); animation: popin .3s; }
+.odot { font-family: var(--f-word); font-size: 40px; font-weight: 700; }
+.otiles .wbtn.used { visibility: hidden; }
+.otiles .wbtn.wrong { opacity: 1; }
+.racegame .track { position: relative; flex: 0 0 34%; display: flex; flex-direction: column; justify-content: space-around; padding: 0 12% 0 3%;
+  background: repeating-linear-gradient(90deg, rgba(255,255,255,.18) 0 2px, transparent 2px 70px); border-radius: 20px; }
+.racegame .lane { position: relative; height: 42%; border-bottom: 4px dashed rgba(245,248,255,.6); }
+.racer { --p: 0; position: absolute; bottom: 0; left: calc(var(--p) * 100%); transition: left .8s cubic-bezier(.3,1.3,.5,1); font-size: clamp(44px, 10vmin, 84px); line-height: 1; white-space: nowrap; }
+.racer.me span { font-size: .7em; margin-left: -.55em; vertical-align: top; }
+.racer.me.win { animation: hopwin .5s ease-in-out 3; }
+@keyframes hopwin { 50% { transform: translateY(-20px); } }
+.racegame .goal { position: absolute; right: 2%; top: 50%; transform: translateY(-50%); font-size: clamp(48px, 10vmin, 80px); }
+.pond { position: relative; width: min(100%, 900px); flex: 1; max-height: 64%; border-radius: 30px; overflow: hidden;
+  background: linear-gradient(#e8f4fd 0 12%, #5b9bd5 12%, #2f6aa8 55%, #1d4677); box-shadow: inset 0 8px 0 rgba(255,255,255,.7); }
+.pond .icehole { position: absolute; left: 50%; top: 4%; width: 120px; height: 34px; transform: translateX(-50%); border-radius: 50%; background: #23558f; box-shadow: 0 0 0 6px #eaf5ff; z-index: 2; }
+.pond .fisher { position: absolute; left: calc(50% + 56px); top: -2px; z-index: 3; font-size: clamp(40px, 8cqh, 58px); line-height: 1; }
+.school { position: absolute; inset: 14% 0 0 0; }
+.fishy { position: absolute; left: -20%; border: none; background: none; padding: 0; display: flex; align-items: center; gap: 2px; touch-action: none;
+  animation: swimR linear infinite; transition: left .7s ease-in, top .7s ease-in; }
+.fishy.l { animation-name: swimL; flex-direction: row-reverse; }
+.fishy .fb { font-size: clamp(46px, 9cqh, 70px); line-height: 1; }
+.fishy.r .fb { transform: scaleX(-1); }
+.fishy .fsign { padding: 2px 8px; border-radius: 12px; background: var(--snow); color: var(--ink); font-size: clamp(28px, 6cqh, 44px); line-height: 1.1; box-shadow: 0 3px 0 var(--frost-d); }
+.fishy.wrong { filter: grayscale(.6); }
+.fishy.wrong .fb { animation: shake .4s; }
+.fishy.caught { animation: none; z-index: 4; transform: translateX(-50%); }
+@keyframes swimR { from { left: -22%; } to { left: 104%; } }
+@keyframes swimL { from { left: 104%; } to { left: -22%; } }
+
 /* ---------- side stages ---------- */
 .paintgame { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; gap: clamp(16px, 4vw, 48px); }
 .ptree { position: relative; flex: none; height: min(100%, 540px); aspect-ratio: 200 / 260; }
@@ -1156,10 +1199,10 @@ const WORLDS = [
 ];
 const PLAN = [
   ['listen', 'memory', 'build', 'robot'],
-  ['hear', 'listen', 'build', 'bingo'],
+  ['hear', 'hide', 'build', 'bingo'],
   ['colors', 'build', 'paint', 'snowball'],
-  ['dress', 'build', 'memory', 'whack'],
-  ['listen', 'memory', 'build', 'final']
+  ['dress', 'build', 'order', 'whack'],
+  ['race', 'fish', 'build', 'final']
 ];
 // the 4th stage of worlds 1-4 guards the ice door to the next world
 const isGate = s => s.k === 3 && s.w < 4;
@@ -1188,6 +1231,10 @@ const KIND = {
   snowball: ['雪球大戰', '答對就丟雪球，打敗暴風雪怪', '❄️'],
   whack:   ['打雪人', '點出拿著對的圖的雪人', '🔨'],
   hear:    ['聽音找動物', '聽聽看，點出對的動物', '👂'],
+  hide:    ['森林躲貓貓', '看單字，找出躲在樹後面的動物', '🌲'],
+  order:   ['句子排排站', '聽句子，把字卡排好', '🧩'],
+  race:    ['雪橇賽跑', '看圖選字，答對雪橇就往前衝', '🛷'],
+  fish:    ['冰上釣魚', '看單字，釣起對的魚', '🎣'],
   dress:   ['幫雪人穿衣服', '把對的衣服拖到雪人身上', '🧣'],
   initial: ['聽開頭字母', '聽聽看，單字是哪個字母開頭？', '🔤'],
   lastletter: ['補最後一個字母', '幫單字補上最後一個字母', '🔤'],
@@ -1297,7 +1344,7 @@ const ZHUYIN = {
   角:'ㄐㄧㄠˇ',話:'ㄏㄨㄚˋ',誰:'ㄕㄟˊ',請:'ㄑㄧㄥˇ',讓:'ㄖㄤˋ',貓:'ㄇㄠ',車:'ㄔㄜ',迪:'ㄉㄧˊ',送:'ㄙㄨㄥˋ',進:'ㄐㄧㄣˋ',
   遞:'ㄉㄧˋ',配:'ㄆㄟˋ',重:'ㄔㄨㄥˊ',金:'ㄐㄧㄣ',鈴:'ㄌㄧㄥˊ',錯:'ㄘㄨㄛˋ',鎮:'ㄓㄣˋ',鐺:'ㄉㄤ',長:'ㄓㄤˇ',門:'ㄇㄣˊ',
   閉:'ㄅㄧˋ',間:'ㄐㄧㄢ',降:'ㄐㄧㄤˋ',限:'ㄒㄧㄢˋ',階:'ㄐㄧㄝ',面:'ㄇㄧㄢˋ',頁:'ㄧㄝˋ',頭:'ㄊㄡˊ',餅:'ㄅㄧㄥˇ',首:'ㄕㄡˇ',
-  住:'ㄓㄨˋ',遊:'ㄧㄡˊ',戲:'ㄒㄧˋ',檔:'ㄉㄤˇ',度:'ㄉㄨˋ',備:'ㄅㄟˋ',份:'ㄈㄣˋ',從:'ㄘㄨㄥˊ',著:'˙ㄓㄜ',掉:'ㄉㄧㄠˋ',怪:'ㄍㄨㄞˋ',器:'ㄑㄧˋ',機:'ㄐㄧ',零:'ㄌㄧㄥˊ',件:'ㄐㄧㄢˋ',修:'ㄒㄧㄡ',理:'ㄌㄧˇ',賓:'ㄅㄧㄣ',連:'ㄌㄧㄢˊ',條:'ㄊㄧㄠˊ',丟:'ㄉㄧㄡ',敗:'ㄅㄞˋ',穿:'ㄔㄨㄢ',衣:'ㄧ',服:'˙ㄈㄨ',身:'ㄕㄣ',泡:'ㄆㄠˋ',像:'ㄒㄧㄤˋ',和:'ㄏㄜˊ',圍:'ㄨㄟˊ',水:'ㄕㄨㄟˇ',旋:'ㄒㄩㄢˊ',木:'ㄇㄨˋ',馬:'ㄇㄚˇ',偶:'ㄡˇ',胡:'ㄏㄨˊ',桃:'ㄊㄠˊ',鉗:'ㄑㄧㄢˊ',箱:'ㄒㄧㄤ',戴:'ㄉㄞˋ',巾:'ㄐㄧㄣ',桶:'ㄊㄨㄥˇ',塗:'ㄊㄨˊ',顯:'ㄒㄧㄢˇ',示:'ㄕˋ',拖:'ㄊㄨㄛ',或:'ㄏㄨㄛˋ',男:'ㄋㄢˊ',女:'ㄋㄩˇ',生:'ㄕㄥ',還:'ㄏㄞˊ',分:'ㄈㄣ',享:'ㄒㄧㄤˇ',螢:'ㄧㄥˊ',幕:'ㄇㄨˋ',轉:'ㄓㄨㄢˇ',橫:'ㄏㄥˊ',製:'ㄓˋ',貼:'ㄊㄧㄝ',框:'ㄎㄨㄤ',綠:'ㄌㄩˋ',白:'ㄅㄞˊ',典:'ㄉㄧㄢˇ',棵:'ㄎㄜ',紅:'ㄏㄨㄥˊ',藍:'ㄌㄢˊ',蝴:'ㄏㄨˊ',蝶:'ㄉㄧㄝˊ',結:'ㄐㄧㄝˊ',跳:'ㄊㄧㄠˋ',視:'ㄕˋ',窗:'ㄔㄨㄤ',辦:'ㄅㄢˋ',法:'ㄈㄚˇ',直:'ㄓˊ',接:'ㄐㄧㄝ',影:'ㄧㄥˇ',像:'ㄒㄧㄤˋ',電:'ㄉㄧㄢˋ',腦:'ㄋㄠˇ',右:'ㄧㄡˋ',鍵:'ㄐㄧㄢˋ',另:'ㄌㄧㄥˋ',移:'ㄧˊ',動:'ㄉㄨㄥˋ',高:'ㄍㄠ',鵝:'ㄜˊ',鷹:'ㄧㄥ',鹿:'ㄌㄨˋ',麋:'ㄇㄧˊ'
+  住:'ㄓㄨˋ',躲:'ㄉㄨㄛˇ',站:'ㄓㄢˋ',賽:'ㄙㄞˋ',跑:'ㄆㄠˇ',往:'ㄨㄤˇ',衝:'ㄔㄨㄥ',釣:'ㄉㄧㄠˋ',魚:'ㄩˊ',遊:'ㄧㄡˊ',戲:'ㄒㄧˋ',檔:'ㄉㄤˇ',度:'ㄉㄨˋ',備:'ㄅㄟˋ',份:'ㄈㄣˋ',從:'ㄘㄨㄥˊ',著:'˙ㄓㄜ',掉:'ㄉㄧㄠˋ',怪:'ㄍㄨㄞˋ',器:'ㄑㄧˋ',機:'ㄐㄧ',零:'ㄌㄧㄥˊ',件:'ㄐㄧㄢˋ',修:'ㄒㄧㄡ',理:'ㄌㄧˇ',賓:'ㄅㄧㄣ',連:'ㄌㄧㄢˊ',條:'ㄊㄧㄠˊ',丟:'ㄉㄧㄡ',敗:'ㄅㄞˋ',穿:'ㄔㄨㄢ',衣:'ㄧ',服:'˙ㄈㄨ',身:'ㄕㄣ',泡:'ㄆㄠˋ',像:'ㄒㄧㄤˋ',和:'ㄏㄜˊ',圍:'ㄨㄟˊ',水:'ㄕㄨㄟˇ',旋:'ㄒㄩㄢˊ',木:'ㄇㄨˋ',馬:'ㄇㄚˇ',偶:'ㄡˇ',胡:'ㄏㄨˊ',桃:'ㄊㄠˊ',鉗:'ㄑㄧㄢˊ',箱:'ㄒㄧㄤ',戴:'ㄉㄞˋ',巾:'ㄐㄧㄣ',桶:'ㄊㄨㄥˇ',塗:'ㄊㄨˊ',顯:'ㄒㄧㄢˇ',示:'ㄕˋ',拖:'ㄊㄨㄛ',或:'ㄏㄨㄛˋ',男:'ㄋㄢˊ',女:'ㄋㄩˇ',生:'ㄕㄥ',還:'ㄏㄞˊ',分:'ㄈㄣ',享:'ㄒㄧㄤˇ',螢:'ㄧㄥˊ',幕:'ㄇㄨˋ',轉:'ㄓㄨㄢˇ',橫:'ㄏㄥˊ',製:'ㄓˋ',貼:'ㄊㄧㄝ',框:'ㄎㄨㄤ',綠:'ㄌㄩˋ',白:'ㄅㄞˊ',典:'ㄉㄧㄢˇ',棵:'ㄎㄜ',紅:'ㄏㄨㄥˊ',藍:'ㄌㄢˊ',蝴:'ㄏㄨˊ',蝶:'ㄉㄧㄝˊ',結:'ㄐㄧㄝˊ',跳:'ㄊㄧㄠˋ',視:'ㄕˋ',窗:'ㄔㄨㄤ',辦:'ㄅㄢˋ',法:'ㄈㄚˇ',直:'ㄓˊ',接:'ㄐㄧㄝ',影:'ㄧㄥˇ',像:'ㄒㄧㄤˋ',電:'ㄉㄧㄢˋ',腦:'ㄋㄠˇ',右:'ㄧㄡˋ',鍵:'ㄐㄧㄢˋ',另:'ㄌㄧㄥˋ',移:'ㄧˊ',動:'ㄉㄨㄥˋ',高:'ㄍㄠ',鵝:'ㄜˊ',鷹:'ㄧㄥ',鹿:'ㄌㄨˋ',麋:'ㄇㄧˊ'
 };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 function zy(text) {
@@ -1928,6 +1975,7 @@ function pickWord(el, cfg) {
         i++; later(round, 1400);
       } else {
         b.classList.add('wrong'); mistakes++; wrong = true; sfx.no(); cheer();
+        if (cfg.onWrong) cfg.onWrong();
         sayBtn.classList.remove('wiggle'); void sayBtn.offsetWidth; sayBtn.classList.add('wiggle');
       }
     });
@@ -2236,6 +2284,142 @@ const GAMES = {
   hear(ctx) {
     quiz(ctx.stage, { targets: pickTargets(ctx.pool, 6), pool: ctx.pool, nOpt: ctx.nOpt, learned: ctx.learned, listenOnly: true,
                       onDone: m => later(() => ctx.done(m), 300) });
+  },
+
+  // animals peek out from behind the trees; read the word and tap the right one
+  hide(ctx) {
+    const animals = pickTargets(ctx.pool, 6), order = shuffle([...animals]);
+    let i = 0, mistakes = 0, wrong = false;
+    ctx.stage.innerHTML = `<div class="hidegame">
+      <div class="ask"><span class="word-prompt"></span><button class="say" aria-label="聽發音">🔊</button></div>
+      <div class="woods">${animals.map((a, k) => `<button class="htree" data-k="${k}" style="--d:${(k * .9) % 3.2}s"><span class="hani">${face(a)}</span><span class="tr">🌲</span></button>`).join('')}</div></div>`;
+    const wp = ctx.stage.querySelector('.word-prompt'), trees = [...ctx.stage.querySelectorAll('.htree')];
+    function round() {
+      setDots(order.length, i);
+      if (i >= order.length) { sfx.win(); later(() => ctx.done(mistakes), 900); return; }
+      const t = order[i]; wrong = false; wp.textContent = t.w;
+      ctx.stage.querySelector('.say').onclick = () => speak(t.w);
+    }
+    trees.forEach(b => b.onclick = () => {
+      const a = animals[+b.dataset.k], t = order[i];
+      if (!t || b.classList.contains('found')) return;
+      if (a.w === t.w) {
+        b.classList.add('found'); sfx.ok(); hideCheer(); speak(t.w);
+        record(t.w, wrong); ctx.learned.add(t.w);
+        i++; later(round, 1200);
+      } else {
+        b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
+        mistakes++; wrong = true; sfx.no(); cheer([[a.w, false]]);
+      }
+    });
+    round();
+  },
+
+  // hear a sentence, tap the word cards in order
+  order(ctx) {
+    const items = pickTargets(ctx.pool.filter(it => !it.c), 5);
+    const art = w => /^[aeiou]/i.test(w) ? 'an' : 'a';
+    const parts = it => ctx.ver === 'basic' ? [pickOne(['I see', 'This is']).split(' '), [`${art(it.w)} ${it.w}`]].flat()
+      : ctx.ver === 'adv' ? ['This', 'is', 'my', it.w] : ['I', 'want', 'to', 'be', `${art(it.w)} ${it.w}`];
+    let i = 0, mistakes = 0;
+    ctx.stage.innerHTML = `<div class="orderg">
+      <div class="ask"><div class="pic"></div><button class="say" aria-label="聽句子">🔊</button></div>
+      <div class="oslots"></div><div class="wopts otiles"></div></div>`;
+    const pic = ctx.stage.querySelector('.pic'), slots = ctx.stage.querySelector('.oslots'), tiles = ctx.stage.querySelector('.otiles');
+    function round() {
+      setDots(items.length, i);
+      if (i >= items.length) { later(() => ctx.done(mistakes), 400); return; }
+      const it = items[i], ps = parts(it), sentence = ps.join(' ') + '.';
+      let pos = 0, wrong = false, mix = shuffle(ps);
+      while (mix.join() === ps.join()) mix = shuffle(ps);
+      pic.innerHTML = face(it);
+      ctx.stage.querySelector('.say').onclick = () => speak(sentence, 0.8);
+      later(() => speak(sentence, 0.8), 350);
+      slots.innerHTML = ps.map(() => '<span class="oslot"></span>').join('') + '<span class="odot">.</span>';
+      tiles.innerHTML = mix.map(w => `<button class="wbtn" data-w="${esc(w)}">${esc(w)}</button>`).join('');
+      tiles.querySelectorAll('.wbtn').forEach(b => b.onclick = () => {
+        if (b.classList.contains('used')) return;
+        if (b.dataset.w === ps[pos]) {
+          const sl = slots.children[pos]; sl.textContent = ps[pos]; sl.classList.add('filled');
+          b.classList.add('used'); sfx.flip(); hideCheer(); pos++;
+          if (pos === ps.length) {
+            sfx.ok(); record(it.w, wrong); ctx.learned.add(it.w);
+            later(() => speak(sentence, 0.8), 250);
+            i++; later(round, 2400);
+          }
+        } else {
+          b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
+          mistakes++; wrong = true; sfx.no(); cheer();
+        }
+      });
+    }
+    round();
+  },
+
+  // every right answer pushes the sled ahead; the reindeer only creeps along
+  race(ctx) {
+    const targets = pickTargets(ctx.pool, 8), N = targets.length;
+    let ok = 0, miss = 0;
+    ctx.stage.innerHTML = `<div class="battle racegame">
+      <div class="track"><div class="lane"><span class="racer me">🛷<span>${avatarOf(P())}</span></span></div>
+        <div class="lane"><span class="racer rival">🦌</span></div><span class="goal">🏁</span></div>
+      <div class="bq"></div></div>`;
+    const me = ctx.stage.querySelector('.racer.me'), rival = ctx.stage.querySelector('.racer.rival');
+    const move = () => {
+      me.style.setProperty('--p', ok / N);
+      rival.style.setProperty('--p', Math.min(.9, (ok + miss) * .75 / N));
+    };
+    move();
+    pickWord(ctx.stage.querySelector('.bq'), {
+      targets, pool: ctx.pool, learned: ctx.learned,
+      onCorrect: () => { ok++; move(); tone(660, 0, .12, 'triangle', .08); },
+      onWrong: () => { miss++; move(); },
+      onDone: m => {
+        me.classList.add('win'); sfx.win(); later(() => speak('You win the race!', 0.9), 300);
+        later(() => ctx.done(m), 2400);
+      }
+    });
+  },
+
+  // fish swim under the ice carrying pictures; catch the one that matches the word
+  fish(ctx) {
+    const targets = pickTargets(ctx.pool, 6), nFish = ctx.nOpt + 1;
+    let i = 0, mistakes = 0;
+    ctx.stage.innerHTML = `<div class="fishing">
+      <div class="ask"><span class="word-prompt"></span><button class="say" aria-label="聽發音">🔊</button></div>
+      <div class="pond"><span class="fisher">${avatarOf(P())}🎣</span><span class="icehole"></span><div class="school"></div></div></div>`;
+    const wp = ctx.stage.querySelector('.word-prompt'), school = ctx.stage.querySelector('.school');
+    function round() {
+      setDots(targets.length, i);
+      if (i >= targets.length) { sfx.win(); later(() => speak('What a big catch!', 0.9), 200); later(() => ctx.done(mistakes), 1800); return; }
+      const t = targets[i], fishes = shuffle([t, ...sample(ctx.pool.filter(x => x.w !== t.w && (x.e || x.c) !== (t.e || t.c)), nFish - 1)]);
+      let wrong = false, caught = false;
+      wp.textContent = t.w;
+      ctx.stage.querySelector('.say').onclick = () => speak(t.w);
+      later(() => speak(t.w), 300);
+      school.innerHTML = fishes.map((f, k) => {
+        const dir = k % 2 ? 'l' : 'r', dur = 9 + Math.random() * 4;
+        return `<button class="fishy ${dir}" data-k="${k}" style="top:${8 + k * (80 / nFish)}%;animation-duration:${dur.toFixed(1)}s;animation-delay:-${(Math.random() * dur).toFixed(1)}s">
+          <span class="fsign">${face(f)}</span><span class="fb">🐟</span></button>`;
+      }).join('');
+      school.querySelectorAll('.fishy').forEach(b => b.addEventListener('pointerdown', e => {
+        e.preventDefault();
+        const f = fishes[+b.dataset.k];
+        if (caught || b.classList.contains('wrong')) return;
+        if (f.w === t.w) {
+          caught = true;
+          const r = b.getBoundingClientRect(), pr = school.getBoundingClientRect();
+          b.style.left = `${r.left - pr.left}px`; b.classList.add('caught');
+          requestAnimationFrame(() => { b.style.left = '50%'; b.style.top = '-6%'; });
+          sfx.ok(); hideCheer(); speak(t.w); record(t.w, wrong); ctx.learned.add(t.w);
+          i++; later(round, 1600);
+        } else {
+          b.classList.add('wrong'); later(() => b.classList.remove('wrong'), 700);
+          mistakes++; wrong = true; sfx.no(); cheer([[f.w, false]]);
+        }
+      }));
+    }
+    round();
   },
 
   // ---- world bosses: each ends by shattering the ice door ----
