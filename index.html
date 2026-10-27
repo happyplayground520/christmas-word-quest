@@ -3191,8 +3191,8 @@ const DECOS = [
   ['presents', '禮物堆', 'presents', 'l', 20, '🎁', 1180, 915, 100, 3],
   ['sofa', '沙發', 'sofa', 'l', 20, '🛋️', 330, 800, 250, 2],
   ['sleigh', '麋鹿雪橇', 'sleigh', 'l', 20, null, 350, 340, 0, 1],
-  ['santa', '聖誕老人', 'Santa', 'l', 20, '🎅', 1540, 820, 170, 4],
-  ['mrsclaus', '聖誕老婆婆', 'Mrs. Claus', 'l', 20, '🤶', 1530, 620, 150, 4],
+  ['santa', '聖誕老人', 'Santa', 'l', 20, null, 1520, 830, 250, 4],
+  ['mrsclaus', '聖誕老婆婆', 'Mrs. Claus', 'l', 20, null, 1385, 840, 235, 4],
   ['elf', '小精靈朋友', 'elf', 'l', 20, '🧝', 900, 790, 140, 4],
   ['carousel', '旋轉木馬', 'carousel', 'l', 20, '🎠', 470, 640, 110, 3],
   ['nutcracker', '胡桃鉗娃娃', 'nutcracker', 'l', 20, '💂', 130, 640, 120, 3],
@@ -3227,6 +3227,7 @@ function baseBox(d) {
   if (d.id === 'poinsettia') return [d.x - 90, d.y - 90, 180, 190];
   if (d.id === 'giftbox') return [d.x - 75, d.y - 85, 150, 160];
   if (d.id === 'candycane') return [d.x - 40, d.y - 60, 80, 120];
+  if (d.id === 'santa' || d.id === 'mrsclaus') return [d.x - d.size * .3, d.y - d.size * .55, d.size * .6, d.size * 1.08];
   if (d.id === 'gingerman') return [d.x - 50, d.y - 60, 100, 120];
   if (d.id === 'wreath') return [700, 195, 200, 200];
   return [d.x - d.size / 2, d.y - d.size / 2, d.size, d.size];
@@ -3395,8 +3396,78 @@ function drawBow(g, x, y, s) {
   g.beginPath(); g.moveTo(x - 8, y); g.lineTo(x - s * .5, y + s * .9); g.lineTo(x - s * .2, y + s * .8); g.lineTo(x, y + 4); g.lineTo(x + s * .2, y + s * .8); g.lineTo(x + s * .5, y + s * .9); g.lineTo(x + 8, y); g.fill();
   g.fillStyle = '#ff6b73'; g.beginPath(); g.arc(x, y, s * .22, 0, 6.283); g.fill();
 }
+// Santa and Mrs. Claus, head to boots; drawn 260 units tall around (x, y), scaled by k
+function drawClaus(g, x, y, k, mrs) {
+  const rr = (rx, ry, w, h, r) => { g.beginPath(); if (g.roundRect) g.roundRect(rx, ry, w, h, r); else g.rect(rx, ry, w, h); };
+  g.save(); g.translate(x, y); g.scale(k, k);
+  const red = g.createLinearGradient(-60, 0, 60, 0); red.addColorStop(0, '#ff6a6f'); red.addColorStop(.55, '#d1222c'); red.addColorStop(1, '#9f121b');
+  const skin = '#f7c9a6', fur = '#ffffff', dark = '#22222c';
+  g.fillStyle = 'rgba(0,0,0,.25)'; g.beginPath(); g.ellipse(0, 130, 64, 10, 0, 0, 6.283); g.fill();
+  if (!mrs) {
+    // a sack of presents over his shoulder
+    g.fillStyle = '#c8a26b'; g.beginPath(); g.ellipse(52, 4, 42, 54, .25, 0, 6.283); g.fill();
+    g.fillStyle = '#2fb36b'; g.fillRect(34, -66, 24, 22); g.fillStyle = '#ffc53d'; g.fillRect(44, -66, 5, 22);
+    g.fillStyle = '#5aa9ff'; g.fillRect(56, -58, 18, 16); g.fillStyle = '#fff'; g.fillRect(63, -58, 4, 16);
+    g.fillStyle = '#a8834f'; g.beginPath(); g.ellipse(44, -44, 26, 9, .2, 0, 6.283); g.fill();
+    // boots and trousers
+    g.fillStyle = dark; rr(-40, 106, 36, 22, 9); g.fill(); rr(4, 106, 36, 22, 9); g.fill();
+    g.fillStyle = red; g.fillRect(-32, 76, 26, 34); g.fillRect(6, 76, 26, 34);
+    g.fillStyle = fur; rr(-35, 100, 32, 10, 5); g.fill(); rr(3, 100, 32, 10, 5); g.fill();
+    // coat with fur trim, belt and gold buckle
+    g.fillStyle = red; g.beginPath(); g.moveTo(-36, -42); g.quadraticCurveTo(-62, 20, -58, 86); g.lineTo(58, 86); g.quadraticCurveTo(62, 20, 36, -42); g.closePath(); g.fill();
+    g.fillStyle = fur; rr(-62, 76, 124, 18, 9); g.fill(); g.fillRect(-7, -40, 14, 118);
+    g.fillStyle = dark; g.fillRect(-58, 26, 116, 15);
+    g.strokeStyle = goldGrad(g, -13, 0, 13, 0); g.lineWidth = 5; g.strokeRect(-12, 24, 24, 19);
+  } else {
+    // long dress, white apron with a heart pocket, little shoes
+    g.fillStyle = dark; g.beginPath(); g.ellipse(-18, 126, 13, 7, 0, 0, 6.283); g.fill(); g.beginPath(); g.ellipse(18, 126, 13, 7, 0, 0, 6.283); g.fill();
+    g.fillStyle = red; g.beginPath(); g.moveTo(-32, -42); g.quadraticCurveTo(-56, 40, -64, 120); g.lineTo(64, 120); g.quadraticCurveTo(56, 40, 32, -42); g.closePath(); g.fill();
+    g.fillStyle = fur; rr(-66, 110, 132, 14, 7); g.fill();
+    g.fillStyle = '#fffaf2'; rr(-20, -36, 40, 36, 8); g.fill();
+    g.beginPath(); g.moveTo(-28, -4); g.lineTo(28, -4); g.lineTo(38, 96);
+    for (let i = 0; i < 6; i++) g.quadraticCurveTo(38 - i * 12.7 - 6.3, 106, 38 - (i + 1) * 12.7, 96);
+    g.closePath(); g.fill();
+    g.strokeStyle = '#e5484d'; g.lineWidth = 3; g.setLineDash([6, 5]); rr(-22, 0, 44, 86, 8); g.stroke(); g.setLineDash([]);
+    g.fillStyle = '#e5484d'; g.beginPath(); g.moveTo(0, 62); g.bezierCurveTo(-16, 50, -10, 36, 0, 44); g.bezierCurveTo(10, 36, 16, 50, 0, 62); g.fill();
+    g.fillStyle = '#2f7d4f'; g.fillRect(-34, -6, 68, 8);
+  }
+  // arms: mittens for Santa, hands for Mrs. Claus
+  for (const sd of [-1, 1]) {
+    g.save(); g.translate(sd * 38, -32); g.rotate(mrs ? sd * .25 : -sd * .3);  // her hands hold the apron, his hang outside the coat
+    g.fillStyle = red; rr(-12, 0, 24, 60, 12); g.fill();
+    g.fillStyle = fur; rr(-14, 48, 28, 12, 6); g.fill();
+    g.fillStyle = mrs ? skin : dark; g.beginPath(); g.arc(0, 70, 11, 0, 6.283); g.fill();
+    g.restore();
+  }
+  g.fillStyle = fur; g.beginPath(); g.ellipse(0, -40, 40, 12, 0, 0, 6.283); g.fill();
+  if (!mrs) {
+    g.fillStyle = skin; g.beginPath(); g.arc(0, -66, 28, 0, 6.283); g.fill();
+    g.fillStyle = fur;
+    [[-24, -52, 15], [24, -52, 15], [-15, -36, 17], [15, -36, 17], [0, -28, 19], [-28, -66, 9], [28, -66, 9]].forEach(([bx, by, br]) => { g.beginPath(); g.arc(bx, by, br, 0, 6.283); g.fill(); });
+    g.fillStyle = 'rgba(255,120,130,.45)'; g.beginPath(); g.arc(-17, -62, 6, 0, 6.283); g.arc(17, -62, 6, 0, 6.283); g.fill();
+    g.fillStyle = dark; g.beginPath(); g.arc(-10, -71, 3.5, 0, 6.283); g.arc(10, -71, 3.5, 0, 6.283); g.fill();
+    g.fillStyle = '#f0a07c'; g.beginPath(); g.arc(0, -61, 6, 0, 6.283); g.fill();
+    g.fillStyle = fur; g.beginPath(); g.ellipse(-10, -53, 13, 7, -.3, 0, 6.283); g.fill(); g.beginPath(); g.ellipse(10, -53, 13, 7, .3, 0, 6.283); g.fill();
+    // hat
+    g.fillStyle = red; g.beginPath(); g.moveTo(-30, -84); g.quadraticCurveTo(-14, -142, 40, -122); g.quadraticCurveTo(16, -112, 30, -84); g.closePath(); g.fill();
+    g.fillStyle = fur; rr(-34, -94, 68, 16, 8); g.fill(); g.beginPath(); g.arc(42, -120, 10, 0, 6.283); g.fill();
+  } else {
+    g.fillStyle = fur;
+    [[-25, -70, 13], [25, -70, 13], [-22, -52, 10], [22, -52, 10]].forEach(([bx, by, br]) => { g.beginPath(); g.arc(bx, by, br, 0, 6.283); g.fill(); });
+    g.fillStyle = skin; g.beginPath(); g.arc(0, -64, 26, 0, 6.283); g.fill();
+    g.fillStyle = fur; g.beginPath(); g.ellipse(0, -84, 29, 14, 0, 0, 6.283); g.fill(); g.beginPath(); g.arc(0, -102, 15, 0, 6.283); g.fill();
+    g.fillStyle = '#2f7d4f'; g.beginPath(); g.ellipse(10, -108, 9, 4, -.5, 0, 6.283); g.fill(); g.beginPath(); g.ellipse(20, -102, 9, 4, .4, 0, 6.283); g.fill();
+    g.fillStyle = '#e5484d'; g.beginPath(); g.arc(14, -103, 4, 0, 6.283); g.fill();
+    g.fillStyle = 'rgba(255,120,130,.5)'; g.beginPath(); g.arc(-15, -58, 6, 0, 6.283); g.arc(15, -58, 6, 0, 6.283); g.fill();
+    g.fillStyle = dark; g.beginPath(); g.arc(-10, -67, 3, 0, 6.283); g.arc(10, -67, 3, 0, 6.283); g.fill();
+    g.strokeStyle = '#c99a1a'; g.lineWidth = 2.5; g.beginPath(); g.arc(-10, -67, 8, 0, 6.283); g.moveTo(18, -67); g.arc(10, -67, 8, 0, 6.283); g.moveTo(-2, -68); g.lineTo(2, -68); g.stroke();
+    g.strokeStyle = '#b5523d'; g.lineWidth = 3; g.lineCap = 'round'; g.beginPath(); g.arc(0, -56, 8, .3, Math.PI - .3); g.stroke();
+  }
+  g.restore();
+}
 // one decoration at its unmoved spot (callers translate/scale the context)
 function drawDeco(g, d) {
+  if (d.id === 'santa' || d.id === 'mrsclaus') { drawClaus(g, d.x, d.y, d.size / 260, d.id === 'mrsclaus'); return; }
   if (d.id === 'treelights') {
     // strands swooping across each tier of the tree
     [[650, 880, 262], [530, 780, 225], [410, 660, 182], [290, 530, 130]].forEach(([t, b, hw], ti) => {
