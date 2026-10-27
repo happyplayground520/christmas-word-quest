@@ -842,6 +842,10 @@ button.chip:active { background: var(--night-2); }
 .adoor.open { background: var(--gold-l); box-shadow: 0 5px 0 var(--gold-d); font-size: clamp(26px, 7cqh, 48px); }
 .adoor.ready { color: var(--ink); background: var(--gold); box-shadow: 0 5px 0 var(--gold-d), 0 0 0 5px var(--gold-l), 0 0 26px 6px rgba(255,197,61,.6); animation: pulse 1.4s ease-in-out infinite; }
 .adoor.flip { animation: flipopen .6s; }
+.adoor.big { box-shadow: 0 5px 0 var(--berry-d), inset 0 0 0 4px var(--gold); flex-direction: column; gap: 0; }
+.adoor.big small { font-size: .5em; line-height: 1; }
+.apager { display: flex; align-items: center; justify-content: center; gap: 14px; font-weight: 700; font-size: 20px; }
+.apager .chip:disabled { opacity: .35; }
 @keyframes flipopen { 50% { transform: rotateY(90deg); } }
 .anote { margin: 0; text-align: center; font-size: 20px; text-shadow: 0 2px 4px rgba(0,0,0,.6); }
 
@@ -988,7 +992,7 @@ button.chip:active { background: var(--night-2); }
         <button class="sbtn" id="sideToggle" aria-label="展開或收起功能列"><span class="si2">☰</span><span class="sl" data-zy>收起來</span></button>
         <button class="sbtn" id="whoBtn" aria-label="換人"><span class="si2" id="whoIcon">🧝</span><span class="sl" id="whoName"></span></button>
         <button class="sbtn" id="cabinBtn" aria-label="聖誕小屋"><span class="si2">🏡</span><span class="sl" data-zy>聖誕小屋</span></button>
-        <button class="sbtn" id="adventBtn" aria-label="降臨曆"><span class="si2">🗓️</span><span class="sl" data-zy>降臨曆</span></button>
+        <button class="sbtn" id="adventBtn" aria-label="簽到"><span class="si2">🗓️</span><span class="sl" data-zy>簽到</span></button>
         <button class="sbtn" id="bagBtn" aria-label="禮物袋"><span class="si2">🎒</span><span class="sl" data-zy>禮物袋</span></button>
         <span class="sep"></span>
         <button class="sbtn fsbtn" aria-label="全螢幕"><span class="si2"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></span><span class="sl" data-zy>全螢幕</span></button>
@@ -1040,6 +1044,7 @@ button.chip:active { background: var(--night-2); }
 
   <section class="screen" id="advent" hidden>
     <p class="anote" id="adventNote"></p>
+    <div class="apager"><button class="chip" id="aPrev" aria-label="上一頁">◀</button><span id="aPage"></span><button class="chip" id="aNext" aria-label="下一頁">▶</button></div>
     <div class="advent"><div class="agrid" id="agrid"></div></div>
   </section>
 
@@ -1349,7 +1354,7 @@ const ZHUYIN = {
   角:'ㄐㄧㄠˇ',話:'ㄏㄨㄚˋ',誰:'ㄕㄟˊ',請:'ㄑㄧㄥˇ',讓:'ㄖㄤˋ',貓:'ㄇㄠ',車:'ㄔㄜ',迪:'ㄉㄧˊ',送:'ㄙㄨㄥˋ',進:'ㄐㄧㄣˋ',
   遞:'ㄉㄧˋ',配:'ㄆㄟˋ',重:'ㄔㄨㄥˊ',金:'ㄐㄧㄣ',鈴:'ㄌㄧㄥˊ',錯:'ㄘㄨㄛˋ',鎮:'ㄓㄣˋ',鐺:'ㄉㄤ',長:'ㄓㄤˇ',門:'ㄇㄣˊ',
   閉:'ㄅㄧˋ',間:'ㄐㄧㄢ',降:'ㄐㄧㄤˋ',限:'ㄒㄧㄢˋ',階:'ㄐㄧㄝ',面:'ㄇㄧㄢˋ',頁:'ㄧㄝˋ',頭:'ㄊㄡˊ',餅:'ㄅㄧㄥˇ',首:'ㄕㄡˇ',
-  住:'ㄓㄨˋ',去:'ㄑㄩˋ',紋:'ㄨㄣˊ',粉:'ㄈㄣˇ',愛:'ㄞˋ',心:'ㄒㄧㄣ',吊:'ㄉㄧㄠˋ',拐:'ㄍㄨㄞˇ',杖:'ㄓㄤˋ',杯:'ㄅㄟ',蛋:'ㄉㄢˋ',糕:'ㄍㄠ',甜:'ㄊㄧㄢˊ',兔:'ㄊㄨˋ',狗:'ㄍㄡˇ',狐:'ㄏㄨˊ',狸:'˙ㄌㄧ',牆:'ㄑㄧㄤˊ',雙:'ㄕㄨㄤ',華:'ㄏㄨㄚˊ',麗:'ㄌㄧˋ',盒:'ㄏㄜˊ',俄:'ㄜˊ',羅:'ㄌㄨㄛˊ',斯:'ㄙ',鐘:'ㄓㄨㄥ',婆:'ㄆㄛˊ',鋼:'ㄍㄤ',琴:'ㄑㄧㄣˊ',所:'ㄙㄨㄛˇ',怎:'ㄗㄣˇ',麼:'˙ㄇㄜ',自:'ㄗˋ',己:'ㄐㄧˇ',寫:'ㄒㄧㄝˇ',種:'ㄓㄨㄥˇ',體:'ㄊㄧˇ',躲:'ㄉㄨㄛˇ',站:'ㄓㄢˋ',賽:'ㄙㄞˋ',跑:'ㄆㄠˇ',往:'ㄨㄤˇ',衝:'ㄔㄨㄥ',釣:'ㄉㄧㄠˋ',魚:'ㄩˊ',遊:'ㄧㄡˊ',戲:'ㄒㄧˋ',檔:'ㄉㄤˇ',度:'ㄉㄨˋ',備:'ㄅㄟˋ',份:'ㄈㄣˋ',從:'ㄘㄨㄥˊ',著:'˙ㄓㄜ',掉:'ㄉㄧㄠˋ',怪:'ㄍㄨㄞˋ',器:'ㄑㄧˋ',機:'ㄐㄧ',零:'ㄌㄧㄥˊ',件:'ㄐㄧㄢˋ',修:'ㄒㄧㄡ',理:'ㄌㄧˇ',賓:'ㄅㄧㄣ',連:'ㄌㄧㄢˊ',條:'ㄊㄧㄠˊ',丟:'ㄉㄧㄡ',敗:'ㄅㄞˋ',穿:'ㄔㄨㄢ',衣:'ㄧ',服:'˙ㄈㄨ',身:'ㄕㄣ',泡:'ㄆㄠˋ',像:'ㄒㄧㄤˋ',和:'ㄏㄜˊ',圍:'ㄨㄟˊ',水:'ㄕㄨㄟˇ',旋:'ㄒㄩㄢˊ',木:'ㄇㄨˋ',馬:'ㄇㄚˇ',偶:'ㄡˇ',胡:'ㄏㄨˊ',桃:'ㄊㄠˊ',鉗:'ㄑㄧㄢˊ',箱:'ㄒㄧㄤ',戴:'ㄉㄞˋ',巾:'ㄐㄧㄣ',桶:'ㄊㄨㄥˇ',塗:'ㄊㄨˊ',顯:'ㄒㄧㄢˇ',示:'ㄕˋ',拖:'ㄊㄨㄛ',或:'ㄏㄨㄛˋ',男:'ㄋㄢˊ',女:'ㄋㄩˇ',生:'ㄕㄥ',還:'ㄏㄞˊ',分:'ㄈㄣ',享:'ㄒㄧㄤˇ',螢:'ㄧㄥˊ',幕:'ㄇㄨˋ',轉:'ㄓㄨㄢˇ',橫:'ㄏㄥˊ',製:'ㄓˋ',貼:'ㄊㄧㄝ',框:'ㄎㄨㄤ',綠:'ㄌㄩˋ',白:'ㄅㄞˊ',典:'ㄉㄧㄢˇ',棵:'ㄎㄜ',紅:'ㄏㄨㄥˊ',藍:'ㄌㄢˊ',蝴:'ㄏㄨˊ',蝶:'ㄉㄧㄝˊ',結:'ㄐㄧㄝˊ',跳:'ㄊㄧㄠˋ',視:'ㄕˋ',窗:'ㄔㄨㄤ',辦:'ㄅㄢˋ',法:'ㄈㄚˇ',直:'ㄓˊ',接:'ㄐㄧㄝ',影:'ㄧㄥˇ',像:'ㄒㄧㄤˋ',電:'ㄉㄧㄢˋ',腦:'ㄋㄠˇ',右:'ㄧㄡˋ',鍵:'ㄐㄧㄢˋ',另:'ㄌㄧㄥˋ',移:'ㄧˊ',動:'ㄉㄨㄥˋ',高:'ㄍㄠ',鵝:'ㄜˊ',鷹:'ㄧㄥ',鹿:'ㄌㄨˋ',麋:'ㄇㄧˊ'
+  住:'ㄓㄨˋ',簽:'ㄑㄧㄢ',去:'ㄑㄩˋ',紋:'ㄨㄣˊ',粉:'ㄈㄣˇ',愛:'ㄞˋ',心:'ㄒㄧㄣ',吊:'ㄉㄧㄠˋ',拐:'ㄍㄨㄞˇ',杖:'ㄓㄤˋ',杯:'ㄅㄟ',蛋:'ㄉㄢˋ',糕:'ㄍㄠ',甜:'ㄊㄧㄢˊ',兔:'ㄊㄨˋ',狗:'ㄍㄡˇ',狐:'ㄏㄨˊ',狸:'˙ㄌㄧ',牆:'ㄑㄧㄤˊ',雙:'ㄕㄨㄤ',華:'ㄏㄨㄚˊ',麗:'ㄌㄧˋ',盒:'ㄏㄜˊ',俄:'ㄜˊ',羅:'ㄌㄨㄛˊ',斯:'ㄙ',鐘:'ㄓㄨㄥ',婆:'ㄆㄛˊ',鋼:'ㄍㄤ',琴:'ㄑㄧㄣˊ',所:'ㄙㄨㄛˇ',怎:'ㄗㄣˇ',麼:'˙ㄇㄜ',自:'ㄗˋ',己:'ㄐㄧˇ',寫:'ㄒㄧㄝˇ',種:'ㄓㄨㄥˇ',體:'ㄊㄧˇ',躲:'ㄉㄨㄛˇ',站:'ㄓㄢˋ',賽:'ㄙㄞˋ',跑:'ㄆㄠˇ',往:'ㄨㄤˇ',衝:'ㄔㄨㄥ',釣:'ㄉㄧㄠˋ',魚:'ㄩˊ',遊:'ㄧㄡˊ',戲:'ㄒㄧˋ',檔:'ㄉㄤˇ',度:'ㄉㄨˋ',備:'ㄅㄟˋ',份:'ㄈㄣˋ',從:'ㄘㄨㄥˊ',著:'˙ㄓㄜ',掉:'ㄉㄧㄠˋ',怪:'ㄍㄨㄞˋ',器:'ㄑㄧˋ',機:'ㄐㄧ',零:'ㄌㄧㄥˊ',件:'ㄐㄧㄢˋ',修:'ㄒㄧㄡ',理:'ㄌㄧˇ',賓:'ㄅㄧㄣ',連:'ㄌㄧㄢˊ',條:'ㄊㄧㄠˊ',丟:'ㄉㄧㄡ',敗:'ㄅㄞˋ',穿:'ㄔㄨㄢ',衣:'ㄧ',服:'˙ㄈㄨ',身:'ㄕㄣ',泡:'ㄆㄠˋ',像:'ㄒㄧㄤˋ',和:'ㄏㄜˊ',圍:'ㄨㄟˊ',水:'ㄕㄨㄟˇ',旋:'ㄒㄩㄢˊ',木:'ㄇㄨˋ',馬:'ㄇㄚˇ',偶:'ㄡˇ',胡:'ㄏㄨˊ',桃:'ㄊㄠˊ',鉗:'ㄑㄧㄢˊ',箱:'ㄒㄧㄤ',戴:'ㄉㄞˋ',巾:'ㄐㄧㄣ',桶:'ㄊㄨㄥˇ',塗:'ㄊㄨˊ',顯:'ㄒㄧㄢˇ',示:'ㄕˋ',拖:'ㄊㄨㄛ',或:'ㄏㄨㄛˋ',男:'ㄋㄢˊ',女:'ㄋㄩˇ',生:'ㄕㄥ',還:'ㄏㄞˊ',分:'ㄈㄣ',享:'ㄒㄧㄤˇ',螢:'ㄧㄥˊ',幕:'ㄇㄨˋ',轉:'ㄓㄨㄢˇ',橫:'ㄏㄥˊ',製:'ㄓˋ',貼:'ㄊㄧㄝ',框:'ㄎㄨㄤ',綠:'ㄌㄩˋ',白:'ㄅㄞˊ',典:'ㄉㄧㄢˇ',棵:'ㄎㄜ',紅:'ㄏㄨㄥˊ',藍:'ㄌㄢˊ',蝴:'ㄏㄨˊ',蝶:'ㄉㄧㄝˊ',結:'ㄐㄧㄝˊ',跳:'ㄊㄧㄠˋ',視:'ㄕˋ',窗:'ㄔㄨㄤ',辦:'ㄅㄢˋ',法:'ㄈㄚˇ',直:'ㄓˊ',接:'ㄐㄧㄝ',影:'ㄧㄥˇ',像:'ㄒㄧㄤˋ',電:'ㄉㄧㄢˋ',腦:'ㄋㄠˇ',右:'ㄧㄡˋ',鍵:'ㄐㄧㄢˋ',另:'ㄌㄧㄥˋ',移:'ㄧˊ',動:'ㄉㄨㄥˋ',高:'ㄍㄠ',鵝:'ㄜˊ',鷹:'ㄧㄥ',鹿:'ㄌㄨˋ',麋:'ㄇㄧˊ'
 };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 function zy(text) {
@@ -1480,8 +1485,9 @@ function daily(key) {
   save();
 }
 
-const adventReady = () => { const a = P().advent; return a.opened < 25 && a.last !== todayStr(); };
-const adventPrize = d => ({ bells: d % 5 === 0 ? 5 : d % 2 ? 1 : 2 });
+const ADVENT_DAYS = 100;
+const adventReady = () => { const a = P().advent; return a.opened < ADVENT_DAYS && a.last !== todayStr(); };
+const adventPrize = d => ({ bells: d % 25 === 0 ? 10 : d % 5 === 0 ? 5 : d % 2 ? 1 : 2 });
 
 /* ================= star chest: every 5 stars (all versions together) opens one ================= */
 const CHEST_EVERY = 5;
@@ -1677,7 +1683,7 @@ $('#chestBtn').onclick = () => {
 };
 $('#whoBtn').onclick = () => show('profiles');
 $('#cabinBtn').onclick = () => show('cabin');
-$('#adventBtn').onclick = () => show('advent');
+$('#adventBtn').onclick = () => { adventPage = null; show('advent'); };
 $('#bagBtn').onclick = () => { bagVer = null; show('bag'); };
 $('#parentBtn').onclick = parentGate;
 $('#homeBtn').onclick = () => show('home');
@@ -3160,11 +3166,11 @@ const DECOS = [
   ['teddy', '泰迪熊', 'teddy bear', 's', 3, '🧸', 560, 880, 110, 3],
   ['mittens', '手套', 'mittens', 's', 3, '🧤', 1520, 420, 80, 3],
   ['snowflake', '雪花', 'snowflake', 's', 3, '❄️', 560, 160, 80, 3],
-  ['angel', '小天使', 'angel', 's', 3, '👼', 960, 230, 90, 3],
-  ['bunny', '兔子', 'bunny', 's', 3, '🐰', 1510, 960, 80, 4],
-  ['kitty', '小貓', 'kitty', 's', 3, '🐱', 430, 940, 80, 4],
-  ['puppy', '小狗', 'puppy', 's', 3, '🐶', 250, 950, 80, 4],
-  ['fox', '狐狸', 'fox', 's', 3, '🦊', 1400, 960, 80, 4],
+  ['angel', '小天使', 'angel', 's', 3, null, 1010, 230, 150, 3],
+  ['bunny', '兔子', 'bunny', 's', 3, null, 1500, 930, 110, 4],
+  ['kitty', '小貓', 'kitty', 's', 3, null, 360, 930, 110, 4],
+  ['puppy', '小狗', 'puppy', 's', 3, null, 220, 930, 110, 4],
+  ['fox', '狐狸', 'fox', 's', 3, null, 1060, 935, 110, 4],
   // 中裝飾 🔔 8
   ['lights', '牆上燈串', 'string lights', 'm', 8, null, 800, 70, 0, 2],
   ['treelights', '樹上燈串', 'tree lights', 'm', 8, null, 1180, 610, 0, 3],
@@ -3179,9 +3185,9 @@ const DECOS = [
   ['plant', '盆栽', 'plant', 'm', 8, '🪴', 110, 820, 150, 2],
   ['owl', '貓頭鷹', 'owl', 'm', 8, '🦉', 1500, 260, 90, 3],
   ['penguin', '企鵝', 'penguin', 'm', 8, '🐧', 1440, 870, 100, 4],
-  ['polarbear', '北極熊', 'polar bear', 'm', 8, '🐻‍❄️', 160, 935, 100, 4],
+  ['polarbear', '北極熊', 'polar bear', 'm', 8, null, 80, 925, 130, 4],
   ['deerdoll', '麋鹿玩偶', 'reindeer toy', 'm', 8, '🦌', 1050, 885, 100, 4],
-  ['globe', '水晶球', 'snow globe', 'm', 8, '🔮', 300, 900, 90, 4],
+  ['globe', '水晶球', 'snow globe', 'm', 8, null, 470, 920, 100, 4],
   ['dolls', '俄羅斯娃娃', 'nesting dolls', 'm', 8, '🪆', 860, 345, 70, 4],
   ['clock', '時鐘', 'clock', 'm', 8, '🕰️', 1320, 160, 100, 3],
   // 大裝飾 🔔 20
@@ -3193,10 +3199,10 @@ const DECOS = [
   ['sleigh', '麋鹿雪橇', 'sleigh', 'l', 20, null, 350, 340, 0, 1],
   ['santa', '聖誕老人', 'Santa', 'l', 20, null, 1520, 830, 250, 4],
   ['mrsclaus', '聖誕老婆婆', 'Mrs. Claus', 'l', 20, null, 1385, 840, 235, 4],
-  ['elf', '小精靈朋友', 'elf', 'l', 20, '🧝', 900, 790, 140, 4],
-  ['carousel', '旋轉木馬', 'carousel', 'l', 20, '🎠', 470, 640, 110, 3],
-  ['nutcracker', '胡桃鉗娃娃', 'nutcracker', 'l', 20, '💂', 130, 640, 120, 3],
-  ['piano', '鋼琴', 'piano', 'l', 20, '🎹', 700, 820, 150, 3]
+  ['elf', '小精靈朋友', 'elf', 'l', 20, null, 900, 800, 210, 4],
+  ['carousel', '旋轉木馬', 'carousel', 'l', 20, '🎠', 960, 930, 110, 3],
+  ['nutcracker', '胡桃鉗娃娃', 'nutcracker', 'l', 20, null, 240, 650, 220, 3],
+  ['piano', '鋼琴', 'piano', 'l', 20, null, 470, 680, 240, 3]
 ].map(([id, zh, en, tier, cost, emo, x, y, size, layer]) => ({ id, zh, en, tier, cost, emo, x, y, size, layer }));
 const DECO_ICON = { sleigh: '🛷' };
 // glass ornaments: [light, dark, pattern]
@@ -3227,7 +3233,8 @@ function baseBox(d) {
   if (d.id === 'poinsettia') return [d.x - 90, d.y - 90, 180, 190];
   if (d.id === 'giftbox') return [d.x - 75, d.y - 85, 150, 160];
   if (d.id === 'candycane') return [d.x - 40, d.y - 60, 80, 120];
-  if (d.id === 'santa' || d.id === 'mrsclaus') return [d.x - d.size * .3, d.y - d.size * .55, d.size * .6, d.size * 1.08];
+  if (TALL[d.id]) return [d.x - d.size * .3, d.y - d.size * .55, d.size * .6, d.size * 1.08];
+  if (d.id === 'piano') return [d.x - d.size * .5, d.y - d.size * .47, d.size, d.size * .95];
   if (d.id === 'gingerman') return [d.x - 50, d.y - 60, 100, 120];
   if (d.id === 'wreath') return [700, 195, 200, 200];
   return [d.x - d.size / 2, d.y - d.size / 2, d.size, d.size];
@@ -3396,6 +3403,189 @@ function drawBow(g, x, y, s) {
   g.beginPath(); g.moveTo(x - 8, y); g.lineTo(x - s * .5, y + s * .9); g.lineTo(x - s * .2, y + s * .8); g.lineTo(x, y + 4); g.lineTo(x + s * .2, y + s * .8); g.lineTo(x + s * .5, y + s * .9); g.lineTo(x + 8, y); g.fill();
   g.fillStyle = '#ff6b73'; g.beginPath(); g.arc(x, y, s * .22, 0, 6.283); g.fill();
 }
+const TALL = { santa: 1, mrsclaus: 1, elf: 1, nutcracker: 1 };
+const CRITTER = {
+  bunny: { body: '#f6f3f0', dark: '#d9d0c7', ear: '#ffb3c7', nose: '#ff8fb0' },
+  kitty: { body: '#f6a54b', dark: '#d07a22', ear: '#ffc9a8', nose: '#ff8f8f' },
+  puppy: { body: '#c98a55', dark: '#8e5a30', ear: '#7a4a2a', nose: '#2b1a10' },
+  fox: { body: '#f07a2a', dark: '#b9501a', ear: '#2b1a10', nose: '#2b1a10' },
+  polarbear: { body: '#f8fafc', dark: '#d6dee8', ear: '#c9d3df', nose: '#2b2233' }
+};
+// a little animal sitting on the floor with a red Christmas scarf; 200 units tall, feet at +95
+function drawCritter(g, x, y, k, t) {
+  const c = CRITTER[t], oval = (ox, oy, rx, ry, a = 0) => { g.beginPath(); g.ellipse(ox, oy, rx, ry, a, 0, 6.283); g.fill(); };
+  g.save(); g.translate(x, y); g.scale(k, k);
+  g.fillStyle = 'rgba(0,0,0,.22)'; oval(0, 96, 66, 9);
+  g.fillStyle = c.body; g.strokeStyle = c.body; g.lineCap = 'round';
+  if (t === 'bunny') { g.fillStyle = '#fff'; g.beginPath(); g.arc(46, 72, 16, 0, 6.283); g.fill(); }
+  if (t === 'kitty') { g.lineWidth = 14; g.beginPath(); g.moveTo(36, 78); g.quadraticCurveTo(84, 60, 66, 4); g.stroke(); }
+  if (t === 'puppy') { g.lineWidth = 12; g.beginPath(); g.moveTo(38, 70); g.quadraticCurveTo(66, 56, 62, 26); g.stroke(); }
+  if (t === 'fox') { oval(56, 44, 26, 56, -.5); g.fillStyle = '#fff'; oval(76, 4, 14, 18, -.5); g.fillStyle = c.body; }
+  if (t === 'polarbear') { g.beginPath(); g.arc(40, 74, 10, 0, 6.283); g.fill(); }
+  oval(0, 42, 48, 56);
+  g.fillStyle = t === 'fox' ? '#fff' : 'rgba(255,255,255,.4)'; oval(0, 52, 28, 38);
+  g.fillStyle = c.dark; oval(-30, 88, 22, 10); oval(30, 88, 22, 10);
+  g.fillStyle = c.body; oval(-14, 84, 12, 10); oval(14, 84, 12, 10);
+  // ears behind the head
+  if (t === 'bunny') { oval(-16, -88, 11, 34, -.15); oval(16, -88, 11, 34, .15); g.fillStyle = c.ear; oval(-16, -86, 5, 24, -.15); oval(16, -86, 5, 24, .15); }
+  if (t === 'kitty' || t === 'fox') {
+    const tip = t === 'fox' ? -96 : -84;
+    [[-1], [1]].forEach(([sd]) => { g.fillStyle = c.body; g.beginPath(); g.moveTo(sd * 36, -46); g.lineTo(sd * 10, -64); g.lineTo(sd * 32, tip); g.closePath(); g.fill();
+      g.fillStyle = c.ear; g.beginPath(); g.moveTo(sd * 30, -54); g.lineTo(sd * 18, -62); g.lineTo(sd * 30, tip + 14); g.closePath(); g.fill(); });
+  }
+  if (t === 'polarbear') { g.fillStyle = c.body; g.beginPath(); g.arc(-28, -62, 13, 0, 6.283); g.arc(28, -62, 13, 0, 6.283); g.fill(); g.fillStyle = c.ear; g.beginPath(); g.arc(-28, -62, 6, 0, 6.283); g.arc(28, -62, 6, 0, 6.283); g.fill(); }
+  g.fillStyle = c.body; g.beginPath(); g.arc(0, -30, t === 'polarbear' ? 42 : 39, 0, 6.283); g.fill();
+  if (t === 'puppy') { g.fillStyle = c.ear; oval(-38, -22, 13, 28, .35); oval(38, -22, 13, 28, -.35); g.fillStyle = '#f3dcc0'; oval(0, -16, 20, 15); }
+  if (t === 'fox') { g.fillStyle = '#fff'; oval(-17, -16, 19, 13, .2); oval(17, -16, 19, 13, -.2); }
+  if (t === 'polarbear') { g.fillStyle = '#eef2f7'; oval(0, -16, 18, 13); }
+  if (t === 'kitty') { g.strokeStyle = c.dark; g.lineWidth = 4; [-10, 0, 10].forEach(dx => { g.beginPath(); g.moveTo(dx, -66); g.lineTo(dx, -56); g.stroke(); }); }
+  // face
+  g.fillStyle = '#2b2233'; g.beginPath(); g.arc(-14, -34, 5.5, 0, 6.283); g.arc(14, -34, 5.5, 0, 6.283); g.fill();
+  g.fillStyle = '#fff'; g.beginPath(); g.arc(-12, -36, 2, 0, 6.283); g.arc(16, -36, 2, 0, 6.283); g.fill();
+  g.fillStyle = c.nose; oval(0, -21, 5, 3.5);
+  g.strokeStyle = '#2b2233'; g.lineWidth = 2.5; g.beginPath(); g.arc(-5, -17, 5, .2, Math.PI - .2); g.moveTo(10, -17); g.arc(5, -17, 5, .2, Math.PI - .2); g.stroke();
+  g.fillStyle = 'rgba(255,120,140,.4)'; g.beginPath(); g.arc(-25, -22, 6, 0, 6.283); g.arc(25, -22, 6, 0, 6.283); g.fill();
+  if (t === 'kitty' || t === 'bunny') { g.strokeStyle = 'rgba(60,40,40,.5)'; g.lineWidth = 1.5; g.beginPath(); [-1, 1].forEach(sd => { g.moveTo(sd * 12, -20); g.lineTo(sd * 34, -24); g.moveTo(sd * 12, -17); g.lineTo(sd * 34, -14); }); g.stroke(); }
+  // red scarf
+  g.fillStyle = '#d1222c'; oval(0, 6, 34, 9); g.fillRect(12, 6, 12, 30); g.fillStyle = '#fff'; g.fillRect(12, 30, 12, 4);
+  g.restore();
+}
+function drawElf(g, x, y, k) {
+  const rr = (rx, ry, w, h, r) => { g.beginPath(); if (g.roundRect) g.roundRect(rx, ry, w, h, r); else g.rect(rx, ry, w, h); };
+  g.save(); g.translate(x, y); g.scale(k, k);
+  const green = g.createLinearGradient(-50, 0, 50, 0); green.addColorStop(0, '#3fc27a'); green.addColorStop(1, '#16794a');
+  g.fillStyle = 'rgba(0,0,0,.22)'; g.beginPath(); g.ellipse(0, 130, 56, 9, 0, 0, 6.283); g.fill();
+  // striped stockings and curly shoes with bells
+  for (const sd of [-1, 1]) {
+    for (let i = 0; i < 6; i++) { g.fillStyle = i % 2 ? '#fff' : '#e5484d'; g.fillRect(sd > 0 ? 6 : -22, 70 + i * 8, 16, 8); }
+    g.fillStyle = '#d1222c'; g.beginPath(); g.ellipse(sd * 18, 120, 20, 9, 0, 0, 6.283); g.fill();
+    g.strokeStyle = '#d1222c'; g.lineWidth = 7; g.lineCap = 'round'; g.beginPath(); g.moveTo(sd * 34, 118); g.quadraticCurveTo(sd * 46, 112, sd * 42, 102); g.stroke();
+    g.fillStyle = '#f2b822'; g.beginPath(); g.arc(sd * 42, 100, 5, 0, 6.283); g.fill();
+  }
+  // tunic with a zigzag hem, belt
+  g.fillStyle = green; g.beginPath(); g.moveTo(-30, -40); g.lineTo(-46, 70);
+  for (let i = 0; i < 6; i++) g.lineTo(-46 + (i + .5) * 15.3, i % 2 ? 70 : 84), g.lineTo(-46 + (i + 1) * 15.3, 70);
+  g.lineTo(30, -40); g.closePath(); g.fill();
+  g.fillStyle = '#22222c'; g.fillRect(-40, 24, 80, 12);
+  g.strokeStyle = goldGrad(g, -10, 0, 10, 0); g.lineWidth = 4; g.strokeRect(-9, 22, 18, 16);
+  for (const sd of [-1, 1]) {
+    g.save(); g.translate(sd * 32, -32); g.rotate(-sd * .35);
+    g.fillStyle = green; rr(-10, 0, 20, 54, 10); g.fill();
+    g.fillStyle = '#f7c9a6'; g.beginPath(); g.arc(0, 60, 9, 0, 6.283); g.fill();
+    g.restore();
+  }
+  // scalloped red collar
+  g.fillStyle = '#e5484d'; for (let i = -3; i <= 3; i++) { g.beginPath(); g.arc(i * 10, -38, 9, 0, 6.283); g.fill(); }
+  // head with pointy ears
+  g.fillStyle = '#f7c9a6';
+  for (const sd of [-1, 1]) { g.beginPath(); g.moveTo(sd * 22, -74); g.lineTo(sd * 46, -88); g.lineTo(sd * 24, -58); g.closePath(); g.fill(); }
+  g.beginPath(); g.arc(0, -66, 26, 0, 6.283); g.fill();
+  g.fillStyle = '#8a4b22'; g.beginPath(); g.ellipse(0, -84, 25, 10, 0, 0, 6.283); g.fill();
+  g.fillStyle = '#2b2233'; g.beginPath(); g.arc(-9, -68, 3.5, 0, 6.283); g.arc(9, -68, 3.5, 0, 6.283); g.fill();
+  g.fillStyle = 'rgba(255,120,130,.5)'; g.beginPath(); g.arc(-15, -58, 6, 0, 6.283); g.arc(15, -58, 6, 0, 6.283); g.fill();
+  g.strokeStyle = '#b5523d'; g.lineWidth = 3; g.lineCap = 'round'; g.beginPath(); g.arc(0, -58, 8, .3, Math.PI - .3); g.stroke();
+  // pointy hat with a bell
+  g.fillStyle = green; g.beginPath(); g.moveTo(-28, -86); g.quadraticCurveTo(-6, -140, 40, -144); g.quadraticCurveTo(12, -122, 28, -86); g.closePath(); g.fill();
+  g.fillStyle = '#fff'; rr(-30, -94, 60, 13, 6); g.fill();
+  g.fillStyle = '#f2b822'; g.beginPath(); g.arc(42, -142, 8, 0, 6.283); g.fill();
+  g.restore();
+}
+function drawNutcracker(g, x, y, k) {
+  g.save(); g.translate(x, y); g.scale(k, k);
+  const gold = goldGrad(g, -40, 0, 40, 0);
+  g.fillStyle = 'rgba(0,0,0,.22)'; g.beginPath(); g.ellipse(0, 130, 52, 8, 0, 0, 6.283); g.fill();
+  g.fillStyle = '#e8c38f'; g.fillRect(-40, 118, 80, 12);
+  g.fillStyle = '#22222c'; g.fillRect(-26, 96, 20, 24); g.fillRect(6, 96, 20, 24);
+  g.fillStyle = '#fff'; g.fillRect(-25, 50, 18, 48); g.fillRect(7, 50, 18, 48);
+  g.fillStyle = '#c41a28'; g.fillRect(-34, -34, 68, 90);
+  g.fillStyle = gold; g.fillRect(-34, 34, 68, 8);
+  g.strokeStyle = '#fff'; g.lineWidth = 6; g.beginPath(); g.moveTo(-30, -32); g.lineTo(30, 32); g.moveTo(30, -32); g.lineTo(-30, 32); g.stroke();
+  g.fillStyle = gold; [-20, 0, 20].forEach(by => { g.beginPath(); g.arc(0, by - 6, 4, 0, 6.283); g.fill(); });
+  g.fillStyle = gold; g.beginPath(); g.ellipse(-38, -32, 14, 7, 0, 0, 6.283); g.ellipse(38, -32, 14, 7, 0, 0, 6.283); g.fill();
+  for (const sd of [-1, 1]) { g.fillStyle = '#c41a28'; g.fillRect(sd > 0 ? 34 : -48, -30, 14, 56); g.fillStyle = '#fff'; g.beginPath(); g.arc(sd * 41, 32, 9, 0, 6.283); g.fill(); }
+  // wooden face, white hair, big moustache and beard
+  g.fillStyle = '#fff'; g.fillRect(-28, -86, 56, 30);
+  g.fillStyle = '#f2d2b0'; g.fillRect(-22, -92, 44, 56);
+  g.fillStyle = '#fff'; g.fillRect(-22, -48, 44, 18);
+  g.fillStyle = '#2b2233'; g.fillRect(-12, -42, 24, 6);
+  g.fillStyle = '#fff'; g.beginPath(); g.ellipse(-10, -54, 12, 5, -.2, 0, 6.283); g.ellipse(10, -54, 12, 5, .2, 0, 6.283); g.fill();
+  g.fillStyle = '#2b2233'; g.beginPath(); g.arc(-9, -72, 3.5, 0, 6.283); g.arc(9, -72, 3.5, 0, 6.283); g.fill();
+  g.fillStyle = 'rgba(230,80,90,.7)'; g.beginPath(); g.arc(-14, -62, 5, 0, 6.283); g.arc(14, -62, 5, 0, 6.283); g.fill();
+  // tall black hat with a gold band and a red plume
+  g.fillStyle = '#22222c'; g.fillRect(-26, -150, 52, 60);
+  g.fillStyle = gold; g.fillRect(-26, -100, 52, 8); g.beginPath(); g.arc(0, -126, 8, 0, 6.283); g.fill();
+  g.fillStyle = '#e5484d'; g.beginPath(); g.ellipse(14, -156, 7, 14, .4, 0, 6.283); g.fill();
+  g.restore();
+}
+// a little angel flying across the wall
+function drawAngel(g, x, y, k) {
+  g.save(); g.translate(x, y); g.scale(k, k); g.rotate(-.28);
+  for (const [wx, wy, a] of [[-26, -20, -.9], [26, -24, .9]]) {
+    g.save(); g.translate(wx, wy); g.rotate(a);
+    g.fillStyle = '#ffffff'; g.strokeStyle = '#bfe0ff'; g.lineWidth = 3;
+    for (let i = 0; i < 3; i++) { g.beginPath(); g.ellipse(0, -18 + i * 14, 16 - i * 2, 34 - i * 6, 0, 0, 6.283); g.fill(); g.stroke(); }
+    g.restore();
+  }
+  const robe = g.createLinearGradient(0, -30, 0, 70); robe.addColorStop(0, '#ffffff'); robe.addColorStop(1, '#dbe9ff');
+  g.fillStyle = robe; g.beginPath(); g.moveTo(-18, -28); g.quadraticCurveTo(-40, 30, -60, 62); g.lineTo(26, 70); g.quadraticCurveTo(26, 20, 18, -28); g.closePath(); g.fill();
+  g.fillStyle = goldGrad(g, -60, 0, 30, 0); g.beginPath(); g.moveTo(-60, 62); g.lineTo(26, 70); g.lineTo(26, 62); g.lineTo(-56, 55); g.fill();
+  g.fillStyle = '#f7c9a6'; g.beginPath(); g.ellipse(-50, 70, 8, 5, .3, 0, 6.283); g.ellipse(-30, 74, 8, 5, .3, 0, 6.283); g.fill();
+  // arms holding a golden star out in front
+  g.strokeStyle = '#ffffff'; g.lineWidth = 12; g.lineCap = 'round'; g.beginPath(); g.moveTo(10, -18); g.lineTo(40, -6); g.stroke();
+  g.fillStyle = '#f7c9a6'; g.beginPath(); g.arc(44, -6, 6, 0, 6.283); g.fill();
+  drawStar(g, 58, -16, 14);
+  g.fillStyle = '#f7c9a6'; g.beginPath(); g.arc(0, -50, 22, 0, 6.283); g.fill();
+  g.fillStyle = '#f5c542'; [[-16, -64, 10], [0, -70, 11], [16, -64, 10], [-20, -48, 8], [20, -48, 8]].forEach(([hx, hy, hr]) => { g.beginPath(); g.arc(hx, hy, hr, 0, 6.283); g.fill(); });
+  g.fillStyle = '#2b2233'; g.beginPath(); g.arc(-7, -50, 3, 0, 6.283); g.arc(7, -50, 3, 0, 6.283); g.fill();
+  g.fillStyle = 'rgba(255,120,130,.5)'; g.beginPath(); g.arc(-12, -42, 5, 0, 6.283); g.arc(12, -42, 5, 0, 6.283); g.fill();
+  g.strokeStyle = '#b5523d'; g.lineWidth = 2.5; g.beginPath(); g.arc(0, -42, 6, .3, Math.PI - .3); g.stroke();
+  g.strokeStyle = '#f2b822'; g.lineWidth = 5; g.beginPath(); g.ellipse(0, -86, 20, 6, 0, 0, 6.283); g.stroke();
+  g.restore();
+  sparkle(g, x - 70 * k, y + 30 * k, 12 * k); sparkle(g, x - 90 * k, y + 60 * k, 8 * k);
+}
+// a see-through snow globe: the wall shows through the glass
+function drawGlobe(g, x, y, k) {
+  g.save(); g.translate(x, y); g.scale(k, k);
+  g.fillStyle = '#b3141d'; g.beginPath(); g.moveTo(-44, 40); g.lineTo(44, 40); g.lineTo(56, 74); g.lineTo(-56, 74); g.closePath(); g.fill();
+  g.fillStyle = goldGrad(g, -56, 0, 56, 0); g.fillRect(-50, 50, 100, 7); g.fillRect(-58, 70, 116, 8);
+  g.save(); g.beginPath(); g.arc(0, -6, 52, 0, 6.283); g.clip();
+  const glass = g.createRadialGradient(-16, -24, 6, 0, -6, 54); glass.addColorStop(0, 'rgba(255,255,255,.12)'); glass.addColorStop(.8, 'rgba(190,225,255,.18)'); glass.addColorStop(1, 'rgba(170,210,250,.45)');
+  g.fillStyle = glass; g.fillRect(-60, -60, 120, 120);
+  g.fillStyle = '#fff'; g.beginPath(); g.ellipse(0, 40, 56, 16, 0, 0, 6.283); g.fill();
+  g.fillStyle = '#1f7a44'; g.beginPath(); g.moveTo(-16, -24); g.lineTo(-34, 30); g.lineTo(2, 30); g.closePath(); g.fill();
+  g.fillStyle = '#ffc53d'; sparkle(g, -16, -26, 6, '#ffd34d');
+  g.fillStyle = '#fff'; g.beginPath(); g.arc(20, 26, 9, 0, 6.283); g.arc(20, 12, 7, 0, 6.283); g.fill();
+  g.fillStyle = '#ff8c1a'; g.fillRect(20, 11, 6, 2);
+  const rnd = seeded(7);
+  g.fillStyle = 'rgba(255,255,255,.9)'; for (let i = 0; i < 22; i++) { g.beginPath(); g.arc((rnd() - .5) * 96, -54 + rnd() * 80, 1.5 + rnd() * 2, 0, 6.283); g.fill(); }
+  g.restore();
+  g.strokeStyle = 'rgba(255,255,255,.75)'; g.lineWidth = 3; g.beginPath(); g.arc(0, -6, 52, 0, 6.283); g.stroke();
+  g.strokeStyle = 'rgba(255,255,255,.85)'; g.lineWidth = 6; g.lineCap = 'round'; g.beginPath(); g.arc(0, -6, 42, 3.6, 4.4); g.stroke();
+  sparkle(g, 30, -40, 8);
+  g.restore();
+}
+// an upright piano with a music sheet
+function drawPiano(g, x, y, k) {
+  g.save(); g.translate(x, y); g.scale(k, k);
+  g.fillStyle = 'rgba(0,0,0,.25)'; g.beginPath(); g.ellipse(0, 112, 120, 10, 0, 0, 6.283); g.fill();
+  const wood = g.createLinearGradient(-110, 0, 110, 0); wood.addColorStop(0, '#3a2219'); wood.addColorStop(.5, '#5a3426'); wood.addColorStop(1, '#2a1812');
+  g.fillStyle = wood; g.fillRect(-108, -100, 216, 90); g.fillRect(-100, 6, 200, 70);
+  g.fillStyle = '#2a1812'; g.fillRect(-116, -110, 232, 14);
+  g.strokeStyle = goldGrad(g, -100, 0, 100, 0); g.lineWidth = 3; g.strokeRect(-88, -86, 176, 60); g.strokeRect(-84, 18, 168, 48);
+  g.fillStyle = '#fffaf0'; g.fillRect(-30, -82, 60, 44);
+  g.strokeStyle = '#555'; g.lineWidth = 1.5; for (let i = 0; i < 4; i++) { g.beginPath(); g.moveTo(-24, -74 + i * 9); g.lineTo(24, -74 + i * 9); g.stroke(); }
+  g.fillStyle = '#222'; [[-14, -70], [2, -61], [14, -52]].forEach(([nx, ny]) => { g.beginPath(); g.ellipse(nx, ny, 4, 3, -.4, 0, 6.283); g.fill(); g.fillRect(nx + 3, ny - 12, 1.5, 12); });
+  g.fillStyle = '#2a1812'; g.fillRect(-118, -12, 236, 20);
+  g.fillStyle = '#fff'; g.fillRect(-112, -10, 224, 16);
+  g.strokeStyle = '#bbb'; g.lineWidth = 1; for (let i = 1; i < 21; i++) { g.beginPath(); g.moveTo(-112 + i * 10.67, -10); g.lineTo(-112 + i * 10.67, 6); g.stroke(); }
+  g.fillStyle = '#111'; for (let i = 1; i < 21; i++) if (![3, 7, 10, 14, 17].includes(i)) g.fillRect(-112 + i * 10.67 - 3, -10, 6, 9);
+  g.fillStyle = '#2a1812'; g.fillRect(-104, 76, 14, 34); g.fillRect(90, 76, 14, 34);
+  g.fillStyle = goldGrad(g, -10, 0, 10, 0); g.fillRect(-14, 96, 8, 12); g.fillRect(6, 96, 8, 12);
+  g.fillStyle = goldGrad(g, -120, 0, -100, 0); g.beginPath(); g.arc(-96, -104, 6, 0, 6.283); g.arc(96, -104, 6, 0, 6.283); g.fill();
+  g.restore();
+}
+// small touches so hung things hang and standing things stand
+const HANG = { mittens: 1, bell: 1, stocking: 1 }, SHELF = { owl: 1, clock: 1 };
 // Santa and Mrs. Claus, head to boots; drawn 260 units tall around (x, y), scaled by k
 function drawClaus(g, x, y, k, mrs) {
   const rr = (rx, ry, w, h, r) => { g.beginPath(); if (g.roundRect) g.roundRect(rx, ry, w, h, r); else g.rect(rx, ry, w, h); };
@@ -3468,6 +3658,30 @@ function drawClaus(g, x, y, k, mrs) {
 // one decoration at its unmoved spot (callers translate/scale the context)
 function drawDeco(g, d) {
   if (d.id === 'santa' || d.id === 'mrsclaus') { drawClaus(g, d.x, d.y, d.size / 260, d.id === 'mrsclaus'); return; }
+  if (d.id === 'elf') { drawElf(g, d.x, d.y, d.size / 260); return; }
+  if (d.id === 'nutcracker') { drawNutcracker(g, d.x, d.y, d.size / 260); return; }
+  if (CRITTER[d.id]) { drawCritter(g, d.x, d.y, d.size / 200, d.id); return; }
+  if (d.id === 'angel') { drawAngel(g, d.x, d.y, d.size / 200); return; }
+  if (d.id === 'globe') { drawGlobe(g, d.x, d.y, d.size / 150); return; }
+  if (d.id === 'piano') { drawPiano(g, d.x, d.y, d.size / 240); return; }
+  if (d.id === 'cookie') {
+    // cookies on a plate rather than loose on the floor
+    g.fillStyle = 'rgba(0,0,0,.2)'; g.beginPath(); g.ellipse(d.x, d.y + 22, 52, 12, 0, 0, 6.283); g.fill();
+    g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(d.x, d.y + 16, 50, 15, 0, 0, 6.283); g.fill();
+    g.strokeStyle = '#5aa9ff'; g.lineWidth = 4; g.beginPath(); g.ellipse(d.x, d.y + 16, 42, 11, 0, 0, 6.283); g.stroke();
+    emojiAt(g, '🍪', d.x - 16, d.y + 4, 40); emojiAt(g, '🍪', d.x + 16, d.y + 6, 40); emojiAt(g, '🍪', d.x, d.y - 8, 40);
+    return;
+  }
+  if (HANG[d.id]) {
+    const top = d.y - d.size * .42;
+    g.strokeStyle = '#d1222c'; g.lineWidth = 4; g.beginPath(); g.moveTo(d.x, top); g.lineTo(d.x, top - 34); g.stroke();
+    g.fillStyle = goldGrad(g, d.x - 7, 0, d.x + 7, 0); g.beginPath(); g.arc(d.x, top - 36, 7, 0, 6.283); g.fill();
+  }
+  if (SHELF[d.id]) {
+    const b = d.y + d.size * .44;
+    g.fillStyle = '#7d5232'; g.fillRect(d.x - d.size * .6, b, d.size * 1.2, 12);
+    g.fillStyle = '#5e3b22'; g.fillRect(d.x - d.size * .45, b + 12, 8, 18); g.fillRect(d.x + d.size * .45 - 8, b + 12, 8, 18);
+  }
   if (d.id === 'treelights') {
     // strands swooping across each tier of the tree
     [[650, 880, 262], [530, 780, 225], [410, 660, 182], [290, 530, 130]].forEach(([t, b, hw], ti) => {
@@ -3632,7 +3846,7 @@ function renderCabin() {
   $('#cabinTip').innerHTML = zy('按住裝飾可以移動，點一下可以聽英文！');
   const tiers = [['s', '小裝飾 🔔 3', '每天玩就能換一個'], ['m', '中裝飾 🔔 8', '存兩三天'], ['l', '大裝飾 🔔 20', '存一個星期']];
   $('#shop').innerHTML = `<p class="ctip">${zy(`你有 🔔 ${p.bells}。所有裝飾都用鈴鐺換！`)}</p>
-    <p class="ctip">${zy('🔔 怎麼拿：過關、每日任務、降臨曆、星星寶箱。')}</p>
+    <p class="ctip">${zy('🔔 怎麼拿：過關、每日任務、每天簽到、星星寶箱。')}</p>
     <p class="ctip">${zy('已經有的裝飾，按「👀 顯示」可以收起來，不會出現在明信片上。')}</p>` + tiers.map(([t, name, note]) =>
     `<h3>${zy(name)}　<small style="font-weight:400;color:var(--frost);font-size:15px">${zy(note)}</small></h3>` +
     DECOS.filter(d => d.tier === t).map(d => {
@@ -3850,17 +4064,26 @@ function openPostcard() {
 $('#postcardBtn').onclick = openPostcard;
 
 /* ================= advent calendar ================= */
+let adventPage = null;
 function renderAdvent() {
   const a = P().advent, ready = adventReady();
-  $('#adventNote').innerHTML = zy(a.opened >= 25 ? '25 格都打開了！聖誕快樂！'
-    : ready ? '今天可以打開一格！點一下發光的門。' : '今天的已經打開了，明天再來開下一格喔！');
+  // 25 days a page; open on the page with today's door
+  const pages = ADVENT_DAYS / 25;
+  if (adventPage === null) adventPage = Math.min(pages - 1, Math.floor(Math.min(a.opened, ADVENT_DAYS - 1) / 25));
+  $('#adventNote').innerHTML = zy(a.opened >= ADVENT_DAYS ? `${ADVENT_DAYS} 天都簽到了！你太棒了！`
+    : ready ? `今天可以打開第 ${a.opened + 1} 格！點一下發光的門。` : `已經簽到 ${a.opened} 天了，明天再來開下一格喔！`);
+  $('#aPage').innerHTML = zy(`第 ${adventPage * 25 + 1}～${adventPage * 25 + 25} 天`);
+  $('#aPrev').disabled = adventPage === 0; $('#aNext').disabled = adventPage === pages - 1;
   $('#agrid').innerHTML = Array.from({ length: 25 }, (_, k) => {
-    const d = k + 1, pr = adventPrize(d);
+    const d = adventPage * 25 + k + 1, pr = adventPrize(d);
     if (d <= a.opened) return `<button class="adoor open" disabled aria-label="${d}">🔔</button>`;
+    if (pr.bells >= 5) return d === a.opened + 1 && ready ? `<button class="adoor ready big" data-d="${d}">${d}</button>` : `<button class="adoor later big" disabled>${d}<small>🔔${pr.bells}</small></button>`;
     if (d === a.opened + 1 && ready) return `<button class="adoor ready" data-d="${d}">${d}</button>`;
     return `<button class="adoor later" disabled>${d}</button>`;
   }).join('');
 }
+$('#aPrev').onclick = () => { adventPage = Math.max(0, adventPage - 1); renderAdvent(); };
+$('#aNext').onclick = () => { adventPage = Math.min(ADVENT_DAYS / 25 - 1, adventPage + 1); renderAdvent(); };
 $('#agrid').addEventListener('click', e => {
   const b = e.target.closest('.adoor.ready'); if (!b || !adventReady()) return;
   const p = P(), a = p.advent; a.opened++; a.last = todayStr();
@@ -4018,7 +4241,7 @@ let sessionSec = 0, nextRemind = Infinity;
 function startSession() {
   sessionSec = 0;
   const p = P(); nextRemind = p && p.remindMin ? p.remindMin * 60 : Infinity;
-  if (p && adventReady()) setTimeout(() => toast('🗓️ 今天的降臨曆可以打開了！'), 900);
+  if (p && adventReady()) setTimeout(() => toast('🗓️ 今天可以簽到了！'), 900);
 }
 setInterval(() => {
   const p = P();
