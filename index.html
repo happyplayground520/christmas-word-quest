@@ -966,6 +966,236 @@ button.chip:active { background: var(--night-2); }
 @media (prefers-reduced-motion: reduce) {
   .station.next .orb, .lit .t-star, .hbtn.glow, .adoor.ready { animation: none; }
 }
+
+/* ---------- secret missions ---------- */
+.vbtn.secret { background: linear-gradient(135deg, #fff1c7, #ffd6e7); box-shadow: 0 7px 0 #c9739b; }
+.vbtn.secret small { display: block; }
+.tipbtn { font-size: 26px; min-width: 56px; justify-content: center; }
+.tipc { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+.panel .tiptag { margin: 0; font-weight: 700; color: var(--berry-d); font-size: 20px; }
+.tipv { font-size: clamp(60px, 13vmin, 104px); line-height: 1.15; min-height: 1.15em; display: flex; align-items: center; gap: .12em; }
+.tipv .vw { font-family: var(--f-word); font-size: .6em; color: var(--berry); letter-spacing: .12em; }
+.panel .tipzh { margin: 0; font-size: clamp(22px, 3.3vmin, 30px); color: var(--ink); line-height: 1.9; }
+.tipen { display: flex; align-items: center; gap: 14px; font-family: var(--f-word); font-weight: 700; font-size: clamp(22px, 3.8vmin, 34px); background: var(--gold-l); color: var(--ink); padding: 8px 10px 8px 22px; border-radius: 20px; text-align: left; }
+.tipen b { color: var(--berry); }
+.tipen .say { width: 60px; height: 60px; font-size: 26px; }
+
+/* the child says it: the snowman grows while she or he talks */
+.sayover { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; padding: 16px; background: rgba(8,16,36,.6); animation: fadein .25s; }
+@keyframes fadein { from { opacity: 0; } }
+.saycard { width: min(720px, 100%); max-height: 100%; overflow: auto; background: var(--snow); color: var(--ink); border-radius: 30px; padding: 16px 22px 20px;
+  box-shadow: 0 10px 0 var(--frost-d); display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.saytop { margin: 0; font-weight: 700; color: var(--berry-d); font-size: 20px; }
+.saysent { font-family: var(--f-word); font-weight: 700; font-size: clamp(26px, 5vmin, 46px); line-height: 1.25; }
+.sayrow { display: flex; gap: 16px; }
+.sayrow .say { width: 66px; height: 66px; font-size: 30px; }
+.slowb { width: 66px; height: 66px; border: none; border-radius: 50%; background: var(--frost); font-size: 32px; box-shadow: 0 7px 0 var(--frost-d); }
+.slowb:active { transform: translateY(4px); box-shadow: 0 3px 0 var(--frost-d); }
+.saymeter { display: flex; align-items: flex-end; justify-content: center; gap: 18px; height: clamp(90px, 17vmin, 140px); }
+.sayelf { font-size: clamp(42px, 7.5vmin, 66px); line-height: 1; }
+.saygrow { --g: 0; display: grid; place-items: end center; height: 100%; aspect-ratio: 1; }
+.saygrow span { font-size: clamp(86px, 17vmin, 140px); line-height: 1; transform-origin: 50% 100%; transform: scale(calc(.3 + var(--g) * .7)); transition: transform .12s;
+  filter: drop-shadow(0 0 calc(var(--g) * 18px) rgba(255,197,61,.95)); }
+.saygrow.loud span { animation: wob .3s infinite; }
+.saygrow.full span { animation: popin .5s; }
+@keyframes wob { 50% { rotate: 4deg; } }
+.saystat { margin: 0; font-size: 22px; font-weight: 700; min-height: 1.8em; }
+.sayend { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.saydone { border: none; background: none; color: var(--ink-2); text-decoration: underline; font-size: 18px; padding: 6px; }
+@media (max-height: 640px) { .saymeter { height: 80px; } .saygrow span { font-size: 80px; } .saycard { gap: 6px; } }
+
+.sghost { position: fixed; z-index: 9; pointer-events: none; transform: translate(-50%, -50%) rotate(-5deg); }
+.sentence b { color: var(--berry); }
+.qpic, .canpic, .bpic { font-size: clamp(42px, 9cqh, 64px); line-height: 1; }
+
+/* a / an bags */
+.sortg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; gap: clamp(14px, 4vw, 50px); }
+.sbag { flex: none; border: none; background: var(--snow); color: var(--ink); border-radius: 30px; width: clamp(130px, 24cqw, 220px); aspect-ratio: 3 / 4;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 8px 0 var(--frost-d); }
+.sbag .bagi { font-size: clamp(64px, 18cqh, 120px); line-height: 1; }
+.sbag b { font-family: var(--f-word); font-size: clamp(40px, 10cqh, 70px); line-height: 1; color: #2563eb; }
+.sbag.an b { color: var(--berry); }
+.sbag.gulp { animation: popin .5s; }
+.sbag.wrong { animation: shake .4s; }
+.sortmid { display: flex; flex-direction: column; align-items: center; gap: 10px; min-width: 0; }
+.scard { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; background: var(--gold-l); color: var(--ink); border-radius: 26px;
+  padding: 12px 26px 16px; box-shadow: 0 8px 0 var(--gold-d); touch-action: none; }
+.scard.in { animation: popin .4s; }
+.scard.gone { animation: pop .45s forwards; }
+.scard.dragging { opacity: .3; }
+.scard .se { font-size: clamp(60px, 17cqh, 116px); line-height: 1.1; }
+.scard .sw { font-family: var(--f-word); font-weight: 700; font-size: clamp(32px, 8cqh, 56px); white-space: nowrap; }
+.v1 { color: var(--berry); }
+.c1 { color: #2563eb; }
+.scard .say { position: absolute; right: -26px; top: -22px; width: 58px; height: 58px; font-size: 26px; }
+.sghost.scard { position: fixed; }
+@media (orientation: portrait) { .sortg { flex-wrap: wrap; align-content: center; } .sortmid { order: -1; width: 100%; } }
+
+.swhack .pop .sign { display: flex; flex-direction: column; align-items: center; }
+.swhack .pop .sign small { font-family: var(--f-word); font-weight: 700; font-size: clamp(14px, 3.2cqh, 22px); line-height: 1.1; white-space: nowrap; }
+
+/* games laid out as a column */
+.theg, .whog, .whereg, .wheng, .whichg, .tlg, .withg { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(10px, 2.6cqh, 22px); }
+.santa { font-size: clamp(46px, 10cqh, 70px); line-height: 1; }
+.table { display: flex; align-items: flex-end; justify-content: center; gap: clamp(14px, 4vw, 40px); padding: 14px 30px 0; border-bottom: 14px solid #b5784a; border-radius: 6px; }
+.gpick2 { border: none; background: none; padding: 6px; font-size: clamp(76px, 22cqh, 150px); line-height: 1; }
+.gpick2.small { font-size: clamp(44px, 12cqh, 84px); }
+.gpick2.right { animation: popin .5s; filter: drop-shadow(0 0 16px var(--gold)); }
+.gpick2.wrong { animation: shake .4s; }
+.storyb { display: flex; flex-direction: column; gap: 4px; }
+.sline { display: block; }
+.gblank.cur { border-bottom-color: var(--berry); background: rgba(229,72,77,.12); }
+.storyg .pic { width: clamp(96px, 22cqh, 160px); font-size: clamp(56px, 14cqh, 100px); }
+
+.photo { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(10px, 2vw, 22px); padding: 14px; background: #fff7e6; border-radius: 22px; border: 10px solid #c98a12; width: min(100%, 860px); }
+.person { position: relative; border: none; background: var(--snow); border-radius: 18px; display: flex; flex-direction: column; align-items: center; padding: 8px 4px; box-shadow: 0 6px 0 var(--frost-d); }
+.person .pe { font-size: clamp(54px, 15cqh, 100px); line-height: 1.05; }
+.person .pp { position: absolute; right: 2%; bottom: 26%; font-size: clamp(26px, 6.5cqh, 46px); filter: drop-shadow(0 2px 2px rgba(0,0,0,.3)); }
+.person .pt { font-family: var(--f-word); font-weight: 700; font-size: clamp(16px, 3.6cqh, 24px); color: var(--ink); }
+.person.right { background: var(--gold-l); box-shadow: 0 6px 0 var(--gold-d), 0 0 0 5px var(--gold); }
+.person.wrong { animation: shake .4s; }
+@media (orientation: portrait) { .photo { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.qtext { font-size: clamp(26px, 6.5cqh, 48px); }
+.qtext b { color: var(--berry); }
+.fsign small { display: block; font-family: var(--f-word); font-weight: 700; font-size: clamp(14px, 3cqh, 20px); text-align: center; }
+.fsign small.big { font-size: clamp(18px, 4cqh, 26px); padding: 4px 2px; }
+.cdot { display: inline-block; width: 1em; height: 1em; border-radius: 50%; background: var(--c); border: 3px solid #fff; box-shadow: 0 0 0 2px rgba(0,0,0,.25); }
+
+.room { position: relative; width: min(100%, 100cqh, 900px); aspect-ratio: 300 / 160; container-type: size; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 0 rgba(0,0,0,.25); flex: none; }
+.room svg, .rlayer, .rzones { position: absolute; inset: 0; width: 100%; height: 100%; }
+.rlayer, .rtop { pointer-events: none; }
+.rzone { position: absolute; border: 4px dashed transparent; background: none; border-radius: 14px; padding: 0; }
+.rzone:hover, .rzone.wrong { border-color: rgba(229,72,77,.7); }
+.rzone.wrong { animation: shake .4s; }
+.ritem { position: absolute; transform: translate(-50%, -50%); font-size: 14cqh; line-height: 1; animation: popin .4s; }
+.rtray { min-height: clamp(76px, 14cqh, 110px); display: flex; justify-content: center; }
+
+.wplay { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.skies, .tlcols { display: flex; gap: clamp(10px, 2vw, 20px); }
+.skyp, .tlcol { border: none; border-radius: 24px; width: clamp(140px, 26cqw, 240px); height: clamp(140px, 40cqh, 260px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #fff; box-shadow: 0 7px 0 rgba(0,0,0,.3); }
+.sky-m { background: linear-gradient(#ffb36b, #ffe6a8); color: var(--ink); }
+.sky-a { background: linear-gradient(#4aa8ff, #bfe3ff); color: var(--ink); }
+.sky-n { background: linear-gradient(#0e1c3a, #34466f); color: var(--snow); }
+.sic { font-size: clamp(46px, 12cqh, 80px); line-height: 1; }
+.sl { font-family: var(--f-word); font-weight: 700; font-size: clamp(16px, 3.6cqh, 24px); }
+.skyp.right, .tlcol.right { box-shadow: 0 7px 0 var(--gold-d), 0 0 0 6px var(--gold); }
+.skyp.wrong, .tlcol.wrong { animation: shake .4s; }
+.clockrow { display: flex; align-items: center; gap: clamp(16px, 4vw, 40px); }
+.digi { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: clamp(48px, 11cqh, 80px); line-height: 1.1; }
+.digi b { font-family: var(--f-num); font-size: .62em; background: #13213f; color: #7dfca0; padding: 4px 16px; border-radius: 12px; }
+.clock { position: relative; width: clamp(200px, 52cqh, 340px); aspect-ratio: 1; }
+.clock svg { width: 100%; height: 100%; display: block; }
+.clock .hh { transform-origin: 100px 100px; transition: transform .5s cubic-bezier(.3,1.4,.5,1); }
+.cnum { position: absolute; transform: translate(-50%, -50%); width: 17%; aspect-ratio: 1; border: none; border-radius: 50%; background: var(--gold-l); color: var(--ink); font: 800 clamp(16px, 4cqh, 26px) var(--f-num); box-shadow: 0 3px 0 var(--gold-d); padding: 0; }
+.cnum.right { background: var(--gold); }
+.cnum.wrong { animation: shake .4s; }
+
+.bubbles { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: clamp(14px, 3vw, 34px); }
+.bubl { width: clamp(116px, 30cqh, 190px); aspect-ratio: 1; border-radius: 50%; border: none; display: grid; place-items: center; padding: 0;
+  background: radial-gradient(circle at 30% 28%, rgba(255,255,255,.95) 0 9%, rgba(191,227,255,.35) 10%, rgba(124,192,245,.4) 72%, rgba(255,255,255,.8) 100%);
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,.7); animation: bob 3s ease-in-out infinite; font-size: clamp(54px, 14cqh, 96px); }
+.bubl.small { font-size: clamp(30px, 7cqh, 50px); }
+@keyframes bob { 50% { transform: translateY(-14px); } }
+.bubl.popb { animation: pop .45s forwards; }
+.bubl.wrong { animation: shake .4s; }
+
+.howg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; gap: clamp(16px, 4vw, 50px); }
+.howg .snowbox { height: min(92%, 480px); }
+.hface { position: absolute; left: 50%; top: 24%; transform: translate(-50%, -50%); font-size: 22cqh; line-height: 1; }
+.hface:not(:empty) { animation: popin .4s; }
+.hboard { position: absolute; right: -6%; top: 42%; font-size: 15cqh; line-height: 1; }
+.hboard:not(:empty) { background: #fff; border: 6px solid #b5784a; border-radius: 12px; padding: 2%; animation: popin .4s; }
+.hscene { display: flex; align-items: center; gap: 12px; background: var(--snow); color: var(--ink); border-radius: 22px; padding: 10px 18px; box-shadow: 0 6px 0 var(--frost-d); }
+.hse { font-size: clamp(44px, 10cqh, 70px); line-height: 1; }
+.hzh { display: flex; flex-direction: column; font-size: 22px; font-weight: 700; }
+.hzh small { font-family: var(--f-word); font-size: 18px; color: var(--ink-2); }
+.window { display: grid; place-items: center; width: clamp(86px, 20cqh, 130px); aspect-ratio: 1; border-radius: 12px; border: 8px solid #b5784a; background: linear-gradient(#bfe3ff, #eaf5ff); font-size: clamp(48px, 11cqh, 76px); }
+.wx { animation: bob 2s ease-in-out infinite; }
+.howg .titem { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.titem small { display: block; font-family: var(--f-word); font-weight: 700; font-size: clamp(13px, 2.6cqh, 17px); color: var(--ink); }
+@media (orientation: portrait) { .howg { flex-direction: column; } .howg .snowbox { height: 42%; } }
+
+.qcell { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: clamp(26px, 7cqh, 50px); }
+.qcell b { font-family: var(--f-word); font-size: .6em; color: var(--ink); }
+.qans { font-size: clamp(24px, 6cqh, 42px); }
+
+.callg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; gap: clamp(14px, 3vw, 40px); }
+.phone { flex: none; width: clamp(230px, 34cqw, 360px); height: min(100%, 560px); background: #13213f; border-radius: 36px; border: 10px solid #22314f; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 0 rgba(0,0,0,.35); }
+.vid { position: relative; flex: 1; min-height: 0; display: grid; place-items: center; background: radial-gradient(circle at 50% 40%, #5b8fd6, #1b3263); }
+.santaf { font-size: clamp(84px, 20cqh, 150px); line-height: 1; }
+.santaf.talk { animation: talk .3s ease-in-out infinite; }
+@keyframes talk { 50% { transform: scale(1.04, .96); } }
+.santaf.glitch { animation: glitch .15s steps(2) infinite; filter: hue-rotate(90deg) contrast(1.5); }
+@keyframes glitch { 50% { transform: translateX(6px); opacity: .5; } }
+.live { position: absolute; left: 12px; top: 10px; font: 800 14px var(--f-num); color: #ff6a6f; }
+.chat { display: flex; flex-direction: column; gap: 6px; padding: 10px; background: #eef4fb; min-height: 36%; justify-content: flex-end; }
+.cb { margin: 0; max-width: 90%; padding: 6px 12px; border-radius: 16px; font-family: var(--f-word); font-weight: 700; font-size: clamp(14px, 2.6cqh, 19px); color: var(--ink); }
+.cb.s { background: #fff; align-self: flex-start; border-bottom-left-radius: 4px; }
+.cb.me { background: var(--gold-l); align-self: flex-end; border-bottom-right-radius: 4px; }
+.replies, .copts { display: flex; flex-direction: column; gap: clamp(10px, 2cqh, 16px); min-width: 0; }
+.rbub { border: none; text-align: left; font-family: var(--f-word); font-weight: 700; font-size: clamp(19px, 4.2cqh, 30px); padding: 12px 22px 14px; border-radius: 24px 24px 24px 6px; background: var(--snow); color: var(--ink); box-shadow: 0 6px 0 var(--frost-d); }
+.racegame .rbub { font-size: clamp(20px, 7cqh, 30px); padding: 8px 20px 10px; }
+.rbub.right { background: var(--gold); box-shadow: 0 6px 0 var(--gold-d); }
+.rbub.wrong { animation: shake .4s; opacity: .5; }
+@media (orientation: portrait) { .callg { flex-direction: column; } .phone { width: min(100%, 420px); height: 50%; } }
+
+.albumg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; gap: 16px; }
+.apage { flex: 1; max-width: 960px; display: flex; align-items: center; justify-content: center; gap: clamp(14px, 3vw, 36px); background: #fffaf0; color: var(--ink); border-radius: 26px; padding: 18px; box-shadow: 0 8px 0 #d9c39a; }
+.photo1 { position: relative; flex: none; width: clamp(120px, 30cqh, 220px); aspect-ratio: 4 / 5; border: 10px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,.25); rotate: -3deg; display: grid; place-items: center; background: linear-gradient(#bfe3ff, #eaf5ff); }
+.photo1 .pe { font-size: clamp(66px, 18cqh, 130px); line-height: 1; }
+.photo1 .pp { position: absolute; right: 6%; bottom: 6%; font-size: clamp(28px, 7cqh, 50px); }
+.aplay { display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 0; }
+.aplay .oslot { color: var(--ink); border-color: rgba(19,33,63,.35); }
+.athumbs { display: flex; flex-direction: column; gap: 6px; }
+.athumbs .th { font-size: 32px; background: #fff; border-radius: 8px; padding: 2px 6px; box-shadow: 0 2px 6px rgba(0,0,0,.3); }
+@media (orientation: portrait) { .albumg, .apage { flex-direction: column; } .athumbs { flex-direction: row; } }
+
+.tlcard { display: flex; align-items: center; gap: 12px; min-height: clamp(86px, 20cqh, 130px); }
+.tlc { display: flex; align-items: center; gap: 10px; border: none; background: var(--gold-l); color: var(--ink); border-radius: 22px; padding: 10px 22px; box-shadow: 0 7px 0 var(--gold-d); touch-action: none; animation: popin .4s; }
+.tlc .se { font-size: clamp(42px, 10cqh, 70px); line-height: 1; }
+.tlt { font-family: var(--f-word); font-weight: 700; font-size: clamp(22px, 5cqh, 36px); }
+.tlc.dragging { opacity: .3; }
+.tlcard .say { width: 58px; height: 58px; font-size: 26px; }
+.tlcol { justify-content: flex-start; padding-top: 14px; }
+.tlin { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; font-size: clamp(24px, 5cqh, 38px); }
+
+.wboard { position: relative; display: flex; justify-content: space-between; width: min(100%, 860px); }
+.wlines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: 1; }
+.wl { stroke: var(--snow); stroke-width: 7; stroke-linecap: round; stroke-dasharray: 2 12; }
+.wl.ok { stroke: var(--gold); stroke-dasharray: none; filter: drop-shadow(0 0 6px var(--gold)); }
+.wl.bad { stroke: var(--berry); stroke-dasharray: none; }
+.wcol { display: flex; flex-direction: column; gap: clamp(12px, 3cqh, 24px); flex: 0 1 38%; min-width: 0; }
+.wit { display: flex; align-items: center; gap: 10px; border: none; background: var(--snow); color: var(--ink); border-radius: 20px; padding: 8px 14px; box-shadow: 0 6px 0 var(--frost-d); touch-action: none; }
+.wit span { font-size: clamp(34px, 9cqh, 60px); line-height: 1; }
+.wit small { font-family: var(--f-word); font-weight: 700; font-size: clamp(15px, 3.4cqh, 24px); text-align: left; }
+.wit.sel { box-shadow: 0 6px 0 var(--gold-d), 0 0 0 5px var(--gold); }
+.wit.done { background: var(--gold-l); }
+
+.todayg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; gap: clamp(14px, 3vw, 36px); }
+.tq { display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1; min-width: 0; max-width: 640px; }
+.picks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(8px, 2cqh, 14px); width: 100%; }
+.pk { border: none; background: var(--snow); color: var(--ink); border-radius: 20px; padding: 8px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px; box-shadow: 0 6px 0 var(--frost-d); }
+.pk span { font-size: clamp(32px, 8cqh, 56px); line-height: 1.1; }
+.pk small { font-family: var(--f-word); font-weight: 700; font-size: clamp(14px, 3cqh, 20px); }
+.pk.right { background: var(--gold-l); box-shadow: 0 6px 0 var(--gold-d), 0 0 0 4px var(--gold); }
+.tstory { flex: none; width: clamp(220px, 34cqw, 380px); max-height: 100%; overflow: auto; background: #fffaf0; color: var(--ink); border-radius: 22px; padding: 14px 18px; box-shadow: 0 8px 0 #d9c39a; font-family: var(--f-word); font-weight: 700; font-size: clamp(17px, 3.4cqh, 24px); }
+.tstory:empty { visibility: hidden; }
+.tstory p { margin: 0 0 6px; }
+.tstory.diary { width: min(100%, 620px); font-size: clamp(20px, 4cqh, 30px); }
+.tstory h3 { margin: 0 0 8px; font-family: var(--f-display); color: var(--berry-d); }
+.tstory h3 small { font-family: var(--f-num); font-size: .6em; color: var(--ink-2); }
+.tstory .row { margin-top: 10px; }
+.ihead { display: flex; flex-direction: column; align-items: center; }
+.ihead .santaf { font-size: clamp(66px, 16cqh, 120px); }
+.ihead .mic { font-size: 40px; line-height: 1; }
+.intv .tq:empty { display: none; }
+@media (orientation: portrait) { .todayg { flex-direction: column; } .tstory { width: 100%; max-height: 30%; } .tstory.diary { max-height: 100%; } .intv .ihead { display: none; } }
+
+.psec input[type=text] { font: inherit; padding: 8px 12px; border-radius: 12px; border: 2px solid var(--frost-d); background: #fff; color: var(--ink); color-scheme: light; min-width: 0; -webkit-user-select: text; user-select: text; }
+.diaryp { background: #fffaf0; border-radius: 12px; padding: 8px 12px; font-family: var(--f-word); color: var(--ink); }
+.diaryp small { display: block; color: var(--ink-2); font-family: var(--f-num); }
+.wchip.schip { white-space: normal; text-align: left; font-size: 20px; }
 </style>
 </head>
 <body>
@@ -1358,7 +1588,8 @@ const ZHUYIN = {
   角:'ㄐㄧㄠˇ',話:'ㄏㄨㄚˋ',誰:'ㄕㄟˊ',請:'ㄑㄧㄥˇ',讓:'ㄖㄤˋ',貓:'ㄇㄠ',車:'ㄔㄜ',迪:'ㄉㄧˊ',送:'ㄙㄨㄥˋ',進:'ㄐㄧㄣˋ',
   遞:'ㄉㄧˋ',配:'ㄆㄟˋ',重:'ㄔㄨㄥˊ',金:'ㄐㄧㄣ',鈴:'ㄌㄧㄥˊ',錯:'ㄘㄨㄛˋ',鎮:'ㄓㄣˋ',鐺:'ㄉㄤ',長:'ㄓㄤˇ',門:'ㄇㄣˊ',
   閉:'ㄅㄧˋ',間:'ㄐㄧㄢ',降:'ㄐㄧㄤˋ',限:'ㄒㄧㄢˋ',階:'ㄐㄧㄝ',面:'ㄇㄧㄢˋ',頁:'ㄧㄝˋ',頭:'ㄊㄡˊ',餅:'ㄅㄧㄥˇ',首:'ㄕㄡˇ',
-  住:'ㄓㄨˋ',簽:'ㄑㄧㄢ',去:'ㄑㄩˋ',紋:'ㄨㄣˊ',粉:'ㄈㄣˇ',愛:'ㄞˋ',心:'ㄒㄧㄣ',吊:'ㄉㄧㄠˋ',拐:'ㄍㄨㄞˇ',杖:'ㄓㄤˋ',杯:'ㄅㄟ',蛋:'ㄉㄢˋ',糕:'ㄍㄠ',甜:'ㄊㄧㄢˊ',兔:'ㄊㄨˋ',狗:'ㄍㄡˇ',狐:'ㄏㄨˊ',狸:'˙ㄌㄧ',牆:'ㄑㄧㄤˊ',雙:'ㄕㄨㄤ',華:'ㄏㄨㄚˊ',麗:'ㄌㄧˋ',盒:'ㄏㄜˊ',俄:'ㄜˊ',羅:'ㄌㄨㄛˊ',斯:'ㄙ',鐘:'ㄓㄨㄥ',婆:'ㄆㄛˊ',鋼:'ㄍㄤ',琴:'ㄑㄧㄣˊ',所:'ㄙㄨㄛˇ',怎:'ㄗㄣˇ',麼:'˙ㄇㄜ',自:'ㄗˋ',己:'ㄐㄧˇ',寫:'ㄒㄧㄝˇ',種:'ㄓㄨㄥˇ',體:'ㄊㄧˇ',躲:'ㄉㄨㄛˇ',站:'ㄓㄢˋ',賽:'ㄙㄞˋ',跑:'ㄆㄠˇ',往:'ㄨㄤˇ',衝:'ㄔㄨㄥ',釣:'ㄉㄧㄠˋ',魚:'ㄩˊ',遊:'ㄧㄡˊ',戲:'ㄒㄧˋ',檔:'ㄉㄤˇ',度:'ㄉㄨˋ',備:'ㄅㄟˋ',份:'ㄈㄣˋ',從:'ㄘㄨㄥˊ',著:'˙ㄓㄜ',掉:'ㄉㄧㄠˋ',怪:'ㄍㄨㄞˋ',器:'ㄑㄧˋ',機:'ㄐㄧ',零:'ㄌㄧㄥˊ',件:'ㄐㄧㄢˋ',修:'ㄒㄧㄡ',理:'ㄌㄧˇ',賓:'ㄅㄧㄣ',連:'ㄌㄧㄢˊ',條:'ㄊㄧㄠˊ',丟:'ㄉㄧㄡ',敗:'ㄅㄞˋ',穿:'ㄔㄨㄢ',衣:'ㄧ',服:'˙ㄈㄨ',身:'ㄕㄣ',泡:'ㄆㄠˋ',像:'ㄒㄧㄤˋ',和:'ㄏㄜˊ',圍:'ㄨㄟˊ',水:'ㄕㄨㄟˇ',旋:'ㄒㄩㄢˊ',木:'ㄇㄨˋ',馬:'ㄇㄚˇ',偶:'ㄡˇ',胡:'ㄏㄨˊ',桃:'ㄊㄠˊ',鉗:'ㄑㄧㄢˊ',箱:'ㄒㄧㄤ',戴:'ㄉㄞˋ',巾:'ㄐㄧㄣ',桶:'ㄊㄨㄥˇ',塗:'ㄊㄨˊ',顯:'ㄒㄧㄢˇ',示:'ㄕˋ',拖:'ㄊㄨㄛ',或:'ㄏㄨㄛˋ',男:'ㄋㄢˊ',女:'ㄋㄩˇ',生:'ㄕㄥ',還:'ㄏㄞˊ',分:'ㄈㄣ',享:'ㄒㄧㄤˇ',螢:'ㄧㄥˊ',幕:'ㄇㄨˋ',轉:'ㄓㄨㄢˇ',橫:'ㄏㄥˊ',製:'ㄓˋ',貼:'ㄊㄧㄝ',框:'ㄎㄨㄤ',綠:'ㄌㄩˋ',白:'ㄅㄞˊ',典:'ㄉㄧㄢˇ',棵:'ㄎㄜ',紅:'ㄏㄨㄥˊ',藍:'ㄌㄢˊ',蝴:'ㄏㄨˊ',蝶:'ㄉㄧㄝˊ',結:'ㄐㄧㄝˊ',跳:'ㄊㄧㄠˋ',視:'ㄕˋ',窗:'ㄔㄨㄤ',辦:'ㄅㄢˋ',法:'ㄈㄚˇ',直:'ㄓˊ',接:'ㄐㄧㄝ',影:'ㄧㄥˇ',像:'ㄒㄧㄤˋ',電:'ㄉㄧㄢˋ',腦:'ㄋㄠˇ',右:'ㄧㄡˋ',鍵:'ㄐㄧㄢˋ',另:'ㄌㄧㄥˋ',移:'ㄧˊ',動:'ㄉㄨㄥˋ',高:'ㄍㄠ',鵝:'ㄜˊ',鷹:'ㄧㄥ',鹿:'ㄌㄨˋ',麋:'ㄇㄧˊ'
+  住:'ㄓㄨˋ',
+  久:'ㄐㄧㄡˇ',事:'ㄕˋ',什:'ㄕㄣˊ',介:'ㄐㄧㄝˋ',他:'ㄊㄚ',作:'ㄗㄨㄛˋ',便:'ㄅㄧㄢˋ',候:'˙ㄏㄡ',偵:'ㄓㄣ',克:'ㄎㄜˋ',兌:'ㄉㄨㄟˋ',其:'ㄑㄧˊ',區:'ㄑㄩ',午:'ㄨˇ',只:'ㄓˇ',叫:'ㄐㄧㄠˋ',同:'ㄊㄨㄥˊ',咕:'ㄍㄨ',問:'ㄨㄣˋ',嚕:'ㄌㄨ',因:'ㄧㄣ',園:'ㄩㄢˊ',外:'ㄨㄞˋ',始:'ㄕˇ',密:'ㄇㄧˋ',實:'ㄕˊ',左:'ㄗㄨㄛˇ',師:'ㄕ',幾:'ㄐㄧˇ',張:'ㄓㄤ',念:'ㄋㄧㄢˋ',情:'ㄑㄧㄥˊ',懂:'ㄉㄨㄥˇ',戳:'ㄔㄨㄛ',指:'ㄓˇ',探:'ㄊㄢˋ',推:'ㄊㄨㄟ',改:'ㄍㄞˇ',故:'ㄍㄨˋ',整:'ㄓㄥˇ',數:'ㄕㄨˋ',方:'ㄈㄤ',早:'ㄗㄠˇ',晚:'ㄨㄢˇ',東:'ㄉㄨㄥ',楚:'˙ㄔㄨ',樣:'ㄧㄤˋ',氣:'ㄑㄧˋ',淇:'ㄑㄧˊ',淋:'ㄌㄧㄣˊ',清:'ㄑㄧㄥ',準:'ㄓㄨㄣˇ',為:'ㄨㄟˋ',畫:'ㄏㄨㄚˋ',相:'ㄒㄧㄤˋ',知:'ㄓ',短:'ㄉㄨㄢˇ',碼:'ㄇㄚˇ',社:'ㄕㄜˋ',祕:'ㄇㄧˋ',積:'ㄐㄧ',簿:'ㄅㄨˋ',紙:'ㄓˇ',紹:'ㄕㄠˋ',組:'ㄗㄨˇ',聊:'ㄌㄧㄠˊ',肚:'ㄉㄨˋ',被:'ㄅㄟˋ',西:'˙ㄒㄧ',計:'ㄐㄧˋ',訊:'ㄒㄩㄣˋ',訪:'ㄈㄤˇ',說:'ㄕㄨㄛ',變:'ㄅㄧㄢˋ',跟:'ㄍㄣ',道:'ㄉㄠˋ',邊:'ㄅㄧㄢ',那:'ㄋㄚˋ',針:'ㄓㄣ',陽:'ㄧㄤˊ',隨:'ㄙㄨㄟˊ',隻:'ㄓ',雷:'ㄌㄟˊ',麥:'ㄇㄞˋ',簽:'ㄑㄧㄢ',去:'ㄑㄩˋ',紋:'ㄨㄣˊ',粉:'ㄈㄣˇ',愛:'ㄞˋ',心:'ㄒㄧㄣ',吊:'ㄉㄧㄠˋ',拐:'ㄍㄨㄞˇ',杖:'ㄓㄤˋ',杯:'ㄅㄟ',蛋:'ㄉㄢˋ',糕:'ㄍㄠ',甜:'ㄊㄧㄢˊ',兔:'ㄊㄨˋ',狗:'ㄍㄡˇ',狐:'ㄏㄨˊ',狸:'˙ㄌㄧ',牆:'ㄑㄧㄤˊ',雙:'ㄕㄨㄤ',華:'ㄏㄨㄚˊ',麗:'ㄌㄧˋ',盒:'ㄏㄜˊ',俄:'ㄜˊ',羅:'ㄌㄨㄛˊ',斯:'ㄙ',鐘:'ㄓㄨㄥ',婆:'ㄆㄛˊ',鋼:'ㄍㄤ',琴:'ㄑㄧㄣˊ',所:'ㄙㄨㄛˇ',怎:'ㄗㄣˇ',麼:'˙ㄇㄜ',自:'ㄗˋ',己:'ㄐㄧˇ',寫:'ㄒㄧㄝˇ',種:'ㄓㄨㄥˇ',體:'ㄊㄧˇ',躲:'ㄉㄨㄛˇ',站:'ㄓㄢˋ',賽:'ㄙㄞˋ',跑:'ㄆㄠˇ',往:'ㄨㄤˇ',衝:'ㄔㄨㄥ',釣:'ㄉㄧㄠˋ',魚:'ㄩˊ',遊:'ㄧㄡˊ',戲:'ㄒㄧˋ',檔:'ㄉㄤˇ',度:'ㄉㄨˋ',備:'ㄅㄟˋ',份:'ㄈㄣˋ',從:'ㄘㄨㄥˊ',著:'˙ㄓㄜ',掉:'ㄉㄧㄠˋ',怪:'ㄍㄨㄞˋ',器:'ㄑㄧˋ',機:'ㄐㄧ',零:'ㄌㄧㄥˊ',件:'ㄐㄧㄢˋ',修:'ㄒㄧㄡ',理:'ㄌㄧˇ',賓:'ㄅㄧㄣ',連:'ㄌㄧㄢˊ',條:'ㄊㄧㄠˊ',丟:'ㄉㄧㄡ',敗:'ㄅㄞˋ',穿:'ㄔㄨㄢ',衣:'ㄧ',服:'˙ㄈㄨ',身:'ㄕㄣ',泡:'ㄆㄠˋ',像:'ㄒㄧㄤˋ',和:'ㄏㄜˊ',圍:'ㄨㄟˊ',水:'ㄕㄨㄟˇ',旋:'ㄒㄩㄢˊ',木:'ㄇㄨˋ',馬:'ㄇㄚˇ',偶:'ㄡˇ',胡:'ㄏㄨˊ',桃:'ㄊㄠˊ',鉗:'ㄑㄧㄢˊ',箱:'ㄒㄧㄤ',戴:'ㄉㄞˋ',巾:'ㄐㄧㄣ',桶:'ㄊㄨㄥˇ',塗:'ㄊㄨˊ',顯:'ㄒㄧㄢˇ',示:'ㄕˋ',拖:'ㄊㄨㄛ',或:'ㄏㄨㄛˋ',男:'ㄋㄢˊ',女:'ㄋㄩˇ',生:'ㄕㄥ',還:'ㄏㄞˊ',分:'ㄈㄣ',享:'ㄒㄧㄤˇ',螢:'ㄧㄥˊ',幕:'ㄇㄨˋ',轉:'ㄓㄨㄢˇ',橫:'ㄏㄥˊ',製:'ㄓˋ',貼:'ㄊㄧㄝ',框:'ㄎㄨㄤ',綠:'ㄌㄩˋ',白:'ㄅㄞˊ',典:'ㄉㄧㄢˇ',棵:'ㄎㄜ',紅:'ㄏㄨㄥˊ',藍:'ㄌㄢˊ',蝴:'ㄏㄨˊ',蝶:'ㄉㄧㄝˊ',結:'ㄐㄧㄝˊ',跳:'ㄊㄧㄠˋ',視:'ㄕˋ',窗:'ㄔㄨㄤ',辦:'ㄅㄢˋ',法:'ㄈㄚˇ',直:'ㄓˊ',接:'ㄐㄧㄝ',影:'ㄧㄥˇ',像:'ㄒㄧㄤˋ',電:'ㄉㄧㄢˋ',腦:'ㄋㄠˇ',右:'ㄧㄡˋ',鍵:'ㄐㄧㄢˋ',另:'ㄌㄧㄥˋ',移:'ㄧˊ',動:'ㄉㄨㄥˋ',高:'ㄍㄠ',鵝:'ㄜˊ',鷹:'ㄧㄥ',鹿:'ㄌㄨˋ',麋:'ㄇㄧˊ'
 };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 function zy(text) {
@@ -1575,12 +1806,13 @@ const curBuddySVG = () => { const c = buddyState().cur; return buddySVG(c.kind, 
 const SCREENS = ['profiles', 'home', 'map', 'game', 'bag', 'cabin', 'advent', 'parent'];
 let curWorld = 0;
 function show(name) {
-  if (name !== 'game') { setScene(name === 'map' ? WORLDS[curWorld].key : null); hideCheer(); }
+  if (name !== 'game') { setScene(name === 'map' ? mapScene() : null); hideCheer(); }
   SCREENS.forEach(s => $('#' + s).hidden = s !== name);
   $('#bar').hidden = !['map', 'bag', 'cabin', 'advent'].includes(name);
   if (P()) {
     $('#bellCount').textContent = P().bells;
-    $('#verChip').innerHTML = `<span>${zy(VERSIONS[version].icon + ' ' + VERSIONS[version].name)}</span>`;
+    const V = VERSIONS[version] || { icon: '🎁', name: '祕密任務' };
+    $('#verChip').innerHTML = `<span>${zy(V.icon + ' ' + V.name)}</span>`;
     $('#verChip').hidden = $('#starChip').hidden = name !== 'map';
     $('#starCount').textContent = totalStars();
   }
@@ -1641,7 +1873,10 @@ function renderHome() {
     <span class="chip">🔔 <b>${p.bells}</b></span>`;
   $('#vers').innerHTML = Object.entries(VERSIONS).map(([k, V]) => `<div class="vcard"><button class="vbtn" data-v="${k}">
       <span class="vi">${V.icon}</span><span><b>${zy(V.name)}</b></span>
-      <span class="vs">⭐ ${p.levels[k] ? totalStars(k) : 0} / 60</span></button></div>`).join('');
+      <span class="vs">⭐ ${p.levels[k] ? totalStars(k) : 0} / 60</span></button></div>`).join('')
+    + (secretOn(p) ? `<div class="vcard"><button class="vbtn secret" data-v="secret"><span class="vi">🎁</span><span><b>${zy('祕密任務')}</b><small>${zy('只有你看得到的特別關卡')}</small></span>
+      <span class="vs">⭐ ${p.levels.secret ? totalStars('secret') : 0} / 60</span></button></div>` : '');
+  if (pendingCode && !secretOn(p)) setTimeout(() => toast('有一組兌換碼，請家長到「家長／老師」頁輸入'), 600);
   const ab = $('#adventBtn');
   ab.classList.toggle('glow', adventReady());
   ab.querySelector('.dot')?.remove();
@@ -1662,7 +1897,7 @@ function renderHome() {
 $('#vers').addEventListener('click', e => {
   const b = e.target.closest('.vbtn'); if (!b) return;
   version = b.dataset.v; actx(); speak("Let's go!", 0.9);
-  curWorld = Math.max(...WORLDS.map((W, w) => worldOpen(w) ? w : 0));
+  curWorld = version === 'secret' ? (nextSecret() || SSTAGES[0]).a : Math.max(...WORLDS.map((W, w) => worldOpen(w) ? w : 0));
   show('map');
 });
 let bubbleTimer = null;
@@ -1708,6 +1943,7 @@ const NODE_POS = {
   tall: { stages: [[24, 88], [72, 68], [28, 48], [70, 28]], side: [27, 18] }
 };
 function renderMap() {
+  if (version === 'secret') return renderSecretMap();
   const pos = NODE_POS[matchMedia('(orientation: portrait)').matches ? 'tall' : 'wide'];
   const next = nextStageFor(version), nextId = next && next.id, me = avatarOf(P());
   $('#wtabs').innerHTML = WORLDS.map((W, w) => {
@@ -1753,8 +1989,8 @@ function renderMap() {
 }
 $('#wtabs').addEventListener('click', e => {
   const b = e.target.closest('.wtab'); if (!b) return;
-  curWorld = +b.dataset.w; setScene(WORLDS[curWorld].key); renderMap();
-  if (!worldOpen(curWorld)) sfx.no();
+  curWorld = +b.dataset.w; setScene(mapScene()); renderMap();
+  if (version !== 'secret' && !worldOpen(curWorld)) sfx.no();
 });
 $('#mapBox').addEventListener('click', e => {
   const b = e.target.closest('.station'); if (!b) return;
@@ -1764,7 +2000,8 @@ $('#mapBox').addEventListener('click', e => {
     else toast('先過前面一關才能打開');
     return;
   }
-  if (b.dataset.stage) startStage(STAGES.find(s => s.id === b.dataset.stage));
+  if (b.dataset.sstage) startSecret(SSTAGES.find(s => s.id === b.dataset.sstage));
+  else if (b.dataset.stage) startStage(STAGES.find(s => s.id === b.dataset.stage));
   else startSide(SIDES.find(s => s.id === b.dataset.side));
 });
 addEventListener('resize', () => { if (!$('#map').hidden) renderMap(); });
@@ -1772,7 +2009,7 @@ addEventListener('resize', () => { if (!$('#map').hidden) renderMap(); });
 /* ---------- word bag ---------- */
 let bagVer = null;
 function renderBag() {
-  const ver = bagVer || version, l = L(ver);
+  const ver = bagVer || (VERSIONS[version] ? version : 'basic'), l = L(ver);
   $('#bagTabs').innerHTML = Object.entries(VERSIONS).map(([k, V]) => `<button class="vtab ${k === ver ? 'on' : ''}" data-v="${k}">${V.icon} ${zy(V.name)}</button>`).join('');
   const all = versionWords(ver);
   const seen = all.filter(it => l.words[it.w]?.ok).length, learned = all.filter(it => (l.words[it.w]?.ok || 0) >= 2).length;
@@ -1799,18 +2036,19 @@ function stopRun() {
   if (run) { run.alive = false; run.ids.forEach(clearTimeout); run.ints.forEach(clearInterval); }
   run = null;
   if (canSpeak) speechSynthesis.cancel();
+  document.querySelectorAll('.sayover').forEach(x => x.remove()); micClose();
 }
 function setDots(total, done) {
   $('#dots').innerHTML = Array.from({ length: total }, (_, i) => `<i class="${i < done ? 'on' : ''}"></i>`).join('');
 }
 function openGame(title, hint, key) {
-  stopRun(); $('#result').hidden = true;
+  stopRun(); $('#result').hidden = true; $('#tipBtn')?.remove();
   run = { alive: true, ids: [], ints: [] };
   show('game'); setScene(key);
   $('#gTitle').innerHTML = zy(title); $('#gHint').innerHTML = zy(hint); $('#dots').innerHTML = '';
   $('#stage').innerHTML = '';
   const learned = new Set();
-  return { stage: $('#stage'), ver: version, nOpt: VERSIONS[version].nOpt, learned, done: m => finish(m, learned) };
+  return { stage: $('#stage'), ver: version, nOpt: (VERSIONS[version] || VERSIONS.basic).nOpt, learned, done: m => finish(m, learned) };
 }
 function startStage(s) {
   const kind = realKind(s), W = WORLDS[s.w];
@@ -1838,7 +2076,7 @@ function finish(mistakes, learned) {
   stopRun();
   const before = buddyState();
   let stars = 0, bells = 0; const why = [];
-  if (cur.type === 'stage') {
+  if (cur.type !== 'side') {
     const s = cur.def, prev = l.stars[s.id] || 0;
     stars = starsFor(cur.kind, mistakes);
     if (!prev) { bells++; why.push('第一次過關'); }
@@ -1857,27 +2095,28 @@ function finish(mistakes, learned) {
   if (chestState().ready) why.push('星星寶箱可以打開了');
   const after = buddyState();
 
-  sfx.win(); setTimeout(() => speak(cur.type === 'stage' ? PRAISE[stars] : 'Great job!', 0.9), 500);
+  sfx.win(); setTimeout(() => speak(cur.type !== 'side' ? PRAISE[stars] : 'Great job!', 0.9), 500);
   $('#rTitle').innerHTML = zy(cur.type === 'side' ? '完成了！' : stars === 3 ? '太厲害了！' : stars === 2 ? '做得很好！' : '過關了！');
-  $('#rStars').innerHTML = cur.type === 'stage' ? [1, 2, 3].map(n => `<span class="${n <= stars ? 'on' : ''}">★</span>`).join('') : '';
-  const nextS = cur.type === 'stage' ? STAGES[STAGES.indexOf(cur.def) + 1] : null;
+  $('#rStars').innerHTML = cur.type !== 'side' ? [1, 2, 3].map(n => `<span class="${n <= stars ? 'on' : ''}">★</span>`).join('') : '';
+  const nextS = cur.type === 'stage' ? STAGES[STAGES.indexOf(cur.def) + 1] : cur.type === 'secret' ? SSTAGES[SSTAGES.indexOf(cur.def) + 1] : null;
   let sub = '這一關學到的單字，點一下再聽一次：';
   if (cur.type === 'stage' && isGate(cur.def)) sub = `冰門打破了！「${WORLDS[cur.def.w + 1].name}」打開了！`;
   if (cur.type === 'stage' && cur.def.kind === 'final') sub = '聖誕樹亮起來了！禮物全部找回來了 🎅';
+  if (cur.type === 'secret') sub = cur.def.boss ? '🎉 這一區的最後一關過了！說過的句子，點一下再聽一次：' : '這一關說過的句子，點一下再聽一次：';
   $('#rSub').innerHTML = zy(sub);
   $('#rBells').innerHTML = bells ? zy(`🔔 +${bells}（${why.join('、')}）`) : zy(why.length ? why.join('、') : '今天的重玩獎勵拿完了，明天再來喔！');
   const newFriend = after.joined.length > before.joined.length;
   const grew = newFriend || after.cur.idx !== before.cur.idx;
   $('#rGrow').innerHTML = grew ? `<div class="rgrow"><span class="ge">${buddySVG(after.cur.kind, after.cur.idx)}</span><span>${zy(newFriend ? `新朋友「${after.cur.name}」來了！` : `你的夥伴長大了！現在是「${after.cur.name}」`)}</span></div>` : '';
-  $('#rWords').innerHTML = [...learned].map(findWord).filter(Boolean)
+  $('#rWords').innerHTML = cur.type === 'secret' ? [...learned].slice(0, 8).map(t => `<button class="wchip schip" data-w="${esc(t)}">${esc(t)}</button>`).join('') : [...learned].map(findWord).filter(Boolean)
     .map(it => `<button class="wchip" data-w="${esc(it.w)}">${face(it)}${esc(it.w)}</button>`).join('');
   const btns = [`<button class="btn alt" id="againBtn">${zy('再玩一次')}</button>`];
-  const hasNext = nextS && nextS.w === cur.def.w && stageOpen(nextS);
+  const hasNext = cur.type === 'secret' ? nextS && nextS.a === cur.def.a && sStageOpen(nextS) : nextS && nextS.w === cur.def.w && stageOpen(nextS);
   if (hasNext) btns.push(`<button class="btn" id="nextBtn">${zy('下一關')}</button>`);
   btns.push(`<button class="btn ${hasNext ? 'alt' : ''}" id="toMapBtn">${zy('回到地圖')}</button>`);
   $('#rBtns').innerHTML = btns.join('');
-  $('#againBtn').onclick = () => cur.type === 'stage' ? startStage(cur.def) : startSide(cur.def);
-  if (hasNext) $('#nextBtn').onclick = () => startStage(nextS);
+  $('#againBtn').onclick = () => cur.type === 'secret' ? startSecret(cur.def) : cur.type === 'stage' ? startStage(cur.def) : startSide(cur.def);
+  if (hasNext) $('#nextBtn').onclick = () => (cur.type === 'secret' ? startSecret : startStage)(nextS);
   $('#toMapBtn').onclick = () => {
     $('#result').hidden = true;
     if (cur.type === 'stage' && isGate(cur.def)) curWorld = cur.def.w + 1;
@@ -4179,6 +4418,7 @@ function renderParent() {
         <div class="pstat"><b>${learnedCount(p)}<em>個</em></b><span>總共學會的單字</span></div>
         <div class="pstat"><b>${p.bells}<em>個</em></b><span>鈴鐺</span></div></div></div>
     ${ver || '<div class="psec"><p>還沒有開始玩任何版本。</p></div>'}
+    ${secretParentHTML(p)}
     <div class="psec"><h3>休息提醒</h3><p>連續玩到設定的時間，麋鹿會溫和地提醒休息（不會強制停止）。</p>
       <select id="remindSel" aria-label="休息提醒">${[15, 20, 30, 0].map(m => `<option value="${m}" ${p.remindMin === m ? 'selected' : ''}>${m ? m + ' 分鐘' : '關閉'}</option>`).join('')}</select></div>
     <div class="psec"><h3>備份進度（建議每週一次）</h3>
@@ -4224,6 +4464,7 @@ function renderParent() {
     if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = '再按一次確定刪除'; return; }
     store.profiles = store.profiles.filter(x => x.id !== p.id); store.current = null; save(); show('profiles');
   };
+  bindSecretParent(p);
 }
 $('#parentBody').addEventListener('click', e => { const b = e.target.closest('[data-say]'); if (b) speak(b.dataset.say); });
 $('#parentBack').onclick = () => show('home');
@@ -4300,6 +4541,1471 @@ setInterval(() => {
   addEventListener('resize', size); size();
   if (!still) requestAnimationFrame(tick);
 })();
+
+/* ================= secret missions: opened per elf with the parent's code ================= */
+// the code itself is not in this file, only a hash of it
+const SECRET_HASH = 'be05469a';
+const normCode = s => String(s).toUpperCase().replace(/[^A-Z0-9]/g, '');
+function codeHash(s) {
+  let h = 0x811c9dc5;
+  for (const ch of 'xwq:' + normCode(s)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 0x01000193) >>> 0; }
+  return h.toString(16);
+}
+const secretOn = (p = P()) => !!(p && p.secretOn);
+const sopt = (p = P()) => p.sopt || (p.sopt = { mode: 'mic', sens: 'mid', friends: [], ename: '' });
+let pendingCode = null;
+try {
+  const q = new URLSearchParams(location.search).get('code');
+  if (q) { pendingCode = q; try { history.replaceState(null, '', location.pathname); } catch (e) {} }
+} catch (e) {}
+const friendNames = () => sopt().friends.filter(Boolean);
+const aFriend = () => friendNames().length ? pickOne(friendNames()) : '';
+const myFriend = n => n ? `my friend ${n}` : 'my friend';
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const art = w => /^[aeiou]/i.test(w) ? 'an' : 'a';
+
+const SAREAS = [
+  { name: '禮物工坊', icon: '🎁', scene: 'workshop' },
+  { name: '問句偵探社', icon: '🔍', scene: 'forest' },
+  { name: '說完整的句子', icon: '💬', scene: 'roof' }
+];
+// [kind, name, hint, icon]
+const SPLAN = [
+  [['aanSort', '袋子分一分', '看開頭的音，把禮物放進 a 袋或 an 袋', '🛍️'],
+   ['anWhack', '打 an 雪人', '只打要用 an 的雪人', '🔨'],
+   ['thePick', '指定的那一個', '聽清楚，拿出指定的那一個禮物', '👉'],
+   ['story', '小故事填空', '第一次說用 a，再說到同一個用 the', '📖'],
+   ['artBoss', '雪球大戰', '選對 a、an、the，用雪球打雪怪', '❄️']],
+  [['who', '誰拿著它？', 'Who 問的是「人」', '👤'],
+   ['what', '冰上釣魚', 'What 問的是東西、顏色、會做什麼', '🎣'],
+   ['where', '放到哪裡？', 'Where 問的是「在哪裡」', '📍'],
+   ['when', '太陽和時鐘', 'When 問的是「什麼時候」', '⏰'],
+   ['which', '戳泡泡', 'Which 問的是「哪一個」', '🫧'],
+   ['how', '雪人的心情', 'How 問的是「怎麼樣」', '⛄'],
+   ['qBingo', '問句賓果', '聽回答，找出是哪一種問句', '🎯']],
+  [['call', '聖誕老人視訊', '跟聖誕老人用完整的句子聊天', '📱'],
+   ['blocks', '句子積木', '把字卡排成完整的句子', '🧱'],
+   ['canRace', '麋鹿賽跑', '選對句子、說出來，麋鹿就往前跑', '🦌'],
+   ['album', '我的相簿', '介紹家人和朋友', '📸'],
+   ['timeline', '我的一天', '把事情放到早上、下午、晚上', '🕰️'],
+   ['withMatch', 'with 小幫手', '連連看：和誰一起、用什麼', '🔗'],
+   ['today', '今天去哪裡？', '選出你今天做的事，說成句子', '🗺️'],
+   ['interview', '聖誕老人訪問', '回答聖誕老人的問題，做一本小日記', '🎤']]
+];
+const SSTAGES = SPLAN.flatMap((list, a) => list.map(([kind, name, hint, icon], k) => ({ id: `s${a + 1}-${k + 1}`, a, k, kind, name, hint, icon, boss: k === list.length - 1 })));
+const sAreaOpen = a => true;  // the three areas can be played in any order
+const sStageOpen = s => s.k === 0 || cleared(`s${s.a + 1}-${s.k}`);
+const nextSecret = () => SSTAGES.find(s => sStageOpen(s) && !cleared(s.id)) || null;
+
+/* ---------- 小老師時間: a few cards before a stage ---------- */
+const TIPS = {
+  aanSort: [
+    { v: '🎁', zh: '說「一個」東西的時候，前面要加 a 或 an。', en: 'a gift' },
+    { v: '<b class="vw">a e i o u</b>', zh: '先聽第一個音。a、e、i、o、u 開頭的音，前面用 an。', en: '<b>an</b> apple, <b>an</b> egg' },
+    { v: '🐶🎂⚽', zh: '其他的音開頭，前面用 a。', en: '<b>a</b> dog, <b>a</b> cake, <b>a</b> ball' }
+  ],
+  anWhack: [
+    { v: '🦉🐘🍊', zh: 'a、e、i、o、u 開頭的音，前面用 an。', en: '<b>an</b> owl, <b>an</b> elephant, <b>an</b> orange' },
+    { v: '🔨⛄', zh: '雪人拿著的東西如果要用 an，就打它！', en: 'I see <b>an</b> owl.' }
+  ],
+  thePick: [
+    { v: '🎁🎁🎁', zh: 'a 是「隨便一個」都可以。', en: 'Give me <b>a</b> gift.' },
+    { v: '<span class="gift" style="--g:#e5484d;--r:#ffc53d"></span>', zh: 'the 是「指定的那一個」，大家都知道是哪一個。', en: 'Give me <b>the</b> red gift.' },
+    { v: '👂', zh: '聽清楚顏色和大小，拿出指定的那一個！', en: 'Give me <b>the</b> big gift.' }
+  ],
+  story: [
+    { v: '🐱', zh: '第一次說到一隻貓，用 a。', en: 'I have <b>a</b> cat.' },
+    { v: '🐱👉', zh: '再說到同一隻貓，就用 the。', en: '<b>The</b> cat is white.' },
+    { v: '☀️🌙', zh: '只有一個、大家都知道的東西，也用 the。', en: '<b>the</b> sun, <b>the</b> moon' }
+  ],
+  artBoss: [
+    { v: '🍎🐶', zh: '隨便一個：母音開頭用 an，其他用 a。', en: '<b>an</b> apple, <b>a</b> dog' },
+    { v: '👉☀️', zh: '指定的、說過的、只有一個的：用 the。', en: '<b>the</b> sun' }
+  ],
+  who: [
+    { v: '👤', zh: 'Who 是「誰」，問的是人。', en: '<b>Who</b> has the ball?' },
+    { v: '👨⚽', zh: '回答要說出是誰，用完整的句子。', en: 'My dad has the ball.' }
+  ],
+  what: [
+    { v: '❓', zh: 'What 是「什麼」，可以問東西、顏色、會做什麼。', en: '<b>What</b> is it?' },
+    { v: '🍌', zh: '問顏色：What color？', en: 'What color is the banana? It is yellow.' },
+    { v: '🐟', zh: '問會做什麼：What can…do？', en: 'What can a fish do? A fish can swim.' }
+  ],
+  where: [
+    { v: '📍', zh: 'Where 是「在哪裡」。', en: '<b>Where</b> is the ball?' },
+    { v: '🧸🛏️', zh: 'on 在上面，in 在裡面，under 在下面。', en: 'It is <b>on</b> the bed.' }
+  ],
+  when: [
+    { v: '⏰', zh: 'When 是「什麼時候」。', en: '<b>When</b> do you eat breakfast?' },
+    { v: '🌅☀️🌙', zh: '早上 in the morning，下午 in the afternoon，晚上 at night。', en: 'I eat breakfast in the morning.' },
+    { v: '🕖', zh: '說幾點：at 幾 o\'clock。', en: 'I eat dinner at 6 o\'clock.' }
+  ],
+  which: [
+    { v: '👆', zh: 'Which 是「哪一個」，要從幾個裡面選一個。', en: '<b>Which</b> one is red?' },
+    { v: '<span class="gift" style="--g:#e5484d;--r:#ffc53d"></span>', zh: '回答用 the，因為是指定的那一個。', en: '<b>The</b> red one.' }
+  ],
+  how: [
+    { v: '💭', zh: 'How 是「怎麼樣」，可以問心情和天氣。', en: '<b>How</b> do you feel?' },
+    { v: '😄☀️', zh: '用完整的句子回答。', en: 'I am happy. It is sunny.' }
+  ],
+  qBingo: [
+    { v: '👤❓📍', zh: 'Who 問人，What 問東西，Where 問在哪裡。', en: 'Who? What? Where?' },
+    { v: '⏰👆💭', zh: 'When 問什麼時候，Which 問哪一個，How 問怎麼樣。', en: 'When? Which? How?' },
+    { v: '🎯', zh: '聽到一個回答，想想它在回答哪一種問句！', en: 'In the kitchen. → Where' }
+  ],
+  call: [
+    { v: '💬', zh: '回答時說完整的句子，還可以問回去！', en: 'I am good, thank you. And you?' },
+    { v: '🆘', zh: '聽不清楚的時候，可以請對方再說一次。', en: 'Can you say that again, please?' },
+    { v: '🤔', zh: '聽不懂的時候，也可以老實說。', en: 'Sorry, I don\'t understand.' }
+  ],
+  blocks: [
+    { v: '🧱', zh: '句子開頭的字，第一個字母要大寫。', en: '<b>I</b> am happy.' },
+    { v: '.', zh: '句子最後要有句點。', en: 'It is sunny<b>.</b>' }
+  ],
+  canRace: [
+    { v: '🏊', zh: 'can 是「會」，後面接動作，不加 ing。', en: 'I can <b>swim</b>.' },
+    { v: '👧👦', zh: '女生用 She，男生用 He。', en: '<b>She</b> can dance. <b>He</b> can draw.' }
+  ],
+  album: [
+    { v: '📸', zh: '介紹一個人：This is my…', en: 'This is my grandpa.' },
+    { v: '👴👵', zh: '男生用 He，女生用 She。', en: '<b>He</b> can cook. <b>She</b> can sing.' },
+    { v: '🙅', zh: '沒有的時候，說 No, I don\'t. 再多說一句！', en: 'No, I don\'t. But I have a good friend.' }
+  ],
+  timeline: [
+    { v: '🌅', zh: '早上做的事：in the morning。', en: 'I go to school in the morning.' },
+    { v: '🌤️🌙', zh: '下午：in the afternoon。晚上：in the evening 或 at night。', en: 'I take a bath at night.' }
+  ],
+  withMatch: [
+    { v: '👫', zh: 'with 可以是「和誰一起」。', en: 'I play <b>with</b> my friend.' },
+    { v: '🥄', zh: 'with 也可以是「用什麼」。', en: 'I eat soup <b>with</b> a spoon.' }
+  ],
+  today: [
+    { v: '📅', zh: '說今天已經做過的事，要用「過去」的說法。', en: 'I <b>went</b> to the park.' },
+    { v: '🛝', zh: 'go → went，play → played，eat → ate，see → saw。', en: 'I <b>played</b> on the swing.' }
+  ],
+  interview: [
+    { v: '🎅🎤', zh: '聖誕老人要訪問你！每一題都用完整的句子回答。', en: 'My name is…' },
+    { v: '📔', zh: '回答完會變成一本你自己的英文小日記。', en: 'My English Diary' }
+  ]
+};
+function showTips(def, cb) {
+  const cards = TIPS[def.kind] || []; let k = 0;
+  if (!cards.length) { cb && cb(); return; }
+  const draw = () => {
+    const c = cards[k], plain = (c.en || '').replace(/<[^>]+>/g, '');
+    openModal(`<div class="tipc"><p class="tiptag">${zy('💡 小老師時間')}　${k + 1} / ${cards.length}</p>
+      <div class="tipv">${c.v}</div><p class="tipzh">${zy(c.zh)}</p>
+      ${c.en ? `<div class="tipen"><span>${c.en}</span><button class="say" id="tipSay" aria-label="聽">🔊</button></div>` : ''}
+      <div class="row">${k ? `<button class="btn alt" id="tipPrev">${zy('上一張')}</button>` : ''}<button class="btn" id="tipNext">${zy(k < cards.length - 1 ? '下一張' : '開始玩！')}</button></div></div>`, true);
+    speakSeq([[c.zh, true], ...(plain ? [[plain, false, .75]] : [])]);
+    if ($('#tipSay')) $('#tipSay').onclick = () => speak(plain, .75);
+    if ($('#tipPrev')) $('#tipPrev').onclick = () => { k--; draw(); };
+    $('#tipNext').onclick = () => {
+      if (k < cards.length - 1) { k++; draw(); return; }
+      closeModal(); if (canSpeak) speechSynthesis.cancel(); cb && cb();
+    };
+  };
+  draw();
+}
+
+/* ---------- question picking and sentence statistics ---------- */
+const skey = q => '✎' + (q.say || q.id);
+function pickQ(bank, n) {
+  const last = q => (L().words[skey(q)] || {}).last || 0;
+  const weak = shuffle(bank.filter(q => isWeak(skey(q)))).slice(0, 2);
+  const core = shuffle(bank.filter(q => q.core && !weak.includes(q))).slice(0, 1);
+  const rest = bank.filter(q => !weak.includes(q) && !core.includes(q))
+    .map(q => [q, last(q) + Math.random() * 9e5]).sort((x, y) => x[1] - y[1]).map(x => x[0]);
+  return shuffle([...weak, ...core, ...rest].slice(0, n));
+}
+const srec = (q, wrong) => record(skey(q), wrong);
+
+/* ---------- speaking: the voice says it, then the child says it ---------- */
+const SRATE = .75;
+function utter(text, zh, rate) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = zh ? 'zh-TW' : 'en-US';
+  const v = zh ? voiceZh : voiceEn; if (v) u.voice = v;
+  u.rate = rate || (zh ? .95 : SRATE); u.pitch = zh ? 1.15 : 1.1;
+  return u;
+}
+// say it, then cb(ms the voice took)
+function speakThen(text, rate, cb) {
+  const words = text.split(/\s+/).length;
+  let done = false, started = 0;
+  const fin = () => { if (done) return; done = true; cb(started ? Date.now() - started : words * 420); };
+  if (!canSpeak) { setTimeout(fin, 300); return; }
+  try {
+    speechSynthesis.cancel();
+    const u = utter(text, false, rate);
+    u.onstart = () => { started = Date.now(); };
+    u.onend = fin; u.onerror = fin;
+    speechSynthesis.speak(u);
+  } catch (e) { fin(); }
+  setTimeout(fin, words * 800 + 3000);  // some voices never send onend
+}
+
+let micStream = null, micAn = null, micDenied = false, recorder = null, recChunks = [], recUrl = null;
+async function micOpen() {
+  if (micAn) return true;
+  if (micDenied || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return false;
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+    const a = actx(); if (!a) return false;
+    micAn = a.createAnalyser(); micAn.fftSize = 1024;
+    a.createMediaStreamSource(micStream).connect(micAn);
+    return true;
+  } catch (e) { micDenied = true; return false; }
+}
+// let go of the microphone between turns so the voice plays through the speaker again
+function micClose() {
+  try { if (recorder && recorder.state !== 'inactive') recorder.stop(); } catch (e) {}
+  if (micStream) micStream.getTracks().forEach(t => t.stop());
+  micStream = null; micAn = null;
+}
+function micLevel() {
+  const d = new Float32Array(micAn.fftSize); micAn.getFloatTimeDomainData(d);
+  let s = 0; for (let i = 0; i < d.length; i++) s += d[i] * d[i];
+  return Math.sqrt(s / d.length);
+}
+function recStart() {
+  recChunks = [];
+  try { if (!window.MediaRecorder) return; recorder = new MediaRecorder(micStream); recorder.ondataavailable = e => { if (e.data.size) recChunks.push(e.data); }; recorder.start(); }
+  catch (e) { recorder = null; }
+}
+function recStop(cb) {
+  const r = recorder; recorder = null;
+  if (!r || r.state === 'inactive') { cb(null); return; }
+  r.onstop = () => {
+    if (recUrl) URL.revokeObjectURL(recUrl);
+    recUrl = recChunks.length ? URL.createObjectURL(new Blob(recChunks, { type: r.mimeType || 'audio/mp4' })) : null;
+    cb(recUrl);
+  };
+  try { r.stop(); } catch (e) { cb(null); }
+}
+const SENS = { high: [1.6, .008], mid: [2.4, .014], low: [3.4, .024] };
+
+function sayAlong(text, cb) {
+  const r = run; if (!r) return;
+  const alive = () => r === run && r.alive;
+  const ov = document.createElement('div'); ov.className = 'sayover';
+  ov.innerHTML = `<div class="saycard">
+      <p class="saytop">${zy('跟著說一次')}</p>
+      <div class="saysent">${esc(text)}</div>
+      <div class="sayrow"><button class="say" data-a="again" aria-label="再聽一次">🔊</button><button class="slowb" data-a="slow" aria-label="慢慢念">🐢</button></div>
+      <div class="saymeter"><span class="sayelf">${avatarOf(P())}</span><span class="saygrow" style="--g:0"><span>⛄</span></span></div>
+      <p class="saystat"></p>
+      <div class="sayend" hidden><button class="btn alt" data-a="play">${zy('▶️ 聽聽我的聲音')}</button><button class="btn" data-a="next">${zy('下一題 ➜')}</button></div>
+      <button class="saydone" data-a="skip" hidden>${zy('我說完了')}</button>
+    </div>`;
+  document.body.appendChild(ov);
+  const stat = ov.querySelector('.saystat'), grow = ov.querySelector('.saygrow'), endRow = ov.querySelector('.sayend'), skipB = ov.querySelector('.saydone');
+  const setStat = t => { stat.innerHTML = zy(t); };
+  let phase = 'voice', need = 1000, got = 0, talking = false, autoNext = null, closed = false;
+  const close = () => {
+    if (closed) return; closed = true; clearTimeout(autoNext);
+    micClose(); ov.remove(); if (alive()) cb && cb();
+  };
+  const finishTurn = () => {
+    if (phase === 'end') return;
+    phase = 'end'; grow.style.setProperty('--g', 1); grow.classList.add('full');
+    tone(1046, 0, .2, 'sine', .1); tone(1568, .1, .3, 'sine', .08);
+    setStat('✔ 說得好！');
+    const show = url => {
+      micClose();
+      endRow.hidden = false; skipB.hidden = true;
+      endRow.querySelector('[data-a="play"]').hidden = !url;
+      autoNext = setTimeout(close, url ? 5000 : 2200);
+    };
+    recStop(show);
+  };
+  const voice = (rate = SRATE) => {
+    talking = true; setStat('聽一聽…');
+    speakThen(text, rate, ms => {
+      talking = false;
+      if (!alive() || closed) return;
+      if (phase === 'voice') { need = Math.max(700, Math.min(3500, ms * .6)); startTurn(); }
+      else if (phase === 'listen') setStat('🎤 換你說！');
+    });
+  };
+  async function startTurn() {
+    phase = 'listen';
+    if (sopt().mode === 'mic') {
+      // a permission prompt nobody answers must not leave the child waiting
+      const ok = await withinMs(micOpen(), 8000);
+      if (closed || !alive()) return;
+      if (ok === true) return listen();
+      micDenied = true; toast('麥克風沒有打開，改成倒數計時');
+    }
+    timer();
+  }
+  function timer() {
+    const T = Math.max(3000, Math.min(9000, need / .6 * 1.6 + 1000)), t0 = Date.now();
+    setStat('🎤 換你說！');
+    const step = () => {
+      if (closed || !alive() || phase !== 'listen') return;
+      const f = Math.min(1, (Date.now() - t0) / T);
+      grow.style.setProperty('--g', f.toFixed(3));
+      if (f >= 1) finishTurn(); else setTimeout(step, 40);
+    };
+    step();
+  }
+  function listen() {
+    const [mult, floorMin] = SENS[sopt().sens] || SENS.mid;
+    setStat('準備…');
+    const samples = [], t0 = Date.now();
+    let thr = 0, last = performance.now(), quietSince = Date.now(), hinted = false;
+    // a timer rather than animation frames, so it keeps listening even if the page is drawn less often
+    const tick = () => {
+      const now = performance.now();
+      if (closed || !alive() || phase !== 'listen' || !micAn) return;
+      const lv = micLevel(), dt = Math.min(100, now - last); last = now;
+      if (!thr) {
+        samples.push(lv);
+        if (Date.now() - t0 > 450) { thr = Math.max(floorMin, (sum(samples) / samples.length) * mult); setStat('🎤 換你說！'); recStart(); quietSince = Date.now(); }
+      } else if (!talking) {
+        if (lv > thr) { got += dt; quietSince = Date.now(); }
+        grow.style.setProperty('--g', Math.min(1, got / need).toFixed(3));
+        grow.classList.toggle('loud', lv > thr);
+        if (got >= need) return finishTurn();
+        if (!hinted && Date.now() - quietSince > 6000) { hinted = true; setStat('🔊 再聽一次，跟著說！'); voice(); }
+        if (Date.now() - quietSince > 10000) skipB.hidden = false;
+      }
+      setTimeout(tick, 40);
+    };
+    tick();
+  }
+  ov.addEventListener('click', e => {
+    const b = e.target.closest('[data-a]'); if (!b) return;
+    const a = b.dataset.a;
+    if (a === 'again' && !talking) voice();
+    if (a === 'slow' && !talking) voice(.55);
+    if (a === 'skip') finishTurn();
+    if (a === 'next') close();
+    if (a === 'play' && recUrl) {
+      clearTimeout(autoNext);
+      try { const au = new Audio(recUrl); au.onended = () => { autoNext = setTimeout(close, 2500); }; au.play(); } catch (e) {}
+    }
+  });
+  voice();
+}
+
+/* ---------- shared bits for the secret games ---------- */
+// the child taps an option: the voice reads the whole sentence with it, then it is checked
+function nudge(def) { toast(def.hint); }
+function sFinishRound(ctx, q, wrong, sentence, next) {
+  srec(q, wrong); ctx.learned.add(sentence);
+  later(() => sayAlong(sentence, next), 700);
+}
+// gift box in a colour; size 'big' | 'small' | ''
+const giftHTML = (c, size = '') => `<span class="gift ${size}" style="--g:${COLOR[c]};--r:${c === 'yellow' || c === 'orange' ? '#e5484d' : '#ffc53d'}"></span>`;
+
+/* ---------- area 1: a / an / the ---------- */
+const NOUNS = [
+  ['apple', '🍎'], ['egg', '🥚'], ['orange', '🍊'], ['ice cream', '🍦'], ['umbrella', '☂️'], ['owl', '🦉'], ['octopus', '🐙'],
+  ['elephant', '🐘'], ['ant', '🐜'], ['eagle', '🦅'], ['onion', '🧅'], ['astronaut', '🧑‍🚀'],
+  ['dog', '🐶'], ['cat', '🐱'], ['ball', '⚽'], ['hat', '🎩'], ['cake', '🎂'], ['bus', '🚌'], ['fish', '🐟'], ['star', '⭐'],
+  ['book', '📖'], ['duck', '🦆'], ['pig', '🐷'], ['bell', '🔔'], ['sock', '🧦'], ['kite', '🪁'], ['robot', '🤖'], ['banana', '🍌'],
+  ['teddy bear', '🧸'], ['snowman', '⛄'], ['gift', '🎁'], ['cookie', '🍪'], ['candy', '🍬'], ['lion', '🦁']
+].map(([w, e]) => ({ w, e, art: art(w), say: `It is ${art(w)} ${w}.` }));
+const firstLetter = w => `<b class="${/^[aeiou]/i.test(w) ? 'v1' : 'c1'}">${esc(w[0])}</b>${esc(w.slice(1))}`;
+
+// drag (or tap) a pointer target onto one of the drop zones; onDrop(zoneEl|null)
+function dragTo(el, zones, onDrop) {
+  el.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    const sx = e.clientX, sy = e.clientY; let ghost = null;
+    const move = ev => {
+      if (!ghost && Math.hypot(ev.clientX - sx, ev.clientY - sy) > 10) {
+        ghost = el.cloneNode(true); ghost.classList.add('sghost'); document.body.appendChild(ghost); el.classList.add('dragging');
+      }
+      if (ghost) { ghost.style.left = ev.clientX + 'px'; ghost.style.top = ev.clientY + 'px'; }
+    };
+    const up = ev => {
+      removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up);
+      if (!ghost) { onDrop(null, true); return; }   // a tap: the game decides
+      ghost.remove(); el.classList.remove('dragging');
+      if (ev.type !== 'pointerup') return;
+      const hit = zones().find(z => { const r = z.getBoundingClientRect(); return ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom; });
+      onDrop(hit || null, false);
+    };
+    addEventListener('pointermove', move); addEventListener('pointerup', up); addEventListener('pointercancel', up);
+  });
+}
+
+const SGAMES = {};
+
+SGAMES.aanSort = (ctx, def) => {
+  const vow = NOUNS.filter(n => n.art === 'an'), con = NOUNS.filter(n => n.art === 'a');
+  const items = shuffle([...pickQ(vow, 3), ...pickQ(con, 3)]);
+  let i = 0, mistakes = 0;
+  ctx.stage.innerHTML = `<div class="sortg">
+      <button class="sbag" data-a="a"><span class="bagi">🛍️</span><b>a</b></button>
+      <div class="sortmid"><div class="scard"></div><p class="sub">${zy('拖到袋子裡，或點一下袋子')}</p></div>
+      <button class="sbag an" data-a="an"><span class="bagi">🛍️</span><b>an</b></button></div>`;
+  const card = ctx.stage.querySelector('.scard'), bags = [...ctx.stage.querySelectorAll('.sbag')];
+  let it = null, wrong = false, busy = false, picked = false;
+  const judge = bag => {
+    if (busy || !bag) return;
+    const a = bag.dataset.a;
+    if (a === it.art) {
+      busy = true; bag.classList.add('gulp'); card.classList.add('gone'); sfx.ok(); hideCheer();
+      later(() => bag.classList.remove('gulp'), 600);
+      i++; sFinishRound(ctx, it, wrong, it.say, round);
+    } else {
+      mistakes++; wrong = true; sfx.no(); cheer([[`${a} ${it.w}`, false, SRATE]]);
+      bag.classList.remove('wrong'); void bag.offsetWidth; bag.classList.add('wrong');
+      if (wrong && ++picked >= 2) nudge(def);
+    }
+  };
+  function round() {
+    setDots(items.length, i);
+    if (i >= items.length) { later(() => ctx.done(mistakes), 300); return; }
+    it = items[i]; wrong = false; busy = false; picked = 0;
+    card.className = 'scard'; void card.offsetWidth; card.classList.add('in');
+    card.innerHTML = `<span class="se">${it.e}</span><span class="sw">${firstLetter(it.w)}</span><button class="say" aria-label="聽">🔊</button>`;
+    card.querySelector('.say').onclick = e => { e.stopPropagation(); speak(it.w, SRATE); };
+    later(() => speak(it.w, SRATE), 300);
+  }
+  bags.forEach(b => b.onclick = () => judge(b));
+  dragTo(card, () => bags, (zone, tap) => { if (!tap) judge(zone); });
+  round();
+};
+
+SGAMES.anWhack = (ctx, def) => {
+  const vow = NOUNS.filter(n => n.art === 'an'), con = NOUNS.filter(n => n.art === 'a');
+  const N = 5;
+  let r = 0, mistakes = 0, paused = false, wrongNow = false;
+  ctx.stage.innerHTML = `<div class="whack swhack">
+      <div class="wprompt"><span class="word-prompt">an ___</span></div>
+      <div class="holes">${Array.from({ length: 6 }, (_, k) => `<div class="hole"><button class="pop" data-h="${k}"><span class="sign"></span><span class="sm">⛄</span></button><span class="chim"></span></div>`).join('')}</div></div>`;
+  const pops = [...ctx.stage.querySelectorAll('.pop')], shown = new Map();
+  const hideAll = () => { pops.forEach(p => p.classList.remove('up', 'bonk')); shown.clear(); };
+  every(() => {
+    if (paused || r >= N) return;
+    const free = pops.filter(p => !p.classList.contains('up'));
+    if (!free.length || shown.size >= 3) return;
+    const p = pickOne(free), hasAn = [...shown.values()].some(x => x.art === 'an');
+    const it = !hasAn && Math.random() < .55 ? pickOne(vow) : pickOne(Math.random() < .25 ? vow : con);
+    shown.set(p, it); p.querySelector('.sign').innerHTML = `${it.e}<small>${esc(it.w)}</small>`; p.classList.add('up');
+    later(() => { if (shown.get(p) === it && !paused) { p.classList.remove('up'); shown.delete(p); } }, 3400 + Math.random() * 700);
+  }, 1100);
+  setDots(N, 0);
+  pops.forEach(p => p.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    if (paused || !p.classList.contains('up')) return;
+    const it = shown.get(p); if (!it) return;
+    if (it.art === 'an') {
+      paused = true; p.classList.add('bonk'); sfx.ok(); hideCheer();
+      const q = it, w = wrongNow; wrongNow = false; r++; setDots(N, r);
+      later(hideAll, 500);
+      sFinishRound(ctx, q, w, `I see an ${it.w}.`, () => {
+        if (r >= N) { sfx.win(); later(() => ctx.done(mistakes), 400); return; }
+        paused = false;
+      });
+    } else {
+      p.classList.remove('wrong'); void p.offsetWidth; p.classList.add('wrong');
+      mistakes++; wrongNow = true; sfx.no(); cheer([[`a ${it.w}`, false, SRATE]]);
+      if (mistakes % 3 === 0) nudge(def);
+    }
+  }));
+};
+
+// "Give me the red gift." -- only one is right; "Give me a gift." -- any one is fine
+function theRound() {
+  const cols = shuffle(['red', 'blue', 'green', 'yellow', 'purple', 'pink', 'orange']);
+  const type = pickOne(['color', 'color', 'size', 'both', 'any']);
+  let gifts, t, ask, say;
+  if (type === 'color') {
+    gifts = cols.slice(0, 3).map(c => ({ c, s: '' })); t = gifts[0];
+    ask = `Give me the ${t.c} gift.`; say = `Here is the ${t.c} gift.`;
+  } else if (type === 'size') {
+    const big = Math.random() < .5;
+    gifts = [{ c: cols[0], s: big ? 'big' : 'small' }, { c: cols[1], s: big ? 'small' : 'big' }, { c: cols[2], s: big ? 'small' : 'big' }];
+    t = gifts[0]; ask = `Give me the ${t.s} gift.`; say = `Here is the ${t.s} gift.`;
+  } else if (type === 'both') {
+    const s = pickOne(['big', 'small']), o = s === 'big' ? 'small' : 'big';
+    gifts = [{ c: cols[0], s }, { c: cols[0], s: o }, { c: cols[1], s }, { c: cols[2], s: o }];
+    t = gifts[0]; ask = `Give me the ${s} ${t.c} gift.`; say = `Here is the ${s} ${t.c} gift.`;
+  } else {
+    gifts = cols.slice(0, 3).map(c => ({ c, s: '' })); t = null;
+    ask = 'Give me a gift.'; say = 'Here is a gift.';
+  }
+  return { gifts: shuffle(gifts), t, ask, say, type };
+}
+SGAMES.thePick = (ctx, def) => {
+  const N = 6; let i = 0, mistakes = 0;
+  const rounds = Array.from({ length: N }, theRound);
+  if (!rounds.some(x => x.type === 'any')) rounds[2 + Math.floor(Math.random() * 3)] = (() => { let x; do x = theRound(); while (x.type !== 'any'); return x; })();
+  ctx.stage.innerHTML = `<div class="theg"><div class="sentrow"><span class="santa">🎅</span><div class="sentence"></div><button class="say" aria-label="聽">🔊</button></div>
+      <div class="table"></div><p class="sub">${zy('點一下你要給聖誕老人的禮物')}</p></div>`;
+  const sent = ctx.stage.querySelector('.sentence'), table = ctx.stage.querySelector('.table');
+  function round() {
+    setDots(N, i);
+    if (i >= N) { later(() => ctx.done(mistakes), 300); return; }
+    const R0 = rounds[i]; let wrong = false, busy = false;
+    sent.innerHTML = esc(R0.ask).replace(/\b(the|a)\b/, '<b>$1</b>');
+    ctx.stage.querySelector('.theg .say').onclick = () => speak(R0.ask, SRATE);
+    later(() => speak(R0.ask, SRATE), 350);
+    table.innerHTML = R0.gifts.map((g, k) => `<button class="gpick2 ${g.s}" data-k="${k}">${giftHTML(g.c)}</button>`).join('');
+    table.querySelectorAll('.gpick2').forEach(b => b.onclick = () => {
+      if (busy) return;
+      const g = R0.gifts[+b.dataset.k];
+      const ok = !R0.t || (g.c === R0.t.c && g.s === R0.t.s);
+      if (ok) {
+        busy = true; b.classList.add('right'); sfx.ok(); hideCheer();
+        if (!R0.t) toast('a 是隨便一個，哪一個都可以！');
+        i++; sFinishRound(ctx, { say: R0.say }, wrong, R0.say, round);
+      } else {
+        mistakes++; wrong = true; sfx.no();
+        cheer([[`This is the ${g.s ? g.s + ' ' : ''}${g.c} gift.`, false, SRATE]]);
+        b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
+      }
+    });
+  }
+  round();
+};
+
+const STORIES = [
+  ['🐶', ['I have ___ dog.', '___ dog is brown.'], ['a', 'the']],
+  ['🐦', ['I see ___ bird.', '___ bird can sing.'], ['a', 'the']],
+  ['🎂', ['Mom made ___ cake.', '___ cake is sweet.'], ['a', 'the']],
+  ['🍎', ['There is ___ apple.', '___ apple is red.'], ['an', 'the']],
+  ['🎁', ['I got ___ gift.', '___ gift is big.'], ['a', 'the']],
+  ['🚗', ['Dad has ___ car.', '___ car is blue.'], ['a', 'the']],
+  ['🦉', ['I see ___ owl.', '___ owl is in the tree.'], ['an', 'the']],
+  ['⛄', ['We made ___ snowman.', '___ snowman is cold.'], ['a', 'the']],
+  ['🥚', ['I have ___ egg.', '___ egg is white.'], ['an', 'the']],
+  ['🐸', ['There is ___ frog.', '___ frog can jump.'], ['a', 'the']],
+  ['⚽', ['I have ___ ball.', 'I kick ___ ball.'], ['a', 'the']],
+  ['☂️', ['She has ___ umbrella.', '___ umbrella is pink.'], ['an', 'the']],
+  ['🐱', ['Grandma has ___ cat.', '___ cat is sleepy.'], ['a', 'the']],
+  ['🍊', ['I want ___ orange.', '___ orange is juicy.'], ['an', 'the']],
+  ['🐘', ['I see ___ elephant.', '___ elephant is big.'], ['an', 'the']],
+  ['☀️', ['Look at ___ sun!'], ['the']],
+  ['🌙', ['___ moon is so bright.'], ['the']]
+].map(([e, s, a]) => ({ e, s, a, say: s.map((x, k) => fillBlank(x, a[k])).join(' ') }));
+function fillBlank(s, w) { return s.replace('___', s.startsWith('___') ? cap(w) : w); }
+SGAMES.story = (ctx, def) => {
+  const items = pickQ(STORIES, 5);
+  let i = 0, mistakes = 0;
+  ctx.stage.innerHTML = `<div class="gram storyg"><div class="pic"></div>
+      <div class="sentrow"><div class="sentence storyb"></div><button class="say" aria-label="聽">🔊</button></div>
+      <div class="wopts">${['a', 'an', 'the'].map(o => `<button class="wbtn" data-o="${o}">${o}</button>`).join('')}</div></div>`;
+  const pic = ctx.stage.querySelector('.pic'), box = ctx.stage.querySelector('.storyb'), btns = [...ctx.stage.querySelectorAll('.wbtn')];
+  let st = null, b = 0, wrong = false, busy = false, misses = 0;
+  const draw = () => {
+    box.innerHTML = st.s.map((x, k) => {
+      const [pre, post] = x.split('___');
+      const mid = k < b ? `<span class="gblank filled">${esc(pre ? st.a[k] : cap(st.a[k]))}</span>` : `<span class="gblank ${k === b ? 'cur' : ''}">&nbsp;</span>`;
+      return `<span class="sline">${esc(pre)}${mid}${esc(post)}</span>`;
+    }).join(' ');
+  };
+  const cur = () => fillBlank(st.s[b], st.a[b]);
+  function round() {
+    setDots(items.length, i);
+    if (i >= items.length) { later(() => ctx.done(mistakes), 300); return; }
+    st = items[i]; b = 0; wrong = false; busy = false; misses = 0;
+    pic.textContent = st.e; draw();
+    ctx.stage.querySelector('.storyg .say').onclick = () => speak(cur(), SRATE);
+  }
+  btns.forEach(btn => btn.onclick = () => {
+    if (busy) return;
+    const o = btn.dataset.o, said = fillBlank(st.s[b], o);
+    if (o === st.a[b]) {
+      btn.classList.add('right'); later(() => btn.classList.remove('right'), 600); sfx.ok(); hideCheer();
+      b++; draw();
+      if (b < st.s.length) speak(said, SRATE);
+      if (b >= st.s.length) { busy = true; i++; sFinishRound(ctx, st, wrong, st.say, round); }
+    } else {
+      mistakes++; wrong = true; sfx.no(); cheer([[said, false, SRATE]]);
+      btn.classList.remove('wrong'); void btn.offsetWidth; btn.classList.add('wrong'); later(() => btn.classList.remove('wrong'), 500);
+      if (++misses === 2) toast(st.a[b] === 'the' ? '說過的、指定的、只有一個的 → the' : st.a[b] === 'an' ? 'a e i o u 開頭的音 → an' : '第一次說到、隨便一個 → a');
+    }
+  });
+  round();
+};
+
+const ART_BOSS = [
+  ['🐘', 'I see ___ elephant.', 'an'], ['🪁', 'She has ___ kite.', 'a'], ['☀️', '___ sun is hot.', 'the'],
+  ['🍪', 'Can I have ___ cookie?', 'a'], ['🍦', 'I want ___ ice cream.', 'an'], ['🌙', 'Look at ___ moon!', 'the'],
+  ['🦉', 'This is ___ owl.', 'an'], ['🎩', 'He has ___ red hat.', 'a'], ['🥚', 'I eat ___ egg.', 'an'],
+  ['🚪', 'Close ___ door, please.', 'the'], ['🪟', 'Open ___ window, please.', 'the'], ['🐱', 'I have a cat. ___ cat is black.', 'the'],
+  ['🍊', 'It is ___ orange.', 'an'], ['⛄', 'We made ___ snowman.', 'a'], ['🎅', 'Santa has ___ big bag.', 'a'],
+  ['🐙', 'I can see ___ octopus.', 'an'], ['💡', 'Turn off ___ light, please.', 'the'], ['☂️', 'This is ___ umbrella.', 'an'],
+  ['🧑‍🚀', 'I want to be ___ astronaut.', 'an'], ['🐶', 'I see a dog. ___ dog is happy.', 'the']
+].map(([e, s, a]) => ({ e, s, a, say: fillBlank(s, a) }));
+SGAMES.artBoss = (ctx, def) => {
+  const HP = 6, items = pickQ(ART_BOSS, HP);
+  let hp = HP, i = 0, mistakes = 0;
+  ctx.stage.innerHTML = `<div class="battle">
+      <div class="arena"><div class="me">${avatarOf(P())}</div><span class="sball" hidden></span>
+        <div class="foe"><div class="hp"></div>${monsterSVG()}<span class="fname">${zy('暴風雪怪')}</span></div></div>
+      <div class="bq"><div class="gram"><div class="sentrow"><span class="bpic"></span><div class="sentence"></div><button class="say" aria-label="聽">🔊</button></div>
+        <div class="wopts">${['a', 'an', 'the'].map(o => `<button class="wbtn" data-o="${o}">${o}</button>`).join('')}</div></div></div></div>`;
+  const hpEl = ctx.stage.querySelector('.hp'), foe = ctx.stage.querySelector('.foe'), ball = ctx.stage.querySelector('.sball');
+  const sent = ctx.stage.querySelector('.sentence'), bpic = ctx.stage.querySelector('.bpic'), btns = [...ctx.stage.querySelectorAll('.wbtn')];
+  const drawHp = () => { hpEl.innerHTML = Array.from({ length: HP }, (_, k) => `<i class="${k < hp ? 'on' : ''}"></i>`).join(''); };
+  drawHp();
+  let it = null, wrong = false, busy = false;
+  function round() {
+    setDots(HP, i);
+    if (i >= HP) {
+      later(() => { foe.classList.add('flee'); sfx.win(); speak('The snow monster ran away!', 0.9); }, 300);
+      later(() => ctx.done(mistakes), 2400); return;
+    }
+    it = items[i]; wrong = false; busy = false;
+    const [pre, post] = it.s.split('___');
+    bpic.textContent = it.e;
+    sent.innerHTML = `${esc(pre)}<span class="gblank">&nbsp;</span>${esc(post)}`;
+    ctx.stage.querySelector('.bq .say').onclick = () => speak(it.say, SRATE);
+  }
+  btns.forEach(btn => btn.onclick = () => {
+    if (busy) return;
+    const o = btn.dataset.o;
+    if (o === it.a) {
+      busy = true; sfx.ok(); hideCheer();
+      const bl = sent.querySelector('.gblank'); bl.textContent = it.s.startsWith('___') ? cap(o) : o; bl.classList.add('filled');
+      ball.hidden = false; ball.classList.remove('fly'); void ball.offsetWidth; ball.classList.add('fly');
+      later(() => { ball.hidden = true; hp--; drawHp(); tone(140, 0, .25, 'triangle', .14); foe.classList.remove('hit'); void foe.offsetWidth; foe.classList.add('hit'); }, 600);
+      i++; sFinishRound(ctx, it, wrong, it.say, round);
+    } else {
+      mistakes++; wrong = true; sfx.no(); cheer([[fillBlank(it.s, o), false, SRATE]]);
+      btn.classList.remove('wrong'); void btn.offsetWidth; btn.classList.add('wrong'); later(() => btn.classList.remove('wrong'), 500);
+    }
+  });
+  round();
+};
+
+/* ---------- area 2: question words ---------- */
+// family and friends; no brothers or sisters
+function people() {
+  const fam = [
+    { e: '👨', tag: 'Dad', subj: 'My dad', obj: 'my dad', he: 'He' }, { e: '👩', tag: 'Mom', subj: 'My mom', obj: 'my mom', he: 'She' },
+    { e: '👴', tag: 'Grandpa', subj: 'My grandpa', obj: 'my grandpa', he: 'He' }, { e: '👵', tag: 'Grandma', subj: 'My grandma', obj: 'my grandma', he: 'She' }
+  ];
+  const names = friendNames();
+  const fr = (names.length ? names : ['']).map((n, k) => ({ e: ['👧', '🧒', '👦'][k % 3], tag: n || 'Friend', subj: n || 'My friend', obj: myFriend(n), friend: true }));
+  return { fam, fr };
+}
+const PROPS = [['ball', '⚽'], ['cake', '🍰'], ['book', '📖'], ['balloon', '🎈'], ['gift', '🎁'], ['cat', '🐱'], ['apple', '🍎'], ['kite', '🪁'], ['teddy bear', '🧸'], ['star', '⭐']];
+
+SGAMES.who = (ctx, def) => {
+  const N = 6, playAt = 2 + Math.floor(Math.random() * 3);
+  let i = 0, mistakes = 0;
+  ctx.stage.innerHTML = `<div class="whog"><div class="sentrow"><div class="sentence"></div><button class="say" aria-label="聽">🔊</button></div>
+      <div class="photo"></div><p class="sub">${zy('點一下對的人')}</p></div>`;
+  const sent = ctx.stage.querySelector('.sentence'), photo = ctx.stage.querySelector('.photo');
+  function round() {
+    setDots(N, i);
+    if (i >= N) { later(() => ctx.done(mistakes), 300); return; }
+    const { fam, fr } = people();
+    const folks = shuffle([...sample(fam, 3), pickOne(fr)]), props = sample(PROPS, 4);
+    folks.forEach((f, k) => { f.prop = props[k]; });
+    const play = i === playAt, t = play ? folks.find(f => f.friend) : pickOne(folks);
+    const ask = play ? 'Who do you play with?' : `Who has the ${t.prop[0]}?`;
+    const say = play ? `I play with ${t.obj}.` : `${t.subj} has the ${t.prop[0]}.`;
+    let wrong = false, busy = false;
+    sent.innerHTML = `<b>Who</b>${esc(ask.slice(3))}`;
+    ctx.stage.querySelector('.whog .say').onclick = () => speak(ask, SRATE);
+    later(() => speak(ask, SRATE), 350);
+    photo.innerHTML = folks.map((f, k) => `<button class="person" data-k="${k}"><span class="pe">${f.e}</span>${play ? '' : `<span class="pp">${f.prop[1]}</span>`}<span class="pt">${esc(f.tag)}</span></button>`).join('');
+    photo.querySelectorAll('.person').forEach(b => b.onclick = () => {
+      if (busy) return;
+      const f = folks[+b.dataset.k];
+      if (play ? f.friend : f === t) {
+        busy = true; b.classList.add('right'); sfx.ok(); hideCheer();
+        i++; sFinishRound(ctx, { say }, wrong, say, round);
+      } else {
+        mistakes++; wrong = true; sfx.no();
+        cheer([[play ? `This is ${f.obj}.` : `${f.subj} has the ${f.prop[0]}.`, false, SRATE]]);
+        b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
+      }
+    });
+  }
+  round();
+};
+
+const WHAT_COLOR = [['🍌', 'banana', 'yellow'], ['🍎', 'apple', 'red'], ['🥕', 'carrot', 'orange'], ['🐸', 'frog', 'green'], ['🐻', 'bear', 'brown'],
+  ['🐷', 'pig', 'pink'], ['⛄', 'snowman', 'white'], ['🐳', 'whale', 'blue'], ['🍓', 'strawberry', 'red'], ['🍋', 'lemon', 'yellow'], ['🥦', 'broccoli', 'green']]
+  .map(([e, w, c]) => ({ e, ask: `What color is the ${w}?`, say: `It is ${c}.`, ans: c, kind: 'color' }));
+const WHAT_CAN = [['🐟', 'fish', 'swim'], ['🐦', 'bird', 'fly'], ['🐶', 'dog', 'run'], ['🐒', 'monkey', 'climb'], ['🐸', 'frog', 'jump'], ['🦆', 'duck', 'swim']]
+  .map(([e, w, v]) => ({ e, ask: `What can a ${w} do?`, say: `A ${w} can ${v}.`, ans: v, kind: 'can' }));
+const VERB_E = { swim: '🏊', fly: '🕊️', run: '🏃', climb: '🧗', jump: '🤸', sing: '🎤', read: '📖' };
+const WHAT_IS = ['cake', 'egg', 'sock', 'bell', 'orange', 'umbrella', 'kite', 'owl', 'apple', 'robot']
+  .map(w => NOUNS.find(n => n.w === w)).map(n => ({ e: n.e, ask: 'What is it?', say: `It is ${n.art} ${n.w}.`, ans: `${n.art} ${n.w}`, kind: 'is' }));
+SGAMES.what = (ctx, def) => {
+  const items = shuffle([...pickQ(WHAT_COLOR, 2), ...pickQ(WHAT_CAN, 2), ...pickQ(WHAT_IS, 2)]);
+  let i = 0, mistakes = 0;
+  ctx.stage.innerHTML = `<div class="fishing">
+      <div class="ask"><span class="qpic"></span><span class="word-prompt qtext"></span><button class="say" aria-label="聽">🔊</button></div>
+      <div class="pond"><span class="fisher">${avatarOf(P())}🎣</span><span class="icehole"></span><div class="school"></div></div></div>`;
+  const qpic = ctx.stage.querySelector('.qpic'), qtext = ctx.stage.querySelector('.qtext'), school = ctx.stage.querySelector('.school');
+  const label = (t, a) => t.kind === 'color' ? `<span class="cdot" style="--c:${COLOR[a]}"></span><small>${a}</small>`
+    : t.kind === 'can' ? `${VERB_E[a] || '⭐'}<small>${a}</small>` : `<small class="big">${esc(a)}</small>`;
+  function round() {
+    setDots(items.length, i);
+    if (i >= items.length) { sfx.win(); later(() => speak('What a big catch!', 0.9), 200); later(() => ctx.done(mistakes), 1800); return; }
+    const t = items[i];
+    const pool = t.kind === 'color' ? ['red', 'blue', 'green', 'yellow', 'pink', 'brown', 'white', 'orange', 'purple']
+      : t.kind === 'can' ? ['swim', 'fly', 'run', 'climb', 'jump', 'sing'] : WHAT_IS.map(x => x.ans);
+    const opts = shuffle([t.ans, ...sample(pool.filter(x => x !== t.ans), 3)]);
+    let wrong = false, caught = false;
+    qpic.textContent = t.e; qtext.innerHTML = `<b>What</b>${esc(t.ask.slice(4))}`;
+    ctx.stage.querySelector('.fishing .say').onclick = () => speak(t.ask, SRATE);
+    later(() => speak(t.ask, SRATE), 300);
+    school.innerHTML = opts.map((o, k) => {
+      const dir = k % 2 ? 'l' : 'r', dur = 10 + Math.random() * 4;
+      return `<button class="fishy ${dir}" data-k="${k}" style="top:${8 + k * 20}%;animation-duration:${dur.toFixed(1)}s;animation-delay:-${(Math.random() * dur).toFixed(1)}s">
+        <span class="fsign">${label(t, o)}</span><span class="fb">🐟</span></button>`;
+    }).join('');
+    school.querySelectorAll('.fishy').forEach(b => b.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      if (caught || b.classList.contains('wrong')) return;
+      const o = opts[+b.dataset.k];
+      if (o === t.ans) {
+        caught = true;
+        const r = b.getBoundingClientRect(), pr = school.getBoundingClientRect();
+        b.style.left = `${r.left - pr.left}px`; b.classList.add('caught');
+        requestAnimationFrame(() => { b.style.left = '50%'; b.style.top = '-6%'; });
+        sfx.ok(); hideCheer();
+        i++; sFinishRound(ctx, t, wrong, t.say, round);
+      } else {
+        b.classList.add('wrong'); later(() => b.classList.remove('wrong'), 700);
+        mistakes++; wrong = true; sfx.no();
+        cheer([[t.kind === 'color' ? `It is ${o}.` : t.kind === 'can' ? t.say.replace(t.ans, o) : `It is ${o}.`, false, SRATE]]);
+      }
+    }));
+  }
+  round();
+};
+
+// the room is drawn in a 300 x 160 box; zones are in the same units
+const SPOTS = {
+  onbed: { p: 'on the bed', z: [16, 28, 92, 50], at: [62, 62] },
+  underbed: { p: 'under the bed', z: [22, 98, 78, 52], at: [60, 134] },
+  ontable: { p: 'on the table', z: [126, 30, 88, 58], at: [170, 74] },
+  undertable: { p: 'under the table', z: [142, 99, 56, 51], at: [170, 134] },
+  inbox: { p: 'in the box', z: [224, 52, 70, 98], at: [259, 102] }
+};
+const THINGS = [['teddy bear', '🧸'], ['ball', '⚽'], ['cat', '🐱'], ['book', '📖'], ['sock', '🧦'], ['shoe', '👟'], ['toy car', '🚗'], ['puppy', '🐶']];
+const ROOM_SVG = `<svg class="rbase" viewBox="0 0 300 160" aria-hidden="true">
+  <rect width="300" height="150" fill="#f6e7d2"/><rect y="0" width="300" height="150" fill="url(#wallp)" opacity=".5"/>
+  <defs><pattern id="wallp" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="2" fill="#e8c9a3"/></pattern></defs>
+  <rect y="150" width="300" height="10" fill="#c99a6b"/>
+  <rect x="8" y="48" width="10" height="102" rx="3" fill="#8a5a35"/><rect x="18" y="96" width="7" height="54" fill="#8a5a35"/><rect x="99" y="96" width="7" height="54" fill="#8a5a35"/>
+  <rect x="12" y="86" width="96" height="12" rx="3" fill="#b5784a"/><rect x="16" y="74" width="90" height="14" rx="5" fill="#fff"/>
+  <rect x="44" y="72" width="62" height="17" rx="5" fill="#7cc0f5"/><rect x="20" y="66" width="22" height="10" rx="5" fill="#fff" stroke="#cfdcf0"/>
+  <rect x="128" y="88" width="84" height="9" rx="2" fill="#b5784a"/><rect x="134" y="97" width="7" height="53" fill="#8a5a35"/><rect x="199" y="97" width="7" height="53" fill="#8a5a35"/>
+  <rect x="226" y="96" width="66" height="54" fill="#b77b42"/><polygon points="226,96 214,84 238,84 248,96" fill="#d9a066"/><polygon points="292,96 304,84 280,84 270,96" fill="#d9a066"/>
+</svg>`;
+const BOX_FRONT = `<svg class="rtop" viewBox="0 0 300 160" aria-hidden="true"><rect x="226" y="110" width="66" height="40" fill="#d9a066"/><rect x="252" y="110" width="14" height="40" fill="#e9c08c"/></svg>`;
+SGAMES.where = (ctx, def) => {
+  const N = 6, keys = Object.keys(SPOTS);
+  const rounds = Array.from({ length: N }, (_, k) => ({ th: pickOne(THINGS), sp: keys[(k + Math.floor(Math.random() * 5)) % 5] }));
+  let i = 0, mistakes = 0;
+  ctx.stage.innerHTML = `<div class="whereg"><div class="sentrow"><div class="sentence"></div><button class="say" aria-label="聽">🔊</button></div>
+      <div class="room">${ROOM_SVG}<div class="rlayer"></div>${BOX_FRONT}<div class="rzones">${keys.map(k => { const [x, y, w, h] = SPOTS[k].z; return `<button class="rzone" data-z="${k}" aria-label="${SPOTS[k].p}" style="left:${x / 3}%;top:${y / 1.6}%;width:${w / 3}%;height:${h / 1.6}%"></button>`; }).join('')}</div></div>
+      <div class="rtray"></div><p class="sub">${zy('把它拖到對的地方，或點一下那個地方')}</p></div>`;
+  const sent = ctx.stage.querySelector('.sentence'), layer = ctx.stage.querySelector('.rlayer'), tray = ctx.stage.querySelector('.rtray');
+  const zones = [...ctx.stage.querySelectorAll('.rzone')];
+  let cur = null, wrong = false, busy = false;
+  const place = z => {
+    if (busy || !z) return;
+    const sp = SPOTS[z.dataset.z], th = cur.th[0];
+    if (z.dataset.z === cur.sp) {
+      busy = true; sfx.ok(); hideCheer();
+      const [x, y] = sp.at;
+      layer.insertAdjacentHTML('beforeend', `<span class="ritem" style="left:${x / 3}%;top:${y / 1.6}%">${cur.th[1]}</span>`);
+      tray.innerHTML = '';
+      const say = `Where is the ${th}? It is ${sp.p}.`;
+      i++; sFinishRound(ctx, { say }, wrong, say, () => { layer.innerHTML = ''; round(); });
+    } else {
+      mistakes++; wrong = true; sfx.no(); cheer([[`Oops! That is ${sp.p}.`, false, SRATE]]);
+      z.classList.remove('wrong'); void z.offsetWidth; z.classList.add('wrong');
+    }
+  };
+  function round() {
+    setDots(N, i);
+    if (i >= N) { later(() => ctx.done(mistakes), 300); return; }
+    cur = rounds[i]; wrong = false; busy = false;
+    const ask = `Put the ${cur.th[0]} ${SPOTS[cur.sp].p}.`;
+    sent.innerHTML = esc(ask).replace(/\b(on|in|under)\b/, '<b>$1</b>');
+    ctx.stage.querySelector('.whereg .say').onclick = () => speak(ask, SRATE);
+    later(() => speak(ask, SRATE), 350);
+    tray.innerHTML = `<button class="titem">${cur.th[1]}</button>`;
+    dragTo(tray.firstChild, () => zones, (zone, tap) => { if (!tap) place(zone); });
+  }
+  zones.forEach(z => z.onclick = () => place(z));
+  round();
+};
+
+const SKY = { m: ['in the morning', '🌅'], a: ['in the afternoon', '☀️'], n: ['at night', '🌙'] };
+const WHEN_SUN = [['🥣', 'eat breakfast', 'm'], ['🏫', 'go to school', 'm'], ['⏰', 'wake up', 'm'], ['🛝', 'play in the park', 'a'],
+  ['🍪', 'have a snack', 'a'], ['😴', 'go to bed', 'n'], ['⭐', 'see the stars', 'n'], ['🛁', 'take a bath', 'n']]
+  .map(([e, a, s]) => ({ e, a, s, ask: `When do you ${a}?`, say: `I ${a} ${SKY[s][0]}.`, kind: 'sun' }));
+const WHEN_CLOCK = [['🍛', 'eat dinner', 6], ['⏰', 'wake up', 7], ['🏫', 'go to school', 8], ['🍱', 'eat lunch', 12], ['😴', 'go to bed', 9], ['🛁', 'take a bath', 8], ['🎹', 'play the piano', 4]]
+  .map(([e, a, h]) => ({ e, a, h, ask: `When do you ${a}?`, say: `I ${a} at ${h} o'clock.`, kind: 'clock' }));
+SGAMES.when = (ctx, def) => {
+  const sun = pickQ(WHEN_SUN, 3), clk = pickQ(WHEN_CLOCK, 3), items = [sun[0], clk[0], sun[1], clk[1], sun[2], clk[2]];
+  let i = 0, mistakes = 0;
+  ctx.stage.innerHTML = `<div class="wheng"><div class="sentrow"><span class="qpic"></span><div class="sentence"></div><button class="say" aria-label="聽">🔊</button></div><div class="wplay"></div></div>`;
+  const qpic = ctx.stage.querySelector('.qpic'), sent = ctx.stage.querySelector('.sentence'), play = ctx.stage.querySelector('.wplay');
+  function round() {
+    setDots(items.length, i);
+    if (i >= items.length) { later(() => ctx.done(mistakes), 300); return; }
+    const t = items[i]; let wrong = false, busy = false;
+    qpic.textContent = t.e; sent.innerHTML = `<b>When</b>${esc(t.ask.slice(4))}`;
+    ctx.stage.querySelector('.wheng .say').onclick = () => speak(t.ask, SRATE);
+    later(() => speak(t.ask, SRATE), 350);
+    const right = (el) => { busy = true; sfx.ok(); hideCheer(); i++; sFinishRound(ctx, t, wrong, t.say, round); };
+    const miss = (el, said) => { mistakes++; wrong = true; sfx.no(); cheer([[said, false, SRATE]]); el.classList.remove('wrong'); void el.offsetWidth; el.classList.add('wrong'); };
+    if (t.kind === 'sun') {
+      play.innerHTML = `<div class="skies">${Object.entries(SKY).map(([k, [p, ic]]) => `<button class="skyp sky-${k}" data-s="${k}"><span class="sic">${ic}</span><span class="sl">${esc(p)}</span></button>`).join('')}</div>
+        <p class="sub">${zy('點一下對的時候')}</p>`;
+      play.querySelectorAll('.skyp').forEach(b => b.onclick = () => {
+        if (busy) return;
+        if (b.dataset.s === t.s) { b.classList.add('right'); right(b); }
+        else miss(b, `I ${t.a} ${SKY[b.dataset.s][0]}.`);
+      });
+    } else {
+      const nums = Array.from({ length: 12 }, (_, k) => k + 1);
+      play.innerHTML = `<div class="clockrow"><div class="digi">${t.e}<b>${t.h}:00</b></div>
+        <div class="clock"><svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="96" fill="#fff" stroke="#c98a12" stroke-width="8"/>
+          <line class="hh" x1="100" y1="100" x2="100" y2="52" stroke="#13213f" stroke-width="9" stroke-linecap="round"/>
+          <line x1="100" y1="100" x2="100" y2="22" stroke="#e5484d" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="100" r="7" fill="#13213f"/></svg>
+          ${nums.map(n => { const a = n / 12 * 2 * Math.PI; return `<button class="cnum" data-h="${n}" style="left:${50 + 39 * Math.sin(a)}%;top:${50 - 39 * Math.cos(a)}%">${n}</button>`; }).join('')}</div></div>
+        <p class="sub">${zy('點時鐘上的數字，把短針轉過去')}</p>`;
+      const hh = play.querySelector('.hh');
+      play.querySelectorAll('.cnum').forEach(b => b.onclick = () => {
+        if (busy) return;
+        const h = +b.dataset.h;
+        hh.style.transform = `rotate(${h * 30}deg)`;
+        if (h === t.h) { b.classList.add('right'); right(b); }
+        else miss(b, `I ${t.a} at ${h} o'clock.`);
+      });
+    }
+  }
+  round();
+};
+
+// which one? only one gift in the bubbles matches
+function whichRound() {
+  const cols = shuffle(['red', 'blue', 'green', 'yellow', 'purple', 'pink', 'orange']);
+  const type = pickOne(['color', 'size', 'both']);
+  let gifts, t, ask, say;
+  if (type === 'color') { gifts = cols.slice(0, 4).map(c => ({ c, s: '' })); t = gifts[0]; ask = `Which one is ${t.c}?`; say = `The ${t.c} one.`; }
+  else if (type === 'size') { const s = pickOne(['big', 'small']), o = s === 'big' ? 'small' : 'big'; gifts = cols.slice(0, 4).map((c, k) => ({ c, s: k ? o : s })); t = gifts[0]; ask = `Which one is ${s}?`; say = `The ${s} one.`; }
+  else { const s = pickOne(['big', 'small']), o = s === 'big' ? 'small' : 'big'; gifts = [{ c: cols[0], s }, { c: cols[0], s: o }, { c: cols[1], s }, { c: cols[2], s: o }]; t = gifts[0]; ask = `Which one is ${s} and ${t.c}?`; say = `The ${s} ${t.c} one.`; }
+  return { gifts: shuffle(gifts), t, ask, say };
+}
+const descOf = (g, all) => {
+  const sameC = all.filter(x => x.c === g.c).length > 1, sizes = new Set(all.map(x => x.s)).size > 1;
+  return `The ${sizes && (sameC || all.every(x => x.c !== g.c || x === g)) && g.s ? g.s + ' ' : ''}${g.c} one.`;
+};
+SGAMES.which = (ctx, def) => {
+  const N = 6; let i = 0, mistakes = 0;
+  ctx.stage.innerHTML = `<div class="whichg"><div class="sentrow"><div class="sentence"></div><button class="say" aria-label="聽">🔊</button></div><div class="bubbles"></div><p class="sub">${zy('戳破對的泡泡')}</p></div>`;
+  const sent = ctx.stage.querySelector('.sentence'), box = ctx.stage.querySelector('.bubbles');
+  function round() {
+    setDots(N, i);
+    if (i >= N) { later(() => ctx.done(mistakes), 300); return; }
+    const R0 = whichRound(); let wrong = false, busy = false;
+    sent.innerHTML = `<b>Which</b>${esc(R0.ask.slice(5))}`;
+    ctx.stage.querySelector('.whichg .say').onclick = () => speak(R0.ask, SRATE);
+    later(() => speak(R0.ask, SRATE), 350);
+    box.innerHTML = R0.gifts.map((g, k) => `<button class="bubl ${g.s}" data-k="${k}" style="animation-delay:-${(k * .7).toFixed(1)}s">${giftHTML(g.c)}</button>`).join('');
+    box.querySelectorAll('.bubl').forEach(b => b.onclick = () => {
+      if (busy) return;
+      const g = R0.gifts[+b.dataset.k];
+      if (g === R0.t) {
+        busy = true; b.classList.add('popb'); sfx.ok(); tone(1400, 0, .08, 'sine', .08); hideCheer();
+        i++; sFinishRound(ctx, { say: R0.say }, wrong, R0.say, round);
+      } else {
+        mistakes++; wrong = true; sfx.no(); cheer([[descOf(g, R0.gifts), false, SRATE]]);
+        b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
+      }
+    });
+  }
+  round();
+};
+
+const FEELS = { happy: '😄', sad: '😢', sleepy: '😴', scared: '😨', angry: '😠', hungry: '😋', tired: '😫', excited: '🤩' };
+const HOW_FEEL = [['🎁', '收到禮物了！', 'You got a present!', 'happy'], ['🍦', '冰淇淋掉到地上了。', 'Your ice cream fell down.', 'sad'],
+  ['🌙', '已經很晚很晚了。', 'It is very late.', 'sleepy'], ['⛈️', '外面打好大的雷！', 'There is big thunder outside!', 'scared'],
+  ['🧱', '積木被推倒了！', 'Someone knocked down your blocks!', 'angry'], ['🍕', '肚子咕嚕咕嚕叫。', 'Your tummy is rumbling.', 'hungry'],
+  ['🏃', '跑了好久好久。', 'You ran and ran and ran.', 'tired'], ['🎢', '明天要去遊樂園！', 'You go to the theme park tomorrow!', 'excited']]
+  .map(([e, zh, en, f]) => ({ e, zh, en, ans: f, ask: 'How do you feel?', say: `I am ${f}.`, kind: 'feel' }));
+const WEATHER = { sunny: '☀️', rainy: '🌧️', cloudy: '☁️', snowy: '❄️', windy: '💨' };
+const HOW_WEATHER = Object.keys(WEATHER).map(w => ({ e: WEATHER[w], ans: w, ask: 'How is the weather?', say: `It is ${w}.`, kind: 'weather' }));
+SGAMES.how = (ctx, def) => {
+  const items = shuffle([...pickQ(HOW_FEEL, 4), ...pickQ(HOW_WEATHER, 2)]);
+  let i = 0, mistakes = 0;
+  ctx.stage.innerHTML = `<div class="howg"><div class="snowbox">${snowmanSVG()}<span class="hface"></span><span class="hboard"></span></div>
+      <div class="dside"><div class="hscene"></div><div class="sentrow"><div class="sentence"></div><button class="say" aria-label="聽">🔊</button></div>
+        <p class="sub">${zy('把貼紙拖到雪人身上，或點一下')}</p><div class="tray"></div></div></div>`;
+  const box = ctx.stage.querySelector('.snowbox'), face = ctx.stage.querySelector('.hface'), board = ctx.stage.querySelector('.hboard'),
+        scene = ctx.stage.querySelector('.hscene'), sent = ctx.stage.querySelector('.sentence'), tray = ctx.stage.querySelector('.tray');
+  function round() {
+    setDots(items.length, i);
+    if (i >= items.length) { box.classList.add('happy'); later(() => ctx.done(mistakes), 1200); return; }
+    const t = items[i], map = t.kind === 'feel' ? FEELS : WEATHER;
+    const opts = shuffle([t.ans, ...sample(Object.keys(map).filter(k => k !== t.ans), 3)]);
+    let wrong = false, busy = false;
+    face.textContent = ''; board.textContent = '';
+    scene.innerHTML = t.kind === 'feel'
+      ? `<span class="hse">${t.e}</span><span class="hzh"><span>${zy(t.zh)}</span><small>${esc(t.en)}</small></span>`
+      : `<span class="window"><span class="wx wx-${t.ans}">${t.e}</span></span><span class="hzh"><span>${zy('看看窗外')}</span></span>`;
+    sent.innerHTML = `<b>How</b>${esc(t.ask.slice(3))}`;
+    const intro = t.kind === 'feel' ? `${t.en} ${t.ask}` : t.ask;
+    ctx.stage.querySelector('.howg .say').onclick = () => speak(intro, SRATE);
+    later(() => speak(intro, SRATE), 350);
+    tray.innerHTML = opts.map((o, k) => `<button class="titem" data-k="${k}">${map[o]}<small>${o}</small></button>`).join('');
+    const tryIt = (btn, onIt) => {
+      if (busy || !onIt) return;
+      const o = opts[+btn.dataset.k];
+      if (o === t.ans) {
+        busy = true; (t.kind === 'feel' ? face : board).textContent = map[o]; btn.remove(); sfx.ok(); hideCheer();
+        i++; sFinishRound(ctx, t, wrong, t.say, round);
+      } else {
+        mistakes++; wrong = true; sfx.no(); cheer([[t.kind === 'feel' ? `I am ${o}.` : `It is ${o}.`, false, SRATE]]);
+        btn.classList.remove('wrong'); void btn.offsetWidth; btn.classList.add('wrong');
+      }
+    };
+    tray.querySelectorAll('.titem').forEach(btn => dragTo(btn, () => [box], (zone, tap) => tryIt(btn, tap || !!zone)));
+  }
+  round();
+};
+
+const QWORDS = { Who: '👤', What: '❓', Where: '📍', When: '⏰', Which: '👆', How: '💭' };
+const QANS = [
+  ['Who', 'My grandma.', 'Who is she? She is my grandma.'], ['Who', 'Santa Claus!', 'Who is at the door? Santa Claus is at the door.'], ['Who', 'My mom.', 'Who cooks dinner? My mom cooks dinner.'],
+  ['What', 'A red ball.', 'What do you have? I have a red ball.'], ['What', 'It is a cake.', 'What is it? It is a cake.'], ['What', 'I can swim.', 'What can you do? I can swim.'],
+  ['Where', 'In the kitchen.', 'Where is Mom? Mom is in the kitchen.'], ['Where', 'Under the bed.', 'Where is the cat? The cat is under the bed.'], ['Where', 'At the park.', 'Where are you? I am at the park.'],
+  ['When', 'In the morning.', 'When do you go to school? I go to school in the morning.'], ['When', "At 7 o'clock.", "When do you wake up? I wake up at 7 o'clock."], ['When', 'At night.', 'When do you see the moon? I see the moon at night.'],
+  ['Which', 'The big one.', 'Which one do you want? I want the big one.'], ['Which', 'The blue one.', 'Which one is yours? The blue one is mine.'], ['Which', 'The small red one.', 'Which gift is it? It is the small red one.'],
+  ['How', 'I am happy.', 'How do you feel? I am happy.'], ['How', 'It is sunny.', 'How is the weather? It is sunny.'], ['How', 'I am fine, thank you.', 'How are you? I am fine, thank you.']
+].map(([w, a, say]) => ({ w, a, say }));
+SGAMES.qBingo = (ctx, def) => {
+  const LINES = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+  const words = Object.keys(QWORDS), cells = shuffle([...words, ...sample(words, 3)]);
+  ctx.stage.innerHTML = `<div class="bingo">
+      <div class="bcall"><button class="say big" aria-label="再聽一次">🔊</button><span class="word-prompt qans" hidden></span><p class="sub">${zy('聽到的回答，是在回答哪一種問句？')}</p></div>
+      <div class="bgrid">${cells.map((w, k) => `<button class="bcell qcell" data-k="${k}"><span class="qe">${QWORDS[w]}</span><b>${w}</b></button>`).join('')}</div></div>`;
+  const els = [...ctx.stage.querySelectorAll('.bcell')], ansEl = ctx.stage.querySelector('.qans');
+  const marked = new Set(); let call = null, tries = 0, wrongNow = false, mistakes = 0, over = false, busy = false;
+  ctx.stage.querySelector('.bcall .say').onclick = () => call && speak(call.a, SRATE);
+  const next = () => {
+    const left = new Set(cells.filter((_, k) => !marked.has(k)));
+    call = pickOne(QANS.filter(q => left.has(q.w))); tries = 0; wrongNow = false; busy = false;
+    ansEl.hidden = true; ansEl.textContent = call.a;
+    later(() => speak(call.a, SRATE), 350);
+  };
+  setDots(9, 0);
+  els.forEach(c => c.onclick = () => {
+    const k = +c.dataset.k;
+    if (over || busy || marked.has(k) || !call) return;
+    if (cells[k] === call.w) {
+      busy = true; marked.add(k); c.classList.add('marked'); sfx.ok(); hideCheer(); setDots(9, marked.size);
+      const line = LINES.find(L => L.every(x => marked.has(x)));
+      srec(call, wrongNow); ctx.learned.add(call.say);
+      later(() => sayAlong(call.say, () => {
+        if (line) {
+          over = true; line.forEach(x => els[x].classList.add('win'));
+          sfx.win(); speak('Bingo!', 0.9); later(() => ctx.done(mistakes), 1800);
+        } else next();
+      }), 600);
+    } else {
+      c.classList.remove('wrong'); void c.offsetWidth; c.classList.add('wrong');
+      mistakes++; wrongNow = true; sfx.no(); cheer([[call.a, false, SRATE]]);
+      if (++tries >= 2) ansEl.hidden = false;
+    }
+  });
+  next();
+};
+
+/* ---------- area 3: whole sentences ---------- */
+const enName = () => (sopt().ename || '').trim() || (/^[A-Za-z][A-Za-z .'-]*$/.test(P().name) ? P().name : '');
+const HOW_ASK = ['How are you?', 'How are you doing?', 'How are you today?', "How's your day?"];
+const GOOD_HOW = ['I am good, thank you. And you?', 'I am great, thanks! How about you?', 'I am fine, thank you. And you?', 'I am a little tired, but I am OK. And you?'];
+// one turn of talk: Santa says something, the child picks a reply; short = a one-word answer, off = answers something else
+const CALL_TURNS = [
+  { id: 'hello', core: 1, santa: () => [`Hi, ${enName() || 'there'}! Can you hear me?`], good: ['Yes, I can hear you!'], short: 'Yes.', off: 'I am seven.' },
+  { id: 'how', core: 1, santa: () => [pickOne(HOW_ASK)], good: GOOD_HOW, short: 'Good.', off: 'It is sunny.' },
+  { id: 'again', core: 1, garble: true, santa: () => ['What… did… you…'], good: ['Can you say that again, please?'], short: 'Yes.', off: 'In the kitchen.' },
+  { id: 'today', santa: () => [pickOne(['What did you do today?', 'What did you do after school?'])], good: ['I played with my friends. What about you?', 'I read a book with my mom. What about you?'], short: 'Play.', off: 'At night.' },
+  { id: 'hard', santa: () => ['Did you see the northern lights?'], good: ["Sorry, I don't understand.", 'What are the northern lights?'], short: 'No.', off: 'Yes, it is red.' },
+  { id: 'snow', santa: () => ['Do you like snow?'], good: ['Yes, I do! I like to make snowmen.', 'Yes, I do. It is so much fun!'], short: 'Yes.', off: 'I am happy, thank you.' },
+  { id: 'think', santa: () => ['What do you want for Christmas?'], good: ['Let me think… I want a teddy bear!', 'Let me think… I want a new book!'], short: 'Toy.', off: 'My dad.' },
+  { id: 'bye', core: 1, last: 1, santa: () => ['I have to go now. Bye-bye!'], good: ['Bye, Santa! See you soon!'], short: 'Bye.', off: 'I am fine, thank you.' }
+];
+// answers a question with a choice of three replies; resolves with the number of misses
+function replyPick(host, turn, onDone) {
+  const good = pickOne(turn.good), opts = shuffle([['good', good], ['short', turn.short], ['off', turn.off]]);
+  let wrong = false, busy = false;
+  host.innerHTML = opts.map(([k, t], n) => `<button class="rbub" data-n="${n}">${esc(t)}</button>`).join('');
+  host.querySelectorAll('.rbub').forEach(b => b.onclick = () => {
+    if (busy) return;
+    const [k, t] = opts[+b.dataset.n];
+    if (k === 'good') { busy = true; b.classList.add('right'); sfx.ok(); hideCheer(); onDone(wrong, t); return; }
+    wrong = true; sfx.no();
+    b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
+    if (k === 'short') { speak(t, SRATE); toast('只說一個字太短了！選完整的句子更棒'); }
+    else cheer([[t, false, SRATE]]);
+    onDone.miss && onDone.miss();
+  });
+}
+SGAMES.call = (ctx, def) => {
+  const core = CALL_TURNS.filter(t => t.core && !t.last), extra = sample(CALL_TURNS.filter(t => !t.core), 2);
+  const turns = [core[0], core[1], extra[0], core[2], extra[1], CALL_TURNS.find(t => t.last)];
+  let i = 0, mistakes = 0;
+  ctx.stage.innerHTML = `<div class="callg"><div class="phone"><div class="vid"><span class="santaf">🎅</span><span class="live">● LIVE</span></div>
+      <div class="chat"></div></div><div class="replies"></div></div>`;
+  const chat = ctx.stage.querySelector('.chat'), reps = ctx.stage.querySelector('.replies'), santa = ctx.stage.querySelector('.santaf');
+  const bubble = (who, t) => { chat.insertAdjacentHTML('beforeend', `<p class="cb ${who}">${esc(t)}</p>`); while (chat.children.length > 3) chat.firstChild.remove(); };
+  function turn() {
+    setDots(turns.length, i);
+    if (i >= turns.length) { sfx.win(); later(() => ctx.done(mistakes), 900); return; }
+    const t = turns[i], [line] = t.santa();
+    reps.innerHTML = '';
+    santa.classList.add('talk'); bubble('s', line);
+    if (t.garble) { santa.classList.add('glitch'); [300, 520, 760].forEach((f, k) => tone(f, k * .12, .1, 'sawtooth', .04)); later(() => santa.classList.remove('glitch'), 1400); }
+    else speak(line, SRATE);
+    later(() => {
+      santa.classList.remove('talk');
+      const done = (wrong, said) => { bubble('me', said); i++; sFinishRound(ctx, { say: said, id: t.id }, wrong, said, turn); };
+      done.miss = () => { mistakes++; };
+      replyPick(reps, t, done);
+    }, 1400);
+  }
+  turn();
+};
+
+const BLOCKS = [['☀️', 'It is sunny today.'], ['❄️', 'It is cold and snowy.'], ['😄', 'I am happy.'], ['😴', 'I feel sleepy.'],
+  ['🌧️', 'It is rainy outside.'], ['😋', 'I am hungry.'], ['😫', 'I am a little tired.'], ['💨', 'It is windy today.'],
+  ['🤩', 'I am so excited!'], ['🥵', 'It is hot today.'], ['🥶', 'I feel cold.'], ['☁️', 'The sky is cloudy.']]
+  .map(([e, say]) => ({ e, say }));
+SGAMES.blocks = (ctx, def) => {
+  const items = pickQ(BLOCKS, 5);
+  let i = 0, mistakes = 0;
+  ctx.stage.innerHTML = `<div class="orderg"><div class="ask"><div class="pic"></div><button class="say" aria-label="聽句子">🔊</button></div>
+      <div class="oslots"></div><div class="wopts otiles"></div></div>`;
+  const pic = ctx.stage.querySelector('.pic'), slots = ctx.stage.querySelector('.oslots'), tiles = ctx.stage.querySelector('.otiles');
+  function round() {
+    setDots(items.length, i);
+    if (i >= items.length) { later(() => ctx.done(mistakes), 300); return; }
+    const it = items[i], ps = it.say.split(' ');
+    let pos = 0, wrong = false, mix = shuffle(ps);
+    while (mix.join() === ps.join()) mix = shuffle(ps);
+    pic.textContent = it.e;
+    ctx.stage.querySelector('.orderg .say').onclick = () => speak(it.say, SRATE);
+    later(() => speak(it.say, SRATE), 350);
+    slots.innerHTML = ps.map(() => '<span class="oslot"></span>').join('');
+    tiles.innerHTML = mix.map(w => `<button class="wbtn" data-w="${esc(w)}">${esc(w)}</button>`).join('');
+    tiles.querySelectorAll('.wbtn').forEach(b => b.onclick = () => {
+      if (b.classList.contains('used') || pos >= ps.length) return;
+      if (b.dataset.w === ps[pos]) {
+        const sl = slots.children[pos]; sl.textContent = ps[pos]; sl.classList.add('filled');
+        b.classList.add('used'); sfx.flip(); hideCheer(); speak(ps[pos].replace(/[.!?,]/g, ''), SRATE); pos++;
+        if (pos === ps.length) { sfx.ok(); i++; sFinishRound(ctx, it, wrong, it.say, round); }
+      } else {
+        b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
+        mistakes++; wrong = true; sfx.no(); cheer();
+        if (pos === 0 && /^[A-Z]/.test(ps[0])) toast('句子第一個字是大寫字母開頭的喔');
+      }
+    });
+  }
+  round();
+};
+
+const CAN_ACTS = [['swim', 'swimming', '🏊'], ['dance', 'dancing', '💃'], ['sing', 'singing', '🎤'], ['draw', 'drawing', '🖍️'], ['read', 'reading', '📖'],
+  ['run fast', 'running fast', '🏃'], ['ride a bike', 'riding a bike', '🚲'], ['cook', 'cooking', '🍳'], ['skate', 'skating', '⛸️'],
+  ['play soccer', 'playing soccer', '⚽'], ['play the piano', 'playing the piano', '🎹'], ['fly a kite', 'flying a kite', '🪁']];
+const CAN_Q = CAN_ACTS.flatMap(([v, ing, e]) => [['I', avatarOf(P() || {})], ['She', '👧'], ['He', '👦']].map(([who, pe]) => ({ v, ing, e, who, pe, say: `${who} can ${v}.` })));
+SGAMES.canRace = (ctx, def) => {
+  const N = 6, items = pickQ(CAN_Q.map(q => q.who === 'I' ? { ...q, pe: avatarOf(P()) } : q), N);
+  let i = 0, mistakes = 0, miss = 0;
+  ctx.stage.innerHTML = `<div class="battle racegame">
+      <div class="track"><div class="lane"><span class="racer me">🦌<span>${avatarOf(P())}</span></span></div>
+        <div class="lane"><span class="racer rival">⛄</span></div><span class="goal">🏁</span></div>
+      <div class="bq"><div class="gram"><div class="sentrow"><span class="canpic"></span><div class="sentence"></div><button class="say" aria-label="聽">🔊</button></div><div class="copts"></div></div></div></div>`;
+  const me = ctx.stage.querySelector('.racer.me'), rival = ctx.stage.querySelector('.racer.rival');
+  const pic = ctx.stage.querySelector('.canpic'), sent = ctx.stage.querySelector('.sentence'), opts = ctx.stage.querySelector('.copts');
+  const move = () => { me.style.setProperty('--p', i / N); rival.style.setProperty('--p', Math.min(.9, (i + miss) * .7 / N)); };
+  move();
+  function round() {
+    setDots(N, i); move();
+    if (i >= N) { me.classList.add('win'); sfx.win(); later(() => speak('You win the race!', 0.9), 300); later(() => ctx.done(mistakes), 2200); return; }
+    const t = items[i], other = pickOne(CAN_ACTS.filter(a => a[0] !== t.v));
+    const wrongWho = t.who === 'I' ? 'He' : t.who === 'She' ? 'He' : 'She';
+    const choices = shuffle([[1, t.say], [0, `${t.who} can ${t.ing}.`], [0, Math.random() < .5 && t.who !== 'I' ? `${wrongWho} can ${t.v}.` : `${t.who} can ${other[0]}.`]]);
+    let wrong = false, busy = false;
+    const ask = t.who === 'I' ? 'What can you do?' : `What can ${t.who === 'She' ? 'she' : 'he'} do?`;
+    pic.innerHTML = `${t.pe}${t.e}`; sent.textContent = ask;
+    ctx.stage.querySelector('.racegame .say').onclick = () => speak(ask, SRATE);
+    later(() => speak(ask, SRATE), 300);
+    opts.innerHTML = choices.map(([ok, s], k) => `<button class="rbub" data-k="${k}">${esc(s)}</button>`).join('');
+    opts.querySelectorAll('.rbub').forEach(b => b.onclick = () => {
+      if (busy) return;
+      const [ok, s] = choices[+b.dataset.k];
+      if (ok) { busy = true; b.classList.add('right'); sfx.ok(); hideCheer(); i++; sFinishRound(ctx, t, wrong, t.say, round); }
+      else {
+        mistakes++; miss++; wrong = true; sfx.no(); move(); cheer([[s, false, SRATE]]);
+        b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
+        if (/ing\./.test(s)) toast('can 後面的動作不加 ing');
+      }
+    });
+  }
+  round();
+};
+
+const ALBUM_ACTS = [['cook', '🍳'], ['sing', '🎤'], ['draw', '🖍️'], ['dance', '💃'], ['swim', '🏊'], ['read', '📖'], ['bake cookies', '🍪'], ['play the piano', '🎹']];
+const SIB_Q = [
+  { ask: 'Do you have a brother?', good: ["No, I don't. But I have a good friend."], short: 'No.', off: 'Yes, I am.' },
+  { ask: 'Do you have a sister?', good: ["No, I don't. I play with my friends."], short: 'No.', off: 'She is happy.' },
+  { ask: 'Do you have any brothers or sisters?', good: ["No, I don't. I have my mom and dad."], short: 'No.', off: 'It is a cat.' }
+];
+SGAMES.album = (ctx, def) => {
+  const { fam, fr } = people();
+  const N = 6, sibAt = new Set(sample([1, 2, 3, 4, 5], 2));
+  const folks = shuffle([...fam, ...fr]);
+  let i = 0, mistakes = 0, f = 0;
+  ctx.stage.innerHTML = `<div class="albumg"><div class="apage"><div class="photo1"></div><div class="aplay"></div></div><div class="athumbs"></div></div>`;
+  const photo = ctx.stage.querySelector('.photo1'), play = ctx.stage.querySelector('.aplay'), thumbs = ctx.stage.querySelector('.athumbs');
+  function round() {
+    setDots(N, i);
+    if (i >= N) { sfx.win(); later(() => ctx.done(mistakes), 900); return; }
+    let wrong = false;
+    if (sibAt.has(i)) {
+      const q = pickOne(SIB_Q);
+      photo.innerHTML = `<span class="pe">🤔</span>`;
+      play.innerHTML = `<div class="sentrow"><div class="sentence">${esc(q.ask)}</div><button class="say" aria-label="聽">🔊</button></div><div class="copts"></div>`;
+      play.querySelector('.say').onclick = () => speak(q.ask, SRATE);
+      later(() => speak(q.ask, SRATE), 300);
+      const done = (w, said) => { i++; sFinishRound(ctx, { say: said }, w, said, round); };
+      done.miss = () => { mistakes++; };
+      replyPick(play.querySelector('.copts'), q, done);
+      return;
+    }
+    const p = folks[f++ % folks.length], act = pickOne(ALBUM_ACTS);
+    const first = p.friend ? (p.subj === 'My friend' ? 'This is my friend.' : `This is my friend ${p.subj}.`) : `This is ${p.obj}.`;
+    const second = p.friend ? 'We play together.' : `${p.he} can ${act[0]}.`;
+    const ps = first.split(' ');
+    let pos = 0, mix = shuffle(ps);
+    while (mix.join() === ps.join()) mix = shuffle(ps);
+    photo.innerHTML = `<span class="pe">${p.e}</span><span class="pp">${p.friend ? '🤝' : act[1]}</span>`;
+    play.innerHTML = `<div class="oslots">${ps.map(() => '<span class="oslot"></span>').join('')}</div><div class="wopts otiles">${mix.map(w => `<button class="wbtn" data-w="${esc(w)}">${esc(w)}</button>`).join('')}</div><div class="copts"></div>`;
+    const slots = play.querySelector('.oslots'), copts = play.querySelector('.copts');
+    later(() => speak(first, SRATE), 300);
+    play.querySelectorAll('.otiles .wbtn').forEach(b => b.onclick = () => {
+      if (b.classList.contains('used') || pos >= ps.length) return;
+      if (b.dataset.w === ps[pos]) {
+        slots.children[pos].textContent = ps[pos]; slots.children[pos].classList.add('filled'); b.classList.add('used'); sfx.flip(); hideCheer(); pos++;
+        if (pos === ps.length) { sfx.ok(); play.querySelector('.otiles').remove(); secondPart(); }
+      } else { b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); mistakes++; wrong = true; sfx.no(); cheer(); }
+    });
+    let sealed = false;
+    function secondPart() {
+      if (p.friend) return finishPhoto();
+      const alt = `${p.he === 'He' ? 'She' : 'He'} can ${act[0]}.`, opts = shuffle([second, alt]);
+      copts.innerHTML = opts.map((s, k) => `<button class="rbub" data-k="${k}">${esc(s)}</button>`).join('');
+      copts.querySelectorAll('.rbub').forEach(b => b.onclick = () => {
+        const s = opts[+b.dataset.k];
+        if (sealed) return;
+        if (s === second) { b.classList.add('right'); sfx.ok(); hideCheer(); finishPhoto(); }
+        else { mistakes++; wrong = true; sfx.no(); cheer([[s, false, SRATE]]); b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); toast(p.he === 'He' ? '男生用 He' : '女生用 She'); }
+      });
+    }
+    function finishPhoto() {
+      if (sealed) return; sealed = true;
+      thumbs.insertAdjacentHTML('beforeend', `<span class="th">${p.e}</span>`);
+      const say = `${first} ${second}`;
+      i++; sFinishRound(ctx, { say }, wrong, say, round);
+    }
+  }
+  round();
+};
+
+const TL_COLS = { m: ['in the morning', '🌅'], a: ['in the afternoon', '🌤️'], n: ['at night', '🌙'] };
+const TL_ACTS = [['⏰', 'I wake up', 'm'], ['🥣', 'I eat breakfast', 'm'], ['🏫', 'I go to school', 'm'], ['🛝', 'I play in the park', 'a'],
+  ['🍪', 'I have a snack', 'a'], ['✏️', 'I do my homework', 'a'], ['🍛', 'I eat dinner', 'n'], ['🛁', 'I take a bath', 'n'], ['😴', 'I go to bed', 'n'], ['📖', 'I read a story', 'n']]
+  .map(([e, s, c]) => ({ e, s, c, say: `${s} ${TL_COLS[c][0]}.` }));
+SGAMES.timeline = (ctx, def) => {
+  const items = pickQ(TL_ACTS, 6);
+  let i = 0, mistakes = 0;
+  ctx.stage.innerHTML = `<div class="tlg"><div class="tlcard"></div><div class="tlcols">${Object.entries(TL_COLS).map(([k, [p, ic]]) => `<button class="tlcol sky-${k}" data-c="${k}"><span class="sic">${ic}</span><span class="sl">${esc(p)}</span><span class="tlin"></span></button>`).join('')}</div>
+      <p class="sub">${zy('把卡片拖到對的時間，或點一下')}</p></div>`;
+  const card = ctx.stage.querySelector('.tlcard'), cols = [...ctx.stage.querySelectorAll('.tlcol')];
+  let it = null, wrong = false, busy = false;
+  const judge = col => {
+    if (busy || !col) return;
+    if (col.dataset.c === it.c) {
+      busy = true; sfx.ok(); hideCheer();
+      col.querySelector('.tlin').insertAdjacentHTML('beforeend', `<span>${it.e}</span>`); card.innerHTML = '';
+      i++; sFinishRound(ctx, it, wrong, it.say, round);
+    } else {
+      mistakes++; wrong = true; sfx.no(); cheer([[`${it.s} ${TL_COLS[col.dataset.c][0]}?`, false, SRATE]]);
+      col.classList.remove('wrong'); void col.offsetWidth; col.classList.add('wrong');
+    }
+  };
+  function round() {
+    setDots(items.length, i);
+    if (i >= items.length) { later(() => ctx.done(mistakes), 300); return; }
+    it = items[i]; wrong = false; busy = false;
+    card.innerHTML = `<button class="tlc"><span class="se">${it.e}</span><span class="tlt">${esc(it.s)}</span></button><button class="say" aria-label="聽">🔊</button>`;
+    card.querySelector('.say').onclick = () => speak(it.s, SRATE);
+    later(() => speak(`${it.s}. When?`, SRATE), 300);
+    dragTo(card.querySelector('.tlc'), () => cols, (zone, tap) => { if (!tap) judge(zone); });
+  }
+  cols.forEach(c => c.onclick = () => judge(c));
+  round();
+};
+
+const WITH_PAIRS = [
+  ['🥣', 'eat soup', '🥄', 'a spoon'], ['🍜', 'eat noodles', '🥢', 'chopsticks'], ['🖼️', 'draw a picture', '🖍️', 'crayons'],
+  ['📝', 'write my name', '✏️', 'a pencil'], ['🦷', 'brush my teeth', '🪥', 'a toothbrush'], ['📄', 'cut paper', '✂️', 'scissors'],
+  ['🧩', 'play', '👧', 'FRIEND'], ['🏞️', 'go to the park', '👩', 'my mom'], ['📚', 'read a book', '👨', 'my dad'], ['🍪', 'bake cookies', '👵', 'my grandma']
+].map(([le, l, re, r]) => ({ le, l, re, r }));
+SGAMES.withMatch = (ctx, def) => {
+  const pick = sample(WITH_PAIRS, 6).map(p => {
+    const n = aFriend(), r = p.r === 'FRIEND' ? myFriend(n) : p.r;
+    return { ...p, r, say: `I ${p.l} with ${r}.` };
+  });
+  const boards = [pick.slice(0, 3), pick.slice(3)];
+  let b = 0, done = 0, mistakes = 0;
+  ctx.stage.innerHTML = `<div class="withg"><p class="sub">${zy('從左邊畫一條線連到右邊，或先點左邊再點右邊')}</p><div class="wboard"><svg class="wlines"></svg><div class="wcol L"></div><div class="wcol R"></div></div></div>`;
+  const board = ctx.stage.querySelector('.wboard'), svg = ctx.stage.querySelector('.wlines'), colL = ctx.stage.querySelector('.wcol.L'), colR = ctx.stage.querySelector('.wcol.R');
+  let pairs = [], sel = null, busy = false, wrongs = new Set();
+  const ctr = (el, side) => { const r = el.getBoundingClientRect(), br = board.getBoundingClientRect(); return [(side === 'L' ? r.right : r.left) - br.left, r.top + r.height / 2 - br.top]; };
+  const line = (a, z, cls) => { const [x1, y1] = a, [x2, y2] = z; svg.insertAdjacentHTML('beforeend', `<line class="${cls}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`); return svg.lastChild; };
+  function drawBoard() {
+    pairs = boards[b]; sel = null; busy = false; wrongs = new Set();
+    svg.innerHTML = '';
+    colL.innerHTML = pairs.map((p, k) => `<button class="wit" data-k="${k}"><span>${p.le}</span><small>${esc(p.l)}</small></button>`).join('');
+    const rs = shuffle(pairs.map((p, k) => k));
+    colR.innerHTML = rs.map(k => `<button class="wit" data-k="${k}"><span>${pairs[k].re}</span><small>${esc(pairs[k].r)}</small></button>`).join('');
+  }
+  const tryPair = (lk, rEl) => {
+    if (busy) return;
+    const lEl = colL.querySelector(`[data-k="${lk}"]`), rk = +rEl.dataset.k, p = pairs[lk];
+    if (lEl.classList.contains('done') || rEl.classList.contains('done')) return;
+    const ln = line(ctr(lEl, 'L'), ctr(rEl, 'R'), 'wl');
+    lEl.classList.remove('sel');
+    if (rk === lk) {
+      busy = true; ln.classList.add('ok'); lEl.classList.add('done'); rEl.classList.add('done'); sfx.ok(); hideCheer();
+      done++; setDots(6, done);
+      sFinishRound(ctx, p, wrongs.has(lk), p.say, () => {
+        busy = false;
+        if (done === 6) { sfx.win(); later(() => ctx.done(mistakes), 600); }
+        else if (done === 3) { b = 1; drawBoard(); }
+      });
+    } else {
+      ln.classList.add('bad'); later(() => ln.remove(), 600);
+      mistakes++; wrongs.add(lk); sfx.no(); cheer([[`I ${p.l} with ${pairs[rk].r}?`, false, SRATE]]);
+    }
+  };
+  board.addEventListener('pointerdown', e => {
+    const l = e.target.closest('.wcol.L .wit'), r = e.target.closest('.wcol.R .wit');
+    if (r && sel !== null) { tryPair(sel, r); sel = null; return; }
+    if (!l || l.classList.contains('done') || busy) return;
+    e.preventDefault();
+    colL.querySelectorAll('.wit').forEach(x => x.classList.toggle('sel', x === l));
+    sel = +l.dataset.k; speak(`I ${pairs[sel].l} with…`, SRATE);
+    const start = ctr(l, 'L'); let ln = null;
+    const move = ev => {
+      const br = board.getBoundingClientRect();
+      if (!ln) ln = line(start, start, 'wl drag');
+      ln.setAttribute('x2', ev.clientX - br.left); ln.setAttribute('y2', ev.clientY - br.top);
+    };
+    const up = ev => {
+      removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up);
+      if (!ln) return;           // a tap: wait for a tap on the right side
+      ln.remove();
+      const hit = [...colR.querySelectorAll('.wit')].find(x => { const rr = x.getBoundingClientRect(); return ev.clientX >= rr.left && ev.clientX <= rr.right && ev.clientY >= rr.top && ev.clientY <= rr.bottom; });
+      if (hit) { tryPair(sel, hit); sel = null; }
+    };
+    addEventListener('pointermove', move); addEventListener('pointerup', up); addEventListener('pointercancel', up);
+  });
+  setDots(6, 0); drawBoard();
+};
+
+/* today: the child picks what really happened; the game turns it into sentences */
+const PLACES = [
+  ['🏞️', 'the park', ['played on the swing', 'rode my bike', 'flew a kite']], ['🏫', 'school', ['read books', 'sang songs', 'played with my friends']],
+  ['🦁', 'the zoo', ['saw a lion', 'saw monkeys', 'ate ice cream']], ['🛒', 'the supermarket', ['bought milk', 'bought apples', 'helped my mom']],
+  ['👵', "Grandma's house", ['ate dinner', 'played games', 'watched TV']], ['📚', 'the library', ['read a book', 'found a new book', 'listened to a story']],
+  ['🏖️', 'the beach', ['made a sandcastle', 'swam in the sea', 'found shells']], ['🏊', 'the swimming pool', ['swam', 'played in the water', 'jumped in']]
+];
+const DO_E = { 'played on the swing': '🛝', 'rode my bike': '🚲', 'flew a kite': '🪁', 'read books': '📚', 'sang songs': '🎵', 'played with my friends': '🧑‍🤝‍🧑',
+  'saw a lion': '🦁', 'saw monkeys': '🐒', 'ate ice cream': '🍦', 'bought milk': '🥛', 'bought apples': '🍎', 'helped my mom': '🤝', 'ate dinner': '🍛',
+  'played games': '🎲', 'watched TV': '📺', 'read a book': '📖', 'found a new book': '🔎', 'listened to a story': '👂', 'made a sandcastle': '🏰',
+  'swam in the sea': '🌊', 'found shells': '🐚', 'swam': '🏊', 'played in the water': '💦', 'jumped in': '🤸' };
+const FEEL_PAST = [['😄', 'It was fun!'], ['🤩', 'It was great!'], ['😊', 'I was happy.'], ['😫', 'I was tired.']];
+const withWho = () => {
+  const { fam } = people(), ns = friendNames();
+  return [...fam.map(f => [f.e, f.obj]), ...(ns.length ? ns.map(n => ['🧒', myFriend(n)]) : [['🧒', 'my friend']]), ['👨‍👩‍👧', 'my family']];
+};
+// one question, picture choices; resolves with [choice index]
+function picAsk(ctx, host, q, choices, cb) {
+  host.innerHTML = `<div class="sentrow"><div class="sentence">${esc(q)}</div><button class="say" aria-label="聽">🔊</button></div>
+    <div class="picks">${choices.map(([e, t], k) => `<button class="pk" data-k="${k}"><span>${e}</span><small>${esc(t)}</small></button>`).join('')}</div>`;
+  host.querySelector('.say').onclick = () => speak(q, SRATE);
+  later(() => speak(q, SRATE), 300);
+  let busy = false;
+  host.querySelectorAll('.pk').forEach(b => b.onclick = () => { if (busy) return; busy = true; b.classList.add('right'); sfx.flip(); cb(+b.dataset.k); });
+}
+function saveDiary(lines) {
+  const l = L(); l.diary = l.diary || [];
+  l.diary.unshift({ date: todayStr(), lines }); l.diary = l.diary.slice(0, 20); save();
+}
+SGAMES.today = (ctx, def) => {
+  let step = 0; const lines = [];
+  ctx.stage.innerHTML = `<div class="todayg"><div class="tq"></div><div class="tstory"></div></div>`;
+  const tq = ctx.stage.querySelector('.tq'), story = ctx.stage.querySelector('.tstory');
+  const add = s => { lines.push(s); story.innerHTML = lines.map(x => `<p>${esc(x)}</p>`).join(''); };
+  let place = null, who = null;
+  const say = (s, next) => { ctx.learned.add(s); srec({ say: s }, false); later(() => sayAlong(s, next), 500); };
+  setDots(5, 0);
+  const qs = [
+    () => { const ch = sample(PLACES, 6); picAsk(ctx, tq, pickOne(['Where did you go today?', 'Did you go anywhere today?', 'Where did you go?']), ch.map(p => [p[0], p[1]]), k => { place = ch[k]; next(`I went to ${place[1]}.`); }); },
+    () => { const ch = withWho(); picAsk(ctx, tq, pickOne(['Who did you go with?', 'Who went with you?']), ch, k => { who = ch[k][1]; next(`I went with ${who}.`); }); },
+    () => { const ch = place[2].map(d => [DO_E[d] || '⭐', d]); picAsk(ctx, tq, pickOne(['What did you do there?', 'What did you do?']), ch, k => next(`I ${ch[k][1]}.`)); },
+    () => picAsk(ctx, tq, pickOne(['How was it?', 'How did you feel?']), FEEL_PAST, k => next(FEEL_PAST[k][1]))
+  ];
+  function next(s) { add(s); step++; setDots(5, step); say(s, ask); }
+  function ask() {
+    if (step < qs.length) { qs[step](); return; }
+    const all = `Today I went to ${place[1]} with ${who}. ${lines[2]} ${lines[3]}`;
+    tq.innerHTML = `<p class="sub">${zy('把今天的事一起說一次！')}</p>`;
+    saveDiary([all]);
+    setDots(5, 5); ctx.learned.add(all);
+    later(() => sayAlong(all, () => { sfx.win(); later(() => ctx.done(0), 400); }), 600);
+  }
+  ask();
+};
+
+SGAMES.interview = (ctx, def) => {
+  const lines = []; let mistakes = 0, step = 0;
+  ctx.stage.innerHTML = `<div class="todayg intv"><div class="ihead"><span class="santaf">🎅</span><span class="mic">🎤</span></div><div class="tq"></div><div class="tstory"></div></div>`;
+  const tq = ctx.stage.querySelector('.tq'), story = ctx.stage.querySelector('.tstory');
+  const add = s => { lines.push(s); story.innerHTML = lines.map(x => `<p>${esc(x)}</p>`).join(''); };
+  const said = (s, next) => { add(s); ctx.learned.add(s); later(() => sayAlong(s, next), 500); };
+  const replyStep = turn => cb => {
+    const [line] = turn.santa ? turn.santa() : [turn.ask];
+    tq.innerHTML = `<div class="sentrow"><div class="sentence">${esc(turn.garble ? 'What… is… your…' : line)}</div><button class="say" aria-label="聽">🔊</button></div><div class="copts"></div>`;
+    const play = () => { if (turn.garble) [300, 520, 760].forEach((f, k) => tone(f, k * .12, .1, 'sawtooth', .04)); else speak(line, SRATE); };
+    tq.querySelector('.say').onclick = play; later(play, 300);
+    const done = (w, s) => { srec({ say: s }, w); said(s, cb); };
+    done.miss = () => { mistakes++; };
+    replyPick(tq.querySelector('.copts'), turn, done);
+  };
+  const picStep = (q, choices, toSay) => cb => picAsk(ctx, tq, q, choices, k => said(toSay(k), cb));
+  const name = enName(), names = friendNames(), who = withWho();
+  const canCh = sample(CAN_ACTS, 4).map(a => [a[2], a[0]]), plCh = sample(PLACES, 4), feels = ['happy', 'excited', 'sleepy', 'tired'];
+  const steps = [
+    replyStep(CALL_TURNS.find(t => t.id === 'how')),
+    ...(name ? [replyStep({ ask: 'What is your name?', good: [`My name is ${name}.`], short: `${name}.`, off: 'I am fine.' })] : []),
+    picStep('How old are you?', [5, 6, 7, 8, 9, 10].map(n => ['🎂', String(n)]), k => `I am ${k + 5} years old.`),
+    replyStep({ garble: true, ask: '', good: ['Can you say that again, please?'], short: 'Yes.', off: 'At the zoo.' }),
+    names.length ? picStep('Who is your best friend?', names.map(n => ['🧒', n]), k => `My best friend is ${names[k]}.`)
+                 : picStep('Who do you like to play with?', who, k => `I like to play with ${who[k][1]}.`),
+    picStep('What can you do?', canCh, k => `I can ${canCh[k][1]}.`),
+    picStep(pickOne(['Where did you go today?', 'Did you go anywhere today?']), plCh.map(p => [p[0], p[1]]), k => `I went to ${plCh[k][1]}.`),
+    picStep(pickOne(['How do you feel now?', 'How are you feeling?']), feels.map(f => [FEELS[f], f]), k => `I feel ${feels[k]}.`)
+  ];
+  setDots(steps.length, 0);
+  function go() {
+    setDots(steps.length, step);
+    if (step >= steps.length) return diary();
+    steps[step++](go);
+  }
+  function diary() {
+    saveDiary(lines.slice());
+    tq.innerHTML = '';
+    story.classList.add('diary');
+    story.insertAdjacentHTML('afterbegin', `<h3>📔 My English Diary <small>${todayStr()}</small></h3>`);
+    story.insertAdjacentHTML('beforeend', `<div class="row"><button class="btn alt" id="dRead">${zy('🔊 念給我聽')}</button><button class="btn" id="dDone">${zy('完成！')}</button></div>`);
+    sfx.win(); speak('Great job! Here is your diary.', 0.9);
+    $('#dRead').onclick = () => speakSeq(lines.map(s => [s, false, SRATE]));
+    $('#dDone').onclick = () => ctx.done(mistakes);
+  }
+  go();
+};
+
+/* ---------- secret missions: map, starting a stage, parent settings ---------- */
+function startSecret(s) {
+  current = { type: 'secret', def: s, kind: s.kind };
+  const ctx = openGame(`${s.id.slice(1)} ${s.name}`, s.hint, SAREAS[s.a].scene);
+  $('#dots').insertAdjacentHTML('beforebegin', '<button class="chip tipbtn" id="tipBtn" aria-label="小老師時間">💡</button>');
+  $('#tipBtn').onclick = () => showTips(s);
+  const go = () => { if (run && run.alive) SGAMES[s.kind](ctx, s); };
+  if (!cleared(s.id)) showTips(s, go); else go();
+}
+function renderSecretMap() {
+  const tall = matchMedia('(orientation: portrait)').matches, me = avatarOf(P()), nx = nextSecret();
+  $('#wtabs').innerHTML = SAREAS.map((A, a) => {
+    const list = SSTAGES.filter(s => s.a === a), n = list.filter(s => cleared(s.id)).length;
+    return `<button class="wtab ${a === curWorld ? 'on' : ''}" data-w="${a}">${nx && nx.a === a ? `<span class="here">${me}</span>` : ''}<span class="wi">${A.icon}</span><span>${zy(A.name)}</span><span class="wprog">${n === list.length ? '✅' : `${n}/${list.length}`}</span></button>`;
+  }).join('');
+  const list = SSTAGES.filter(s => s.a === curWorld), n = list.length, l = L();
+  const pts = list.map((s, k) => tall ? [k % 2 ? 72 : 28, 90 - k * (80 / (n - 1))] : [7 + k * (86 / (n - 1)), k % 2 ? 32 : 70]);
+  const seg = i => { const [x0, y0] = pts[i], [x1, y1] = pts[i + 1], mx = x0 + (x1 - x0) * .5; return `M${x0} ${y0} C${mx} ${y0} ${mx} ${y1} ${x1} ${y1}`; };
+  const segs = pts.slice(1).map((_, i) => `<path class="${cleared(list[i].id) ? 'trail-done' : 'trail-todo'}" d="${seg(i)}" vector-effect="non-scaling-stroke"/>`).join('');
+  const nodes = list.map((s, k) => {
+    const open = sStageOpen(s), st = l.stars[s.id] || 0;
+    const cls = [s.boss ? 'gate' : '', !open ? 'locked' : st ? 'done' : nx === s ? 'next' : ''].join(' ');
+    return `<button class="station ${cls}" data-sstage="${s.id}" style="--x:${pts[k][0]}%;--y:${pts[k][1]}%" aria-label="${s.id.slice(1)} ${s.name}">
+      <span class="orb"><span class="num">${s.id.slice(1)}</span><span class="ico">${s.icon}</span></span>
+      <span class="name">${zy(nx === s ? '下一關' : s.name)}</span>
+      <span class="st">${open ? '★'.repeat(st) + `<i>${'★'.repeat(3 - st)}</i>` : ''}</span></button>`;
+  }).join('');
+  $('#mapBox').innerHTML = `<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${segs}</svg>${nodes}<span class="mbuddy" aria-hidden="true">${curBuddySVG()}</span>`;
+  const hereK = nx && nx.a === curWorld ? nx.k : -1;
+  if (hereK >= 0) $('#mapBox').insertAdjacentHTML('beforeend', `<span class="elfmark" style="--x:${pts[hereK][0]}%;--y:${pts[hereK][1]}%" aria-hidden="true"><span class="flag">${zy('在這裡！')}</span><span class="elf">${me}</span></span>`);
+  const done = list.filter(s => cleared(s.id)).length;
+  $('#mapNote').innerHTML = zy(hereK >= 0 ? `下一關：${nx.id.slice(1)} ${nx.name}（已經過了 ${done} / ${n} 關）`
+    : done === n ? `${SAREAS[curWorld].name}全部過關了！🎉` : `${SAREAS[curWorld].name}：已經過了 ${done} / ${n} 關`);
+}
+const mapScene = () => version === 'secret' ? SAREAS[curWorld].scene : WORLDS[curWorld].key;
+
+function secretParentHTML(p) {
+  if (!secretOn(p)) return `<div class="psec"><h3>🎁 祕密任務</h3><p>輸入兌換碼，就能幫 ${esc(p.name)} 打開祕密任務（只有這個小精靈看得到）。</p>
+      <div class="row"><input type="text" id="codeIn" autocomplete="off" autocapitalize="characters" aria-label="兌換碼" value="${esc(pendingCode || '')}"><button class="btn" id="codeOk">打開</button></div></div>`;
+  const o = sopt(p), l = p.levels.secret || { stars: {}, words: {} };
+  const weak = Object.entries(l.words).filter(([w, s]) => w.startsWith('✎') && s.bad > 0).sort((a, b) => (b[1].bad - b[1].ok / 3) - (a[1].bad - a[1].ok / 3)).slice(0, 10);
+  const diary = (l.diary || []).slice(0, 3);
+  return `<div class="psec"><h3>🎁 祕密任務</h3>
+      <div class="pstats"><div class="pstat"><b>${sum(Object.values(l.stars))}<em class="of">/ 60</em></b><span>星星</span></div>
+        <div class="pstat"><b>${Object.keys(l.stars).length}<em class="of">/ ${SSTAGES.length}</em></b><span>過了的關卡</span></div></div>
+      <p>常錯的句子（點一下聽）</p>
+      <div class="weak">${weak.length ? weak.map(([w, s]) => `<button data-say="${esc(w.slice(1))}">${esc(w.slice(1))}<small>錯 ${s.bad} 次</small></button>`).join('') : '<span>目前沒有</span>'}</div>
+      <p>最近的英文小日記</p>
+      ${diary.length ? diary.map(d => `<div class="diaryp"><small>${esc(d.date)}</small>${d.lines.map(x => `<div>${esc(x)}</div>`).join('')}</div>`).join('') : '<p>還沒有日記。玩「今天去哪裡？」或「聖誕老人訪問」就會產生。</p>'}
+      <p>孩子的英文名字（聖誕老人會用這個名字叫她／他）</p>
+      <input type="text" id="enameIn" maxlength="16" autocomplete="off" placeholder="例如 Emma" value="${esc(o.ename || '')}" aria-label="英文名字">
+      <p>好朋友的英文名字（最多 3 位，會出現在句子裡；沒填就用 my friend）</p>
+      <div class="row">${[0, 1, 2].map(k => `<input type="text" class="frIn" data-k="${k}" maxlength="12" autocomplete="off" value="${esc(o.friends[k] || '')}" aria-label="朋友 ${k + 1}">`).join('')}</div>
+      <p>跟著說的方式</p>
+      <select id="modeSel" aria-label="跟著說的方式"><option value="mic" ${o.mode === 'mic' ? 'selected' : ''}>🎤 麥克風：聽到孩子出聲才前進（錄音只留在這台平板、不上傳）</option><option value="timer" ${o.mode === 'timer' ? 'selected' : ''}>⏱ 只留時間：倒數完就前進</option></select>
+      <p>麥克風靈敏度（家裡比較吵就調低）</p>
+      <select id="sensSel" aria-label="麥克風靈敏度">${[['high', '高（很小聲也算）'], ['mid', '中'], ['low', '低（比較吵的地方）']].map(([v, t]) => `<option value="${v}" ${o.sens === v ? 'selected' : ''}>${t}</option>`).join('')}</select></div>`;
+}
+function bindSecretParent(p) {
+  if (!secretOn(p)) {
+    const ok = () => {
+      if (codeHash($('#codeIn').value) === SECRET_HASH) {
+        p.secretOn = 1; pendingCode = null; save(); sfx.win(); toast('🎁 祕密任務打開了！回到首頁就看得到'); renderParent();
+      } else { sfx.no(); toast('兌換碼不正確，請再確認一次'); }
+    };
+    $('#codeOk').onclick = ok; $('#codeIn').onkeydown = e => { if (e.key === 'Enter') ok(); };
+    return;
+  }
+  const o = sopt(p);
+  $('#enameIn').onchange = e => { o.ename = e.target.value.trim(); save(); };
+  document.querySelectorAll('.frIn').forEach(inp => inp.onchange = () => { o.friends[+inp.dataset.k] = inp.value.trim(); save(); });
+  $('#modeSel').onchange = e => { o.mode = e.target.value; save(); };
+  $('#sensSel').onchange = e => { o.sens = e.target.value; save(); };
+}
 
 /* ================= start ================= */
 document.querySelectorAll('[data-zy]').forEach(el => el.innerHTML = zy(el.textContent.trim()));
