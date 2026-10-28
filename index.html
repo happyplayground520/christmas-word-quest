@@ -971,6 +971,10 @@ button.chip:active { background: var(--night-2); }
 .vbtn.secret { background: linear-gradient(135deg, #fff1c7, #ffd6e7); box-shadow: 0 7px 0 #c9739b; }
 .vbtn.secret small { display: block; }
 .tipbtn { font-size: 26px; min-width: 56px; justify-content: center; }
+#mpanel { position: relative; }
+.tipx { position: absolute; right: 12px; top: 12px; z-index: 1; width: 52px; height: 52px; border: none; border-radius: 50%;
+  background: var(--frost); color: var(--ink); font: 900 26px/1 var(--f-num); box-shadow: 0 5px 0 var(--frost-d); }
+.tipx:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--frost-d); }
 .tipc { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
 .panel .tiptag { margin: 0; font-weight: 700; color: var(--berry-d); font-size: 20px; }
 .tipv { font-size: clamp(60px, 13vmin, 104px); line-height: 1.15; min-height: 1.15em; display: flex; align-items: center; gap: .12em; }
@@ -1588,7 +1592,7 @@ const ZHUYIN = {
   角:'ㄐㄧㄠˇ',話:'ㄏㄨㄚˋ',誰:'ㄕㄟˊ',請:'ㄑㄧㄥˇ',讓:'ㄖㄤˋ',貓:'ㄇㄠ',車:'ㄔㄜ',迪:'ㄉㄧˊ',送:'ㄙㄨㄥˋ',進:'ㄐㄧㄣˋ',
   遞:'ㄉㄧˋ',配:'ㄆㄟˋ',重:'ㄔㄨㄥˊ',金:'ㄐㄧㄣ',鈴:'ㄌㄧㄥˊ',錯:'ㄘㄨㄛˋ',鎮:'ㄓㄣˋ',鐺:'ㄉㄤ',長:'ㄓㄤˇ',門:'ㄇㄣˊ',
   閉:'ㄅㄧˋ',間:'ㄐㄧㄢ',降:'ㄐㄧㄤˋ',限:'ㄒㄧㄢˋ',階:'ㄐㄧㄝ',面:'ㄇㄧㄢˋ',頁:'ㄧㄝˋ',頭:'ㄊㄡˊ',餅:'ㄅㄧㄥˇ',首:'ㄕㄡˇ',
-  住:'ㄓㄨˋ',
+  住:'ㄓㄨˋ',慢:'ㄇㄢˋ',
   久:'ㄐㄧㄡˇ',事:'ㄕˋ',什:'ㄕㄣˊ',介:'ㄐㄧㄝˋ',他:'ㄊㄚ',作:'ㄗㄨㄛˋ',便:'ㄅㄧㄢˋ',候:'˙ㄏㄡ',偵:'ㄓㄣ',克:'ㄎㄜˋ',兌:'ㄉㄨㄟˋ',其:'ㄑㄧˊ',區:'ㄑㄩ',午:'ㄨˇ',只:'ㄓˇ',叫:'ㄐㄧㄠˋ',同:'ㄊㄨㄥˊ',咕:'ㄍㄨ',問:'ㄨㄣˋ',嚕:'ㄌㄨ',因:'ㄧㄣ',園:'ㄩㄢˊ',外:'ㄨㄞˋ',始:'ㄕˇ',密:'ㄇㄧˋ',實:'ㄕˊ',左:'ㄗㄨㄛˇ',師:'ㄕ',幾:'ㄐㄧˇ',張:'ㄓㄤ',念:'ㄋㄧㄢˋ',情:'ㄑㄧㄥˊ',懂:'ㄉㄨㄥˇ',戳:'ㄔㄨㄛ',指:'ㄓˇ',探:'ㄊㄢˋ',推:'ㄊㄨㄟ',改:'ㄍㄞˇ',故:'ㄍㄨˋ',整:'ㄓㄥˇ',數:'ㄕㄨˋ',方:'ㄈㄤ',早:'ㄗㄠˇ',晚:'ㄨㄢˇ',東:'ㄉㄨㄥ',楚:'˙ㄔㄨ',樣:'ㄧㄤˋ',氣:'ㄑㄧˋ',淇:'ㄑㄧˊ',淋:'ㄌㄧㄣˊ',清:'ㄑㄧㄥ',準:'ㄓㄨㄣˇ',為:'ㄨㄟˋ',畫:'ㄏㄨㄚˋ',相:'ㄒㄧㄤˋ',知:'ㄓ',短:'ㄉㄨㄢˇ',碼:'ㄇㄚˇ',社:'ㄕㄜˋ',祕:'ㄇㄧˋ',積:'ㄐㄧ',簿:'ㄅㄨˋ',紙:'ㄓˇ',紹:'ㄕㄠˋ',組:'ㄗㄨˇ',聊:'ㄌㄧㄠˊ',肚:'ㄉㄨˋ',被:'ㄅㄟˋ',西:'˙ㄒㄧ',計:'ㄐㄧˋ',訊:'ㄒㄩㄣˋ',訪:'ㄈㄤˇ',說:'ㄕㄨㄛ',變:'ㄅㄧㄢˋ',跟:'ㄍㄣ',道:'ㄉㄠˋ',邊:'ㄅㄧㄢ',那:'ㄋㄚˋ',針:'ㄓㄣ',陽:'ㄧㄤˊ',隨:'ㄙㄨㄟˊ',隻:'ㄓ',雷:'ㄌㄟˊ',麥:'ㄇㄞˋ',簽:'ㄑㄧㄢ',去:'ㄑㄩˋ',紋:'ㄨㄣˊ',粉:'ㄈㄣˇ',愛:'ㄞˋ',心:'ㄒㄧㄣ',吊:'ㄉㄧㄠˋ',拐:'ㄍㄨㄞˇ',杖:'ㄓㄤˋ',杯:'ㄅㄟ',蛋:'ㄉㄢˋ',糕:'ㄍㄠ',甜:'ㄊㄧㄢˊ',兔:'ㄊㄨˋ',狗:'ㄍㄡˇ',狐:'ㄏㄨˊ',狸:'˙ㄌㄧ',牆:'ㄑㄧㄤˊ',雙:'ㄕㄨㄤ',華:'ㄏㄨㄚˊ',麗:'ㄌㄧˋ',盒:'ㄏㄜˊ',俄:'ㄜˊ',羅:'ㄌㄨㄛˊ',斯:'ㄙ',鐘:'ㄓㄨㄥ',婆:'ㄆㄛˊ',鋼:'ㄍㄤ',琴:'ㄑㄧㄣˊ',所:'ㄙㄨㄛˇ',怎:'ㄗㄣˇ',麼:'˙ㄇㄜ',自:'ㄗˋ',己:'ㄐㄧˇ',寫:'ㄒㄧㄝˇ',種:'ㄓㄨㄥˇ',體:'ㄊㄧˇ',躲:'ㄉㄨㄛˇ',站:'ㄓㄢˋ',賽:'ㄙㄞˋ',跑:'ㄆㄠˇ',往:'ㄨㄤˇ',衝:'ㄔㄨㄥ',釣:'ㄉㄧㄠˋ',魚:'ㄩˊ',遊:'ㄧㄡˊ',戲:'ㄒㄧˋ',檔:'ㄉㄤˇ',度:'ㄉㄨˋ',備:'ㄅㄟˋ',份:'ㄈㄣˋ',從:'ㄘㄨㄥˊ',著:'˙ㄓㄜ',掉:'ㄉㄧㄠˋ',怪:'ㄍㄨㄞˋ',器:'ㄑㄧˋ',機:'ㄐㄧ',零:'ㄌㄧㄥˊ',件:'ㄐㄧㄢˋ',修:'ㄒㄧㄡ',理:'ㄌㄧˇ',賓:'ㄅㄧㄣ',連:'ㄌㄧㄢˊ',條:'ㄊㄧㄠˊ',丟:'ㄉㄧㄡ',敗:'ㄅㄞˋ',穿:'ㄔㄨㄢ',衣:'ㄧ',服:'˙ㄈㄨ',身:'ㄕㄣ',泡:'ㄆㄠˋ',像:'ㄒㄧㄤˋ',和:'ㄏㄜˊ',圍:'ㄨㄟˊ',水:'ㄕㄨㄟˇ',旋:'ㄒㄩㄢˊ',木:'ㄇㄨˋ',馬:'ㄇㄚˇ',偶:'ㄡˇ',胡:'ㄏㄨˊ',桃:'ㄊㄠˊ',鉗:'ㄑㄧㄢˊ',箱:'ㄒㄧㄤ',戴:'ㄉㄞˋ',巾:'ㄐㄧㄣ',桶:'ㄊㄨㄥˇ',塗:'ㄊㄨˊ',顯:'ㄒㄧㄢˇ',示:'ㄕˋ',拖:'ㄊㄨㄛ',或:'ㄏㄨㄛˋ',男:'ㄋㄢˊ',女:'ㄋㄩˇ',生:'ㄕㄥ',還:'ㄏㄞˊ',分:'ㄈㄣ',享:'ㄒㄧㄤˇ',螢:'ㄧㄥˊ',幕:'ㄇㄨˋ',轉:'ㄓㄨㄢˇ',橫:'ㄏㄥˊ',製:'ㄓˋ',貼:'ㄊㄧㄝ',框:'ㄎㄨㄤ',綠:'ㄌㄩˋ',白:'ㄅㄞˊ',典:'ㄉㄧㄢˇ',棵:'ㄎㄜ',紅:'ㄏㄨㄥˊ',藍:'ㄌㄢˊ',蝴:'ㄏㄨˊ',蝶:'ㄉㄧㄝˊ',結:'ㄐㄧㄝˊ',跳:'ㄊㄧㄠˋ',視:'ㄕˋ',窗:'ㄔㄨㄤ',辦:'ㄅㄢˋ',法:'ㄈㄚˇ',直:'ㄓˊ',接:'ㄐㄧㄝ',影:'ㄧㄥˇ',像:'ㄒㄧㄤˋ',電:'ㄉㄧㄢˋ',腦:'ㄋㄠˇ',右:'ㄧㄡˋ',鍵:'ㄐㄧㄢˋ',另:'ㄌㄧㄥˋ',移:'ㄧˊ',動:'ㄉㄨㄥˋ',高:'ㄍㄠ',鵝:'ㄜˊ',鷹:'ㄧㄥ',鹿:'ㄌㄨˋ',麋:'ㄇㄧˊ'
 };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -1614,7 +1618,15 @@ function pickVoices() {
   // Taiwan Mandarin: iPad Mei-Jia, Windows Yating/Hanhan/Zhiwei, Chrome "國語（臺灣）"
   voiceZh = vs.find(v => /zh[-_]TW/i.test(v.lang) && /Mei-?Jia|Yating|Hanhan|Google/i.test(v.name))
          || vs.find(v => /zh[-_]TW/i.test(v.lang)) || vs.find(v => /zh[-_]Hant/i.test(v.lang)) || null;
+  const want = devPref('xmas-zh-voice');
+  if (want) voiceZh = vs.find(v => v.name === want) || voiceZh;
 }
+// a Chinese voice and speed picked on the parent page; voices differ per device, so these stay on this device
+function devPref(k, v) {
+  try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {}
+  return null;
+}
+const zhRate = () => +(devPref('xmas-zh-rate') || .8);
 if (canSpeak) { pickVoices(); speechSynthesis.onvoiceschanged = pickVoices; }
 // parts: [[text, isChinese, rate?], ...] spoken one after another
 function speakSeq(parts) {
@@ -1624,8 +1636,8 @@ function speakSeq(parts) {
     parts.forEach(([text, zh, rate]) => {
       const u = new SpeechSynthesisUtterance(text);
       u.lang = zh ? 'zh-TW' : 'en-US';
-      const v = zh ? voiceZh : voiceEn; if (v) u.voice = v;
-      u.rate = rate || (zh ? 0.95 : 0.8); u.pitch = zh ? 1.15 : 1.1;
+      const v = zh ? voiceZh : voiceEn; if (v) { u.voice = v; u.lang = v.lang; }
+      u.rate = rate || (zh ? zhRate() : 0.8); u.pitch = zh ? 1.15 : 1.1;
       speechSynthesis.speak(u);
     });
   } catch (e) {}
@@ -4693,17 +4705,21 @@ function showTips(def, cb) {
   if (!cards.length) { cb && cb(); return; }
   const draw = () => {
     const c = cards[k], plain = (c.en || '').replace(/<[^>]+>/g, '');
-    openModal(`<div class="tipc"><p class="tiptag">${zy('💡 小老師時間')}　${k + 1} / ${cards.length}</p>
+    openModal(`<button class="tipx" id="tipX" aria-label="關掉">✕</button><div class="tipc"><p class="tiptag">${zy('💡 小老師時間')}　${k + 1} / ${cards.length}</p>
       <div class="tipv">${c.v}</div><p class="tipzh">${zy(c.zh)}</p>
+      <div class="row"><button class="btn alt" id="tipAgain">${zy('🔁 再聽一次')}</button><button class="btn alt" id="tipSlow">${zy('🐢 慢慢說')}</button></div>
       ${c.en ? `<div class="tipen"><span>${c.en}</span><button class="say" id="tipSay" aria-label="聽">🔊</button></div>` : ''}
       <div class="row">${k ? `<button class="btn alt" id="tipPrev">${zy('上一張')}</button>` : ''}<button class="btn" id="tipNext">${zy(k < cards.length - 1 ? '下一張' : '開始玩！')}</button></div></div>`, true);
-    speakSeq([[c.zh, true], ...(plain ? [[plain, false, .75]] : [])]);
+    // one sentence at a time, so the voice pauses between them
+    const sayCard = (slow = 1) => speakSeq([...c.zh.split(/(?<=[。！？，：])/).filter(x => x.trim()).map(x => [x, true, zhRate() * slow]), ...(plain ? [[plain, false, .75 * slow]] : [])]);
+    sayCard();
+    $('#tipAgain').onclick = () => sayCard();
+    $('#tipSlow').onclick = () => sayCard(.8);
     if ($('#tipSay')) $('#tipSay').onclick = () => speak(plain, .75);
     if ($('#tipPrev')) $('#tipPrev').onclick = () => { k--; draw(); };
-    $('#tipNext').onclick = () => {
-      if (k < cards.length - 1) { k++; draw(); return; }
-      closeModal(); if (canSpeak) speechSynthesis.cancel(); cb && cb();
-    };
+    const end = () => { closeModal(); if (canSpeak) speechSynthesis.cancel(); cb && cb(); };
+    $('#tipNext').onclick = () => { if (k < cards.length - 1) { k++; draw(); } else end(); };
+    $('#tipX').onclick = end;   // leave the cards part way; the stage starts
   };
   draw();
 }
@@ -5987,6 +6003,11 @@ function secretParentHTML(p) {
       <div class="row">${[0, 1, 2].map(k => `<input type="text" class="frIn" data-k="${k}" maxlength="12" autocomplete="off" value="${esc(o.friends[k] || '')}" aria-label="朋友 ${k + 1}">`).join('')}</div>
       <p>跟著說的方式</p>
       <select id="modeSel" aria-label="跟著說的方式"><option value="mic" ${o.mode === 'mic' ? 'selected' : ''}>🎤 麥克風：聽到孩子出聲才前進（錄音只留在這台平板、不上傳）</option><option value="timer" ${o.mode === 'timer' ? 'selected' : ''}>⏱ 只留時間：倒數完就前進</option></select>
+      <p>小老師時間的中文語音（這台平板上有的聲音）</p>
+      <div class="row"><select id="zhVoiceSel" aria-label="中文語音"></select>
+        <select id="zhRateSel" aria-label="說話速度">${[['0.95', '一般'], ['0.8', '慢'], ['0.68', '很慢']].map(([v, t]) => `<option value="${v}" ${String(zhRate()) === v ? 'selected' : ''}>${t}</option>`).join('')}</select>
+        <button class="btn alt" id="zhTry">試聽</button></div>
+      <p>想要更自然的聲音：iPad「設定 → 輔助使用 → 朗讀內容 → 聲音 → 中文（台灣）」，下載「美佳（增強版）」等聲音，再回來這裡選。</p>
       <p>麥克風靈敏度（家裡比較吵就調低）</p>
       <select id="sensSel" aria-label="麥克風靈敏度">${[['high', '高（很小聲也算）'], ['mid', '中'], ['low', '低（比較吵的地方）']].map(([v, t]) => `<option value="${v}" ${o.sens === v ? 'selected' : ''}>${t}</option>`).join('')}</select></div>`;
 }
@@ -6005,6 +6026,18 @@ function bindSecretParent(p) {
   document.querySelectorAll('.frIn').forEach(inp => inp.onchange = () => { o.friends[+inp.dataset.k] = inp.value.trim(); save(); });
   $('#modeSel').onchange = e => { o.mode = e.target.value; save(); };
   $('#sensSel').onchange = e => { o.sens = e.target.value; save(); };
+  const fillVoices = () => {
+    const vs = canSpeak ? speechSynthesis.getVoices().filter(v => /^zh|cmn/i.test(v.lang)) : [];
+    const cur = devPref('xmas-zh-voice') || '';
+    $('#zhVoiceSel').innerHTML = `<option value="">自動選擇${voiceZh ? `（${esc(voiceZh.name)}）` : ''}</option>` +
+      vs.map(v => `<option value="${esc(v.name)}" ${v.name === cur ? 'selected' : ''}>${esc(v.name)}（${esc(v.lang)}）</option>`).join('');
+  };
+  fillVoices();
+  if (canSpeak) speechSynthesis.addEventListener('voiceschanged', () => { if ($('#zhVoiceSel')) fillVoices(); });
+  const trySay = () => speakSeq([['你好，我是小老師。', true], ['說一個東西的時候，前面要加 a 或 an。', true]]);
+  $('#zhVoiceSel').onchange = e => { devPref('xmas-zh-voice', e.target.value || null); pickVoices(); trySay(); };
+  $('#zhRateSel').onchange = e => { devPref('xmas-zh-rate', e.target.value); trySay(); };
+  $('#zhTry').onclick = trySay;
 }
 
 /* ================= start ================= */
