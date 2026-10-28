@@ -4700,6 +4700,14 @@ const TIPS = {
     { v: '📔', zh: '回答完會變成一本你自己的英文小日記。', en: 'My English Diary' }
   ]
 };
+// Chinese with English words inside: the Chinese voice rushes through "a" or "an",
+// so each English word is read by the English voice, slowly, between the Chinese parts
+function zhParts(text, slow = 1) {
+  return text.replace(/a、e、i、o、u/g, 'A, E, I, O, U').split(/(?<=[。！？，：])/)
+    .flatMap(sen => sen.split(/([A-Za-z][A-Za-z' ,]*[A-Za-z]|[A-Za-z])/))
+    .map(x => x.trim().replace(/^[.,!?]+\s*/, '')).filter(x => x && !/^[，。、：！？「」…\s]+$/.test(x))
+    .map(x => /[A-Za-z]/.test(x) ? [x, false, .6 * slow] : [x, true, zhRate() * slow]);
+}
 function showTips(def, cb) {
   const cards = TIPS[def.kind] || []; let k = 0;
   if (!cards.length) { cb && cb(); return; }
@@ -4711,7 +4719,7 @@ function showTips(def, cb) {
       ${c.en ? `<div class="tipen"><span>${c.en}</span><button class="say" id="tipSay" aria-label="聽">🔊</button></div>` : ''}
       <div class="row">${k ? `<button class="btn alt" id="tipPrev">${zy('上一張')}</button>` : ''}<button class="btn" id="tipNext">${zy(k < cards.length - 1 ? '下一張' : '開始玩！')}</button></div></div>`, true);
     // one sentence at a time, so the voice pauses between them
-    const sayCard = (slow = 1) => speakSeq([...c.zh.split(/(?<=[。！？，：])/).filter(x => x.trim()).map(x => [x, true, zhRate() * slow]), ...(plain ? [[plain, false, .75 * slow]] : [])]);
+    const sayCard = (slow = 1) => speakSeq([...zhParts(c.zh, slow), ...(plain ? [[plain, false, .75 * slow]] : [])]);
     sayCard();
     $('#tipAgain').onclick = () => sayCard();
     $('#tipSlow').onclick = () => sayCard(.8);
@@ -6034,7 +6042,7 @@ function bindSecretParent(p) {
   };
   fillVoices();
   if (canSpeak) speechSynthesis.addEventListener('voiceschanged', () => { if ($('#zhVoiceSel')) fillVoices(); });
-  const trySay = () => speakSeq([['你好，我是小老師。', true], ['說一個東西的時候，前面要加 a 或 an。', true]]);
+  const trySay = () => speakSeq(zhParts('你好，我是小老師。說一個東西的時候，前面要加 a 或 an。'));
   $('#zhVoiceSel').onchange = e => { devPref('xmas-zh-voice', e.target.value || null); pickVoices(); trySay(); };
   $('#zhRateSel').onchange = e => { devPref('xmas-zh-rate', e.target.value); trySay(); };
   $('#zhTry').onclick = trySay;
