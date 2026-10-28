@@ -987,7 +987,7 @@ button.chip:active { background: var(--night-2); }
 /* the child says it: the snowman grows while she or he talks */
 .sayover { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; padding: 16px; background: rgba(8,16,36,.6); animation: fadein .25s; }
 @keyframes fadein { from { opacity: 0; } }
-.saycard { width: min(720px, 100%); max-height: 100%; overflow: auto; background: var(--snow); color: var(--ink); border-radius: 30px; padding: 16px 22px 20px;
+.saycard { position: relative; width: min(720px, 100%); max-height: 100%; overflow: auto; background: var(--snow); color: var(--ink); border-radius: 30px; padding: 16px 22px 20px;
   box-shadow: 0 10px 0 var(--frost-d); display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
 .saytop { margin: 0; font-weight: 700; color: var(--berry-d); font-size: 20px; }
 .saysent { font-family: var(--f-word); font-weight: 700; font-size: clamp(26px, 5vmin, 46px); line-height: 1.25; }
@@ -4848,6 +4848,7 @@ function sayAlong(text, cb) {
   const alive = () => r === run && r.alive;
   const ov = document.createElement('div'); ov.className = 'sayover';
   ov.innerHTML = `<div class="saycard">
+      <button class="tipx" data-a="next" aria-label="跳過">✕</button>
       <p class="saytop">${zy('跟著說一次')}</p>
       <div class="saysent">${esc(text)}</div>
       <div class="sayrow"><button class="say" data-a="again" aria-label="再聽一次">🔊</button><button class="slowb" data-a="slow" aria-label="慢慢念">🐢</button></div>
@@ -4866,6 +4867,8 @@ function sayAlong(text, cb) {
   const close = () => {
     if (closed) return; closed = true;
     try { if (player) player.pause(); } catch (e) {}
+    try { if (recorder && recorder.state !== 'inactive') recorder.stop(); } catch (e) {}
+    paceToken++; if (canSpeak) speechSynthesis.cancel();
     micClose(); ov.remove(); if (alive()) cb && cb();
   };
   // the turn ends only when the child has finished; moving on is always the child's tap
@@ -5055,6 +5058,8 @@ SGAMES.anWhack = (ctx, def) => {
   const vow = NOUNS.filter(n => n.art === 'an'), con = NOUNS.filter(n => n.art === 'a');
   const N = 5;
   let r = 0, mistakes = 0, paused = false, wrongNow = false;
+  const hit = new Set();  // each round needs a different "an" word
+  const anLeft = () => { const l = vow.filter(x => !hit.has(x.w)); return l.length ? l : vow; };
   ctx.stage.innerHTML = `<div class="whack swhack">
       <div class="wprompt"><span class="word-prompt">an ___</span></div>
       <div class="holes">${Array.from({ length: 6 }, (_, k) => `<div class="hole"><button class="pop" data-h="${k}"><span class="sign"></span><span class="sm">⛄</span></button><span class="chim"></span></div>`).join('')}</div></div>`;
@@ -5065,7 +5070,7 @@ SGAMES.anWhack = (ctx, def) => {
     const free = pops.filter(p => !p.classList.contains('up'));
     if (!free.length || shown.size >= 3) return;
     const p = pickOne(free), hasAn = [...shown.values()].some(x => x.art === 'an');
-    const it = !hasAn && Math.random() < .55 ? pickOne(vow) : pickOne(Math.random() < .25 ? vow : con);
+    const it = !hasAn && Math.random() < .55 ? pickOne(anLeft()) : Math.random() < .25 ? pickOne(anLeft()) : pickOne(con);
     shown.set(p, it); p.querySelector('.sign').innerHTML = `${it.e}<small>${esc(it.w)}</small>`; p.classList.add('up');
     later(() => { if (shown.get(p) === it && !paused) { p.classList.remove('up'); shown.delete(p); } }, 6000 + Math.random() * 1000);
   }, 1800);
@@ -5076,7 +5081,7 @@ SGAMES.anWhack = (ctx, def) => {
     const it = shown.get(p); if (!it) return;
     if (it.art === 'an') {
       paused = true; p.classList.add('bonk'); sfx.ok(); hideCheer();
-      const q = it, w = wrongNow; wrongNow = false; r++; setDots(N, r);
+      const q = it, w = wrongNow; wrongNow = false; r++; setDots(N, r); hit.add(it.w);
       later(hideAll, 500);
       sFinishRound(ctx, q, w, `I see an ${it.w}.`, () => {
         if (r >= N) { sfx.win(); later(() => ctx.done(mistakes), 400); return; }
@@ -5188,11 +5193,19 @@ const STORIES = [
   ['🍊', ['I want ___ orange.', '___ orange is juicy.'], ['an', 'the']],
   ['🐘', ['I see ___ elephant.', '___ elephant is big.'], ['an', 'the']],
   ['☀️', ['Look at ___ sun!'], ['the']],
-  ['🌙', ['___ moon is so bright.'], ['the']]
+  ['🌙', ['___ moon is so bright.'], ['the']],
+  ['🐱🐶', ['I have ___ cat.', 'I have ___ dog, too.'], ['a', 'a']],
+  ['☀️🐦', ['___ sun is up.', 'I see ___ bird.'], ['the', 'a']],
+  ['🌙⭐', ['Look at ___ moon!', 'I see ___ star, too.'], ['the', 'a']],
+  ['🍎🥚', ['I want ___ apple.', 'Mom wants ___ egg.'], ['an', 'an']],
+  ['🐘🦉', ['There is ___ elephant.', 'There is ___ owl, too.'], ['an', 'an']],
+  ['🚪⛄', ['Please open ___ door.', 'I see ___ snowman outside!'], ['the', 'a']],
+  ['🎈☂️', ['I have ___ balloon.', 'She has ___ umbrella.'], ['a', 'an']]
 ].map(([e, s, a]) => ({ e, s, a, say: s.map((x, k) => fillBlank(x, a[k])).join(' ') }));
 function fillBlank(s, w) { return s.replace('___', s.startsWith('___') ? cap(w) : w); }
 SGAMES.story = (ctx, def) => {
-  const items = pickQ(STORIES, 5);
+  // only two of the five follow "a, then the", so the order of the answers cannot be learned by heart
+  const plain = x => x.a.join() === 'a,the', items = shuffle([...pickQ(STORIES.filter(plain), 2), ...pickQ(STORIES.filter(x => !plain(x)), 3)]);
   let i = 0, mistakes = 0;
   ctx.stage.innerHTML = `<div class="gram storyg"><div class="pic"></div>
       <div class="sentrow"><div class="sentence storyb"></div><button class="say" aria-label="聽">🔊</button></div>
@@ -5294,9 +5307,20 @@ function people() {
   return { fam, fr };
 }
 const PROPS = [['ball', '⚽'], ['cake', '🍰'], ['book', '📖'], ['balloon', '🎈'], ['gift', '🎁'], ['cat', '🐱'], ['apple', '🍎'], ['kite', '🪁'], ['teddy bear', '🧸'], ['star', '⭐']];
+const WEARS = [['a hat', '🎩'], ['a scarf', '🧣'], ['glasses', '👓'], ['a crown', '👑'], ['mittens', '🧤']];
+const DOINGS = [['sleeping', '😴'], ['reading', '📖'], ['cooking', '🍳'], ['singing', '🎤'], ['dancing', '💃'], ['drawing', '🖍️']];
+// [question, answer, what someone else is doing] for each kind of who-question
+const WHO_KIND = {
+  has: { pool: PROPS, ask: x => `Who has the ${x}?`, line: (f, x) => `${f.subj} has the ${x}.` },
+  wear: { pool: WEARS, ask: x => `Who is wearing ${x}?`, line: (f, x) => `${f.subj} is wearing ${x}.` },
+  doing: { pool: DOINGS, ask: x => `Who is ${x}?`, line: (f, x) => `${f.subj} is ${x}.` }
+};
 
 SGAMES.who = (ctx, def) => {
-  const N = 6, playAt = 2 + Math.floor(Math.random() * 3);
+  // two of each kind and one "who do you play with", never the same kind twice in a row
+  let kinds;
+  do kinds = shuffle(['has', 'has', 'wear', 'wear', 'doing', 'play']); while (kinds.some((x, k) => k && x === kinds[k - 1]));
+  const N = kinds.length;
   let i = 0, mistakes = 0;
   ctx.stage.innerHTML = `<div class="whog"><div class="sentrow"><div class="sentence"></div><button class="say" aria-label="聽">🔊</button></div>
       <div class="photo"></div><p class="sub">${zy('點一下對的人')}</p></div>`;
@@ -5305,11 +5329,12 @@ SGAMES.who = (ctx, def) => {
     setDots(N, i);
     if (i >= N) { later(() => ctx.done(mistakes), 300); return; }
     const { fam, fr } = people();
-    const folks = shuffle([...sample(fam, 3), pickOne(fr)]), props = sample(PROPS, 4);
+    const play = kinds[i] === 'play', K = WHO_KIND[kinds[i]];
+    const folks = shuffle([...sample(fam, 3), pickOne(fr)]), props = play ? [] : sample(K.pool, 4);
     folks.forEach((f, k) => { f.prop = props[k]; });
-    const play = i === playAt, t = play ? folks.find(f => f.friend) : pickOne(folks);
-    const ask = play ? 'Who do you play with?' : `Who has the ${t.prop[0]}?`;
-    const say = play ? `I play with ${t.obj}.` : `${t.subj} has the ${t.prop[0]}.`;
+    const t = play ? folks.find(f => f.friend) : pickOne(folks);
+    const ask = play ? 'Who do you play with?' : K.ask(t.prop[0]);
+    const say = play ? `I play with ${t.obj}.` : K.line(t, t.prop[0]);
     let wrong = false, busy = false;
     sent.innerHTML = `<b>Who</b>${esc(ask.slice(3))}`;
     ctx.stage.querySelector('.whog .say').onclick = () => speak(ask, SRATE);
@@ -5323,7 +5348,7 @@ SGAMES.who = (ctx, def) => {
         i++; sFinishRound(ctx, { say }, wrong, say, round);
       } else {
         mistakes++; wrong = true; sfx.no();
-        cheer([[play ? `This is ${f.obj}.` : `${f.subj} has the ${f.prop[0]}.`, false, SRATE]]);
+        cheer([[play ? `This is ${f.obj}.` : K.line(f, f.prop[0]), false, SRATE]]);
         b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
       }
     });
@@ -5407,7 +5432,9 @@ const ROOM_SVG = `<svg class="rbase" viewBox="0 0 300 160" aria-hidden="true">
 const BOX_FRONT = `<svg class="rtop" viewBox="0 0 300 160" aria-hidden="true"><rect x="226" y="110" width="66" height="40" fill="#d9a066"/><rect x="252" y="110" width="14" height="40" fill="#e9c08c"/></svg>`;
 SGAMES.where = (ctx, def) => {
   const N = 6, keys = Object.keys(SPOTS);
-  const rounds = Array.from({ length: N }, (_, k) => ({ th: pickOne(THINGS), sp: keys[(k + Math.floor(Math.random() * 5)) % 5] }));
+  // all five places come up, plus one more that is not the same as the one before it
+  const sps = shuffle(keys); sps.push(pickOne(keys.filter(k => k !== sps[4])));
+  const ths = sample(THINGS, N), rounds = sps.map((sp, k) => ({ th: ths[k], sp }));
   let i = 0, mistakes = 0;
   ctx.stage.innerHTML = `<div class="whereg"><div class="sentrow"><div class="sentence"></div><button class="say" aria-label="聽">🔊</button></div>
       <div class="room">${ROOM_SVG}<div class="rlayer"></div>${BOX_FRONT}<div class="rzones">${keys.map(k => { const [x, y, w, h] = SPOTS[k].z; return `<button class="rzone" data-z="${k}" aria-label="${SPOTS[k].p}" style="left:${x / 3}%;top:${y / 1.6}%;width:${w / 3}%;height:${h / 1.6}%"></button>`; }).join('')}</div></div>
@@ -5452,7 +5479,8 @@ const WHEN_SUN = [['🥣', 'eat breakfast', 'm'], ['🏫', 'go to school', 'm'],
 const WHEN_CLOCK = [['🍛', 'eat dinner', 6], ['⏰', 'wake up', 7], ['🏫', 'go to school', 8], ['🍱', 'eat lunch', 12], ['😴', 'go to bed', 9], ['🛁', 'take a bath', 8], ['🎹', 'play the piano', 4]]
   .map(([e, a, h]) => ({ e, a, h, ask: `When do you ${a}?`, say: `I ${a} at ${h} o'clock.`, kind: 'clock' }));
 SGAMES.when = (ctx, def) => {
-  const sun = pickQ(WHEN_SUN, 3), clk = pickQ(WHEN_CLOCK, 3), items = [sun[0], clk[0], sun[1], clk[1], sun[2], clk[2]];
+  const sun = shuffle(['m', 'a', 'n'].map(t => pickQ(WHEN_SUN.filter(x => x.s === t), 1)[0]));
+  const clk = pickQ(WHEN_CLOCK.filter(x => !sun.some(y => y.a === x.a)), 3), items = [sun[0], clk[0], sun[1], clk[1], sun[2], clk[2]];
   let i = 0, mistakes = 0;
   ctx.stage.innerHTML = `<div class="wheng"><div class="sentrow"><span class="qpic"></span><div class="sentence"></div><button class="say" aria-label="聽">🔊</button></div><div class="wplay"></div></div>`;
   const qpic = ctx.stage.querySelector('.qpic'), sent = ctx.stage.querySelector('.sentence'), play = ctx.stage.querySelector('.wplay');
@@ -5494,32 +5522,39 @@ SGAMES.when = (ctx, def) => {
   round();
 };
 
-// which one? only one gift in the bubbles matches
-function whichRound() {
+// which one? only one thing in the bubbles matches
+function whichRound(type, thing) {
   const cols = shuffle(['red', 'blue', 'green', 'yellow', 'purple', 'pink', 'orange']);
-  const type = pickOne(['color', 'size', 'both']);
   let gifts, t, ask, say;
-  if (type === 'color') { gifts = cols.slice(0, 4).map(c => ({ c, s: '' })); t = gifts[0]; ask = `Which one is ${t.c}?`; say = `The ${t.c} one.`; }
-  else if (type === 'size') { const s = pickOne(['big', 'small']), o = s === 'big' ? 'small' : 'big'; gifts = cols.slice(0, 4).map((c, k) => ({ c, s: k ? o : s })); t = gifts[0]; ask = `Which one is ${s}?`; say = `The ${s} one.`; }
-  else { const s = pickOne(['big', 'small']), o = s === 'big' ? 'small' : 'big'; gifts = [{ c: cols[0], s }, { c: cols[0], s: o }, { c: cols[1], s }, { c: cols[2], s: o }]; t = gifts[0]; ask = `Which one is ${s} and ${t.c}?`; say = `The ${s} ${t.c} one.`; }
-  return { gifts: shuffle(gifts), t, ask, say };
+  if (type === 'color') { gifts = cols.slice(0, 4).map(c => ({ c, s: '' })); t = gifts[0]; ask = `Which ${thing} is ${t.c}?`; say = `The ${t.c} one.`; }
+  else if (type === 'size') { const s = pickOne(['big', 'small']), o = s === 'big' ? 'small' : 'big'; gifts = cols.slice(0, 4).map((c, k) => ({ c, s: k ? o : s })); t = gifts[0]; ask = `Which ${thing} is ${s}?`; say = `The ${s} one.`; }
+  else { const s = pickOne(['big', 'small']), o = s === 'big' ? 'small' : 'big'; gifts = [{ c: cols[0], s }, { c: cols[0], s: o }, { c: cols[1], s }, { c: cols[2], s: o }]; t = gifts[0]; ask = `Which ${thing} is ${s} and ${t.c}?`; say = `The ${s} ${t.c} one.`; }
+  return { gifts: shuffle(gifts), t, ask, say, type, thing };
+}
+// colour, size, and both, twice each, never the same kind or thing twice in a row, no question asked twice
+function whichRounds() {
+  let types;
+  do types = shuffle(['color', 'color', 'size', 'size', 'both', 'both']); while (types.some((x, k) => k && x === types[k - 1]));
+  const things = shuffle(Object.keys(THINGS_C)); things.push(pickOne(Object.keys(THINGS_C).filter(x => x !== things[4])));
+  const asks = new Set();
+  return types.map((ty, k) => { let R0, n = 0; do R0 = whichRound(ty, things[k]); while (asks.has(R0.ask) && ++n < 20); asks.add(R0.ask); return R0; });
 }
 const descOf = (g, all) => {
   const sameC = all.filter(x => x.c === g.c).length > 1, sizes = new Set(all.map(x => x.s)).size > 1;
   return `The ${sizes && (sameC || all.every(x => x.c !== g.c || x === g)) && g.s ? g.s + ' ' : ''}${g.c} one.`;
 };
 SGAMES.which = (ctx, def) => {
-  const N = 6; let i = 0, mistakes = 0;
+  const rounds = whichRounds(), N = rounds.length; let i = 0, mistakes = 0;
   ctx.stage.innerHTML = `<div class="whichg"><div class="sentrow"><div class="sentence"></div><button class="say" aria-label="聽">🔊</button></div><div class="bubbles"></div><p class="sub">${zy('戳破對的泡泡')}</p></div>`;
   const sent = ctx.stage.querySelector('.sentence'), box = ctx.stage.querySelector('.bubbles');
   function round() {
     setDots(N, i);
     if (i >= N) { later(() => ctx.done(mistakes), 300); return; }
-    const R0 = whichRound(); let wrong = false, busy = false;
+    const R0 = rounds[i]; let wrong = false, busy = false;
     sent.innerHTML = `<b>Which</b>${esc(R0.ask.slice(5))}`;
     ctx.stage.querySelector('.whichg .say').onclick = () => speak(R0.ask, SRATE);
     later(() => speak(R0.ask, SRATE), 350);
-    box.innerHTML = R0.gifts.map((g, k) => `<button class="bubl ${g.s}" data-k="${k}" style="animation-delay:-${(k * .7).toFixed(1)}s">${giftHTML(g.c)}</button>`).join('');
+    box.innerHTML = R0.gifts.map((g, k) => `<button class="bubl ${g.s}" data-k="${k}" style="animation-delay:-${(k * .7).toFixed(1)}s">${THINGS_C[R0.thing](g.c)}</button>`).join('');
     box.querySelectorAll('.bubl').forEach(b => b.onclick = () => {
       if (busy) return;
       const g = R0.gifts[+b.dataset.k];
@@ -5598,11 +5633,12 @@ SGAMES.qBingo = (ctx, def) => {
       <div class="bcall"><button class="say big" aria-label="再聽一次">🔊</button><span class="word-prompt qans" hidden></span><p class="sub">${zy('聽到的回答，是在回答哪一種問句？')}</p></div>
       <div class="bgrid">${cells.map((w, k) => `<button class="bcell qcell" data-k="${k}"><span class="qe">${QWORDS[w]}</span><b>${w}</b></button>`).join('')}</div></div>`;
   const els = [...ctx.stage.querySelectorAll('.bcell')], ansEl = ctx.stage.querySelector('.qans');
-  const marked = new Set(); let call = null, tries = 0, wrongNow = false, mistakes = 0, over = false, busy = false;
+  const marked = new Set(), called = new Set(); let call = null, tries = 0, wrongNow = false, mistakes = 0, over = false, busy = false;
   ctx.stage.querySelector('.bcall .say').onclick = () => call && speak(call.a, SRATE);
   const next = () => {
     const left = new Set(cells.filter((_, k) => !marked.has(k)));
-    call = pickOne(QANS.filter(q => left.has(q.w))); tries = 0; wrongNow = false; busy = false;
+    const fresh = QANS.filter(q => left.has(q.w) && !called.has(q.a));
+    call = pickOne(fresh.length ? fresh : QANS.filter(q => left.has(q.w))); called.add(call.a); tries = 0; wrongNow = false; busy = false;
     ansEl.hidden = true; ansEl.textContent = call.a;
     later(() => speak(call.a, SRATE), 350);
   };
@@ -5728,7 +5764,9 @@ const CAN_ACTS = [['swim', 'swimming', '🏊'], ['dance', 'dancing', '💃'], ['
   ['play soccer', 'playing soccer', '⚽'], ['play the piano', 'playing the piano', '🎹'], ['fly a kite', 'flying a kite', '🪁']];
 const CAN_Q = CAN_ACTS.flatMap(([v, ing, e]) => [['I', avatarOf(P() || {})], ['She', '👧'], ['He', '👦']].map(([who, pe]) => ({ v, ing, e, who, pe, say: `${who} can ${v}.` })));
 SGAMES.canRace = (ctx, def) => {
-  const N = 6, items = pickQ(CAN_Q.map(q => q.who === 'I' ? { ...q, pe: avatarOf(P()) } : q), N);
+  const N = 6, who = shuffle([['I', avatarOf(P())], ['I', avatarOf(P())], ['She', '👧'], ['She', '👧'], ['He', '👦'], ['He', '👦']]);
+  const acts = pickQ(CAN_ACTS.map(([v, ing, e]) => ({ v, ing, e, say: `I can ${v}.` })), N);
+  const items = acts.map((a, k) => ({ ...a, who: who[k][0], pe: who[k][1], say: `${who[k][0]} can ${a.v}.` }));
   let i = 0, mistakes = 0, miss = 0;
   ctx.stage.innerHTML = `<div class="battle racegame">
       <div class="track"><div class="lane"><span class="racer me">🦌<span>${avatarOf(P())}</span></span></div>
@@ -5773,7 +5811,7 @@ const SIB_Q = [
 SGAMES.album = (ctx, def) => {
   const { fam, fr } = people();
   const N = 6, sibAt = new Set(sample([1, 2, 3, 4, 5], 2));
-  const folks = shuffle([...fam, ...fr]);
+  const folks = shuffle([...fam, ...fr]), albumActs = shuffle(ALBUM_ACTS);
   let i = 0, mistakes = 0, f = 0;
   ctx.stage.innerHTML = `<div class="albumg"><div class="apage"><div class="photo1"></div><div class="aplay"></div></div><div class="athumbs"></div></div>`;
   const photo = ctx.stage.querySelector('.photo1'), play = ctx.stage.querySelector('.aplay'), thumbs = ctx.stage.querySelector('.athumbs');
@@ -5792,7 +5830,7 @@ SGAMES.album = (ctx, def) => {
       replyPick(play.querySelector('.copts'), q, done);
       return;
     }
-    const p = folks[f++ % folks.length], act = pickOne(ALBUM_ACTS);
+    const act = albumActs[f % albumActs.length], p = folks[f++ % folks.length];
     const first = p.friend ? (p.subj === 'My friend' ? 'This is my friend.' : `This is my friend ${p.subj}.`) : `This is ${p.obj}.`;
     const second = p.friend ? 'We play together.' : `${p.he} can ${act[0]}.`;
     const ps = first.split(' ');
@@ -5836,7 +5874,7 @@ const TL_ACTS = [['⏰', 'I wake up', 'm'], ['🥣', 'I eat breakfast', 'm'], ['
   ['🍪', 'I have a snack', 'a'], ['✏️', 'I do my homework', 'a'], ['🍛', 'I eat dinner', 'n'], ['🛁', 'I take a bath', 'n'], ['😴', 'I go to bed', 'n'], ['📖', 'I read a story', 'n']]
   .map(([e, s, c]) => ({ e, s, c, say: `${s} ${TL_COLS[c][0]}.` }));
 SGAMES.timeline = (ctx, def) => {
-  const items = pickQ(TL_ACTS, 6);
+  const items = shuffle(['m', 'a', 'n'].flatMap(c => pickQ(TL_ACTS.filter(x => x.c === c), 2)));
   let i = 0, mistakes = 0;
   ctx.stage.innerHTML = `<div class="tlg"><div class="tlcard"></div><div class="tlcols">${Object.entries(TL_COLS).map(([k, [p, ic]]) => `<button class="tlcol sky-${k}" data-c="${k}"><span class="sic">${ic}</span><span class="sl">${esc(p)}</span><span class="tlin"></span></button>`).join('')}</div>
       <p class="sub">${zy('把卡片拖到對的時間，或點一下')}</p></div>`;
