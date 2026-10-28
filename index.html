@@ -1048,6 +1048,7 @@ button.chip:active { background: var(--night-2); }
 .table { display: flex; align-items: flex-end; justify-content: center; gap: clamp(14px, 4vw, 40px); padding: 14px 30px 0; border-bottom: 14px solid #b5784a; border-radius: 6px; }
 .gpick2 { border: none; background: none; padding: 6px; font-size: clamp(76px, 22cqh, 150px); line-height: 1; }
 .gpick2.small { font-size: clamp(44px, 12cqh, 84px); }
+.gpick2 .thing { width: 1em; height: 1em; display: block; }
 .gpick2.right { animation: popin .5s; filter: drop-shadow(0 0 16px var(--gold)); }
 .gpick2.wrong { animation: shake .4s; }
 .storyb { display: flex; flex-direction: column; gap: 4px; }
@@ -5089,34 +5090,60 @@ SGAMES.anWhack = (ctx, def) => {
   }));
 };
 
-// "Give me the red gift." -- only one is right; "Give me a gift." -- any one is fine
-function theRound() {
+// things that can be any colour: a gift box, or a drawn ball, star, sock or hat (1em square)
+// a soft outline that works on older iPads too
+const dark = c => 'rgba(0,0,0,.3)';
+const THINGS_C = {
+  gift: c => giftHTML(c),
+  ball: c => `<svg class="thing" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="52" r="44" fill="${COLOR[c]}" stroke="${dark(c)}" stroke-width="4"/>
+    <path d="M10 46 Q50 66 90 46" fill="none" stroke="#fff" stroke-width="7" opacity=".85"/><ellipse cx="34" cy="30" rx="11" ry="7" fill="#fff" opacity=".7" transform="rotate(-30 34 30)"/></svg>`,
+  star: c => `<svg class="thing" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,4 62,36 96,37 69,58 79,92 50,72 21,92 31,58 4,37 38,36" fill="${COLOR[c]}" stroke="${dark(c)}" stroke-width="4" stroke-linejoin="round"/>
+    <circle cx="40" cy="40" r="5" fill="#fff" opacity=".6"/></svg>`,
+  sock: c => `<svg class="thing" viewBox="0 0 100 100" aria-hidden="true"><path d="M32 18 H66 V58 Q66 66 74 70 L86 77 Q98 85 90 94 Q85 99 74 96 L36 82 Q24 77 28 64 Z" fill="${COLOR[c]}" stroke="${dark(c)}" stroke-width="4" stroke-linejoin="round"/>
+    <rect x="28" y="4" width="42" height="18" rx="6" fill="#fff" stroke="#cfdcf0" stroke-width="3"/></svg>`,
+  hat: c => `<svg class="thing" viewBox="0 0 100 100" aria-hidden="true"><path d="M14 74 Q14 22 50 22 Q86 22 86 74 Z" fill="${COLOR[c]}" stroke="${dark(c)}" stroke-width="4"/>
+    <rect x="8" y="68" width="84" height="20" rx="9" fill="#fff" stroke="#cfdcf0" stroke-width="3"/><circle cx="50" cy="16" r="12" fill="#fff" stroke="#cfdcf0" stroke-width="3"/></svg>`
+};
+// one round of "Give me the red ball." -- only one is right; "Give me a star." -- any one is fine
+function theRound(type, thing) {
   const cols = shuffle(['red', 'blue', 'green', 'yellow', 'purple', 'pink', 'orange']);
-  const type = pickOne(['color', 'color', 'size', 'both', 'any']);
-  let gifts, t, ask, say;
+  let items, t, ask, say;
   if (type === 'color') {
-    gifts = cols.slice(0, 3).map(c => ({ c, s: '' })); t = gifts[0];
-    ask = `Give me the ${t.c} gift.`; say = `Here is the ${t.c} gift.`;
+    items = cols.slice(0, 3).map(c => ({ c, s: '' })); t = items[0];
+    ask = `Give me the ${t.c} ${thing}.`; say = `Here is the ${t.c} ${thing}.`;
   } else if (type === 'size') {
     const big = Math.random() < .5;
-    gifts = [{ c: cols[0], s: big ? 'big' : 'small' }, { c: cols[1], s: big ? 'small' : 'big' }, { c: cols[2], s: big ? 'small' : 'big' }];
-    t = gifts[0]; ask = `Give me the ${t.s} gift.`; say = `Here is the ${t.s} gift.`;
+    items = [{ c: cols[0], s: big ? 'big' : 'small' }, { c: cols[1], s: big ? 'small' : 'big' }, { c: cols[2], s: big ? 'small' : 'big' }];
+    t = items[0]; ask = `Give me the ${t.s} ${thing}.`; say = `Here is the ${t.s} ${thing}.`;
   } else if (type === 'both') {
     const s = pickOne(['big', 'small']), o = s === 'big' ? 'small' : 'big';
-    gifts = [{ c: cols[0], s }, { c: cols[0], s: o }, { c: cols[1], s }, { c: cols[2], s: o }];
-    t = gifts[0]; ask = `Give me the ${s} ${t.c} gift.`; say = `Here is the ${s} ${t.c} gift.`;
+    items = [{ c: cols[0], s }, { c: cols[0], s: o }, { c: cols[1], s }, { c: cols[2], s: o }];
+    t = items[0]; ask = `Give me the ${s} ${t.c} ${thing}.`; say = `Here is the ${s} ${t.c} ${thing}.`;
   } else {
-    gifts = cols.slice(0, 3).map(c => ({ c, s: '' })); t = null;
-    ask = 'Give me a gift.'; say = 'Here is a gift.';
+    items = cols.slice(0, 3).map(c => ({ c, s: '' })); t = null;
+    ask = `Give me a ${thing}.`; say = `Here is a ${thing}.`;
   }
-  return { gifts: shuffle(gifts), t, ask, say, type };
+  return { items: shuffle(items), t, ask, say, type, thing };
+}
+// every kind of question comes up, never the same kind twice in a row; "a" (any one) twice to set against "the"
+function theRounds() {
+  const types = ['color', 'size', 'any', 'both', 'color', pickOne(['any', 'size'])];
+  // five different things, then a sixth that is neither the one before it nor the third (the other "a" round)
+  const things = shuffle(Object.keys(THINGS_C));
+  things.push(pickOne(Object.keys(THINGS_C).filter(x => x !== things[4] && x !== things[2])));
+  const out = [], asks = new Set();
+  types.forEach((ty, k) => {
+    let R0, n = 0;
+    do R0 = theRound(ty, things[k]); while (asks.has(R0.ask) && ++n < 20);
+    asks.add(R0.ask); out.push(R0);
+  });
+  return out;
 }
 SGAMES.thePick = (ctx, def) => {
-  const N = 6; let i = 0, mistakes = 0;
-  const rounds = Array.from({ length: N }, theRound);
-  if (!rounds.some(x => x.type === 'any')) rounds[2 + Math.floor(Math.random() * 3)] = (() => { let x; do x = theRound(); while (x.type !== 'any'); return x; })();
+  const rounds = theRounds(), N = rounds.length;
+  let i = 0, mistakes = 0;
   ctx.stage.innerHTML = `<div class="theg"><div class="sentrow"><span class="santa">🎅</span><div class="sentence"></div><button class="say" aria-label="聽">🔊</button></div>
-      <div class="table"></div><p class="sub">${zy('點一下你要給聖誕老人的禮物')}</p></div>`;
+      <div class="table"></div><p class="sub">${zy('點一下你要給聖誕老人的東西')}</p></div>`;
   const sent = ctx.stage.querySelector('.sentence'), table = ctx.stage.querySelector('.table');
   function round() {
     setDots(N, i);
@@ -5125,10 +5152,10 @@ SGAMES.thePick = (ctx, def) => {
     sent.innerHTML = esc(R0.ask).replace(/\b(the|a)\b/, '<b>$1</b>');
     ctx.stage.querySelector('.theg .say').onclick = () => speak(R0.ask, SRATE);
     later(() => speak(R0.ask, SRATE), 350);
-    table.innerHTML = R0.gifts.map((g, k) => `<button class="gpick2 ${g.s}" data-k="${k}">${giftHTML(g.c)}</button>`).join('');
+    table.innerHTML = R0.items.map((g, k) => `<button class="gpick2 ${g.s}" data-k="${k}" aria-label="${g.s} ${g.c} ${R0.thing}">${THINGS_C[R0.thing](g.c)}</button>`).join('');
     table.querySelectorAll('.gpick2').forEach(b => b.onclick = () => {
       if (busy) return;
-      const g = R0.gifts[+b.dataset.k];
+      const g = R0.items[+b.dataset.k];
       const ok = !R0.t || (g.c === R0.t.c && g.s === R0.t.s);
       if (ok) {
         busy = true; b.classList.add('right'); sfx.ok(); hideCheer();
@@ -5136,7 +5163,7 @@ SGAMES.thePick = (ctx, def) => {
         i++; sFinishRound(ctx, { say: R0.say }, wrong, R0.say, round);
       } else {
         mistakes++; wrong = true; sfx.no();
-        cheer([[`This is the ${g.s ? g.s + ' ' : ''}${g.c} gift.`, false, SRATE]]);
+        cheer([[`This is the ${g.s ? g.s + ' ' : ''}${g.c} ${R0.thing}.`, false, SRATE]]);
         b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
       }
     });
