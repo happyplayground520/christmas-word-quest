@@ -1632,15 +1632,29 @@ function zy(text) {
 /* ================= speech ================= */
 const canSpeak = 'speechSynthesis' in window;
 let voiceEn = null, voiceZh = null;
+// the iPad lists a voice once for each quality, and its fun voices once for each language: tell them apart
+const voiceKey = v => v.voiceURI || v.name;
+function voiceQuality(v) {
+  const u = v.voiceURI || '';
+  if (/eloquence|speech\.synthesis\.voice/i.test(u)) return 0;   // fun voices (Eddy, Grandma…)
+  if (/\.premium\./i.test(u)) return 3;                           // 進階版
+  if (/enhanced|-premium/i.test(u)) return 2;                      // 增強版 (older iPads named it premium)
+  return 1;                                                        // 標準版
+}
+const QUALITY_ZH = ['趣味聲音', '標準版', '增強版', '進階版'];
+const accentOf = lang => /TW|Hant/i.test(lang) ? 0 : /HK|yue/i.test(lang) ? 1 : 2;
+const ACCENT_ZH = ['台灣', '香港', '大陸'];
 function pickVoices() {
   const vs = speechSynthesis.getVoices();
   voiceEn = vs.find(v => /en[-_]US/i.test(v.lang) && /Samantha|Google US|Jenny|Aria|Ava|Zira/i.test(v.name))
          || vs.find(v => /en[-_]US/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null;
   // Taiwan Mandarin: iPad Mei-Jia, Windows Yating/Hanhan/Zhiwei, Chrome "國語（臺灣）"
-  voiceZh = vs.find(v => /zh[-_]TW/i.test(v.lang) && /Mei-?Jia|Yating|Hanhan|Google/i.test(v.name))
-         || vs.find(v => /zh[-_]TW/i.test(v.lang)) || vs.find(v => /zh[-_]Hant/i.test(v.lang)) || null;
+  // the best Taiwan voice on this device: highest quality first, the usual teacher-like voices before others
+  const usual = v => /Mei-?Jia|美佳|Yating|Hanhan|Google/i.test(v.name) ? 1 : 0;
+  const tw = vs.filter(v => /zh[-_]TW/i.test(v.lang) && voiceQuality(v) > 0).sort((a, b) => voiceQuality(b) - voiceQuality(a) || usual(b) - usual(a));
+  voiceZh = tw[0] || vs.find(v => /zh[-_]Hant/i.test(v.lang)) || null;
   const want = devPref('xmas-zh-voice');
-  if (want) voiceZh = vs.find(v => v.name === want) || voiceZh;
+  if (want) voiceZh = vs.find(v => voiceKey(v) === want) || vs.find(v => v.name === want) || voiceZh;
 }
 // a Chinese voice and speed picked on the parent page; voices differ per device, so these stay on this device
 function devPref(k, v) {
@@ -6165,6 +6179,7 @@ function secretParentHTML(p) {
         <button class="btn alt" id="zhTry">試聽</button></div>
       <p>英文句子的速度（跟著說和題目）</p>
       <select id="enRateSel" aria-label="英文速度">${[['0.75', '一般'], ['0.6', '慢'], ['0.5', '很慢']].map(([v, t]) => `<option value="${v}" ${String(SRATE) === v ? 'selected' : ''}>${t}</option>`).join('')}</select>
+      <p>建議選「台灣口音」裡的「增強版」或「進階版」；「自動選擇」會自動用這台平板上最好的台灣聲音。</p>
       <p>想要更自然的聲音：iPad「設定 → 輔助使用 → 朗讀內容 → 聲音 → 中文（台灣）」，下載「美佳（增強版）」等聲音，再回來這裡選。</p>
       <p>麥克風靈敏度（家裡比較吵就調低）</p>
       <select id="sensSel" aria-label="麥克風靈敏度">${[['high', '高（很小聲也算）'], ['mid', '中'], ['low', '低（比較吵的地方）']].map(([v, t]) => `<option value="${v}" ${o.sens === v ? 'selected' : ''}>${t}</option>`).join('')}</select></div>`;
@@ -6185,10 +6200,16 @@ function bindSecretParent(p) {
   $('#modeSel').onchange = e => { o.mode = e.target.value; save(); };
   $('#sensSel').onchange = e => { o.sens = e.target.value; save(); };
   const fillVoices = () => {
-    const vs = canSpeak ? speechSynthesis.getVoices().filter(v => /^zh|cmn/i.test(v.lang)) : [];
-    const cur = devPref('xmas-zh-voice') || '';
-    $('#zhVoiceSel').innerHTML = `<option value="">自動選擇${voiceZh ? `（${esc(voiceZh.name)}）` : ''}</option>` +
-      vs.map(v => `<option value="${esc(v.name)}" ${v.name === cur ? 'selected' : ''}>${esc(v.name)}（${esc(v.lang)}）</option>`).join('');
+    const seen = new Set(), cur = devPref('xmas-zh-voice') || '';
+    const vs = (canSpeak ? speechSynthesis.getVoices() : []).filter(v => /^zh|cmn|yue/i.test(v.lang) && !seen.has(voiceKey(v)) && seen.add(voiceKey(v)))
+      .sort((a, b) => (voiceQuality(a) === 0) - (voiceQuality(b) === 0) || accentOf(a.lang) - accentOf(b.lang) || voiceQuality(b) - voiceQuality(a) || a.name.localeCompare(b.name));
+    const label = v => `${v.name}（${ACCENT_ZH[accentOf(v.lang)]}・${QUALITY_ZH[voiceQuality(v)]}）`;
+    const opt = v => `<option value="${esc(voiceKey(v))}" ${voiceKey(v) === cur || v.name === cur ? 'selected' : ''}>${esc(label(v))}</option>`;
+    const group = (title, list) => list.length ? `<optgroup label="${title}">${list.map(opt).join('')}</optgroup>` : '';
+    $('#zhVoiceSel').innerHTML = `<option value="">自動選擇${voiceZh ? `：${esc(label(voiceZh))}` : ''}</option>` +
+      group('台灣口音', vs.filter(v => voiceQuality(v) && accentOf(v.lang) === 0)) +
+      group('其他口音', vs.filter(v => voiceQuality(v) && accentOf(v.lang) > 0)) +
+      group('趣味聲音', vs.filter(v => !voiceQuality(v)));
   };
   fillVoices();
   if (canSpeak) speechSynthesis.addEventListener('voiceschanged', () => { if ($('#zhVoiceSel')) fillVoices(); });
