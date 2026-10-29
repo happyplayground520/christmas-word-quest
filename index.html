@@ -1203,6 +1203,8 @@ button.chip:active { background: var(--night-2); }
 
 .psec input[type=text] { font: inherit; padding: 8px 12px; border-radius: 12px; border: 2px solid var(--frost-d); background: #fff; color: var(--ink); color-scheme: light; min-width: 0; -webkit-user-select: text; user-select: text; }
 .diaryp { background: #fffaf0; border-radius: 12px; padding: 8px 12px; font-family: var(--f-word); color: var(--ink); }
+.vinfo summary { cursor: pointer; color: var(--ink-2); }
+.vinfo pre { white-space: pre-wrap; word-break: break-all; font-size: 13px; background: #eef3fc; border-radius: 10px; padding: 8px; color: var(--ink); -webkit-user-select: text; user-select: text; }
 .diaryp small { display: block; color: var(--ink-2); font-family: var(--f-num); }
 .wchip.schip { white-space: normal; text-align: left; font-size: 20px; }
 
@@ -6179,7 +6181,8 @@ function secretParentHTML(p) {
         <button class="btn alt" id="zhTry">試聽</button></div>
       <p>英文句子的速度（跟著說和題目）</p>
       <select id="enRateSel" aria-label="英文速度">${[['0.75', '一般'], ['0.6', '慢'], ['0.5', '很慢']].map(([v, t]) => `<option value="${v}" ${String(SRATE) === v ? 'selected' : ''}>${t}</option>`).join('')}</select>
-      <p>建議選「台灣口音」裡的「增強版」或「進階版」；「自動選擇」會自動用這台平板上最好的台灣聲音。</p>
+      <p>只列出台灣口音的聲音。同名的聲音會標「第 1 個」「第 2 個」，請各選一次按「試聽」，挑聽起來比較自然的（通常是增強版）。</p>
+      <details class="vinfo"><summary>語音詳細資料（選不到增強版時，可以截圖這裡）</summary><pre id="zhVoiceInfo"></pre></details>
       <p>想要更自然的聲音：iPad「設定 → 輔助使用 → 朗讀內容 → 聲音 → 中文（台灣）」，下載「美佳（增強版）」等聲音，再回來這裡選。</p>
       <p>麥克風靈敏度（家裡比較吵就調低）</p>
       <select id="sensSel" aria-label="麥克風靈敏度">${[['high', '高（很小聲也算）'], ['mid', '中'], ['low', '低（比較吵的地方）']].map(([v, t]) => `<option value="${v}" ${o.sens === v ? 'selected' : ''}>${t}</option>`).join('')}</select></div>`;
@@ -6199,17 +6202,22 @@ function bindSecretParent(p) {
   document.querySelectorAll('.frIn').forEach(inp => inp.onchange = () => { o.friends[+inp.dataset.k] = inp.value.trim(); save(); });
   $('#modeSel').onchange = e => { o.mode = e.target.value; save(); };
   $('#sensSel').onchange = e => { o.sens = e.target.value; save(); };
+  // Taiwan voices only; the iPad may give two voices the same name without saying which is enhanced,
+  // so those are numbered and told apart by listening
   const fillVoices = () => {
     const seen = new Set(), cur = devPref('xmas-zh-voice') || '';
-    const vs = (canSpeak ? speechSynthesis.getVoices() : []).filter(v => /^zh|cmn|yue/i.test(v.lang) && !seen.has(voiceKey(v)) && seen.add(voiceKey(v)))
-      .sort((a, b) => (voiceQuality(a) === 0) - (voiceQuality(b) === 0) || accentOf(a.lang) - accentOf(b.lang) || voiceQuality(b) - voiceQuality(a) || a.name.localeCompare(b.name));
-    const label = v => `${v.name}（${ACCENT_ZH[accentOf(v.lang)]}・${QUALITY_ZH[voiceQuality(v)]}）`;
+    const vs = (canSpeak ? speechSynthesis.getVoices() : []).filter(v => /zh[-_](TW|Hant)/i.test(v.lang) && !seen.has(voiceKey(v)) && seen.add(voiceKey(v)))
+      .sort((a, b) => (voiceQuality(a) === 0) - (voiceQuality(b) === 0) || voiceQuality(b) - voiceQuality(a) || a.name.localeCompare(b.name));
+    const base = v => v.name + (voiceQuality(v) >= 2 ? `（${QUALITY_ZH[voiceQuality(v)]}）` : '');
+    const count = {}, nth = new Map();
+    vs.forEach(v => { const b = base(v); count[b] = (count[b] || 0) + 1; nth.set(v, count[b]); });
+    const label = v => base(v) + (count[base(v)] > 1 ? ` 第 ${nth.get(v)} 個` : '');
     const opt = v => `<option value="${esc(voiceKey(v))}" ${voiceKey(v) === cur || v.name === cur ? 'selected' : ''}>${esc(label(v))}</option>`;
-    const group = (title, list) => list.length ? `<optgroup label="${title}">${list.map(opt).join('')}</optgroup>` : '';
-    $('#zhVoiceSel').innerHTML = `<option value="">自動選擇${voiceZh ? `：${esc(label(voiceZh))}` : ''}</option>` +
-      group('台灣口音', vs.filter(v => voiceQuality(v) && accentOf(v.lang) === 0)) +
-      group('其他口音', vs.filter(v => voiceQuality(v) && accentOf(v.lang) > 0)) +
-      group('趣味聲音', vs.filter(v => !voiceQuality(v)));
+    const auto = voiceZh && vs.includes(voiceZh) ? `：${esc(label(voiceZh))}` : '';
+    $('#zhVoiceSel').innerHTML = `<option value="">自動選擇${auto}</option>` +
+      vs.filter(v => voiceQuality(v)).map(opt).join('') +
+      (vs.some(v => !voiceQuality(v)) ? `<optgroup label="趣味聲音">${vs.filter(v => !voiceQuality(v)).map(opt).join('')}</optgroup>` : '');
+    $('#zhVoiceInfo').textContent = vs.map(v => `${label(v)} | ${v.lang} | ${v.voiceURI} | ${v.localService ? '本機' : '網路'}${v.default ? ' | 預設' : ''}`).join('\n') || '這台裝置沒有台灣中文語音';
   };
   fillVoices();
   if (canSpeak) speechSynthesis.addEventListener('voiceschanged', () => { if ($('#zhVoiceSel')) fillVoices(); });
