@@ -1205,6 +1205,20 @@ button.chip:active { background: var(--night-2); }
 .diaryp { background: #fffaf0; border-radius: 12px; padding: 8px 12px; font-family: var(--f-word); color: var(--ink); }
 .diaryp small { display: block; color: var(--ink-2); font-family: var(--f-num); }
 .wchip.schip { white-space: normal; text-align: left; font-size: 20px; }
+
+/* ---------- first-time guided tour ---------- */
+.tour { position: fixed; inset: 0; z-index: 7; }
+.tspot { position: fixed; border-radius: 18px; border: 4px solid var(--gold); box-shadow: 0 0 0 9999px rgba(8,16,36,.62); pointer-events: none; transition: left .3s, top .3s, width .3s, height .3s; }
+.tour.tap .tspot { animation: tglow 1.2s ease-in-out infinite; }
+@keyframes tglow { 50% { border-color: #fff; box-shadow: 0 0 0 9999px rgba(8,16,36,.62), 0 0 26px 8px var(--gold); } }
+.tbub { position: fixed; display: flex; gap: 12px; align-items: flex-start; background: var(--snow); color: var(--ink); border-radius: 24px; padding: 14px 16px; box-shadow: 0 8px 0 var(--frost-d); animation: popin .35s; }
+.tbud { flex: none; width: 68px; height: 68px; }
+.tbud svg { width: 100%; height: 100%; display: block; }
+.ttext { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.ttext p { margin: 0; font-size: 22px; font-weight: 700; line-height: 1.9; }
+.trow { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+.trow .btn { min-height: 48px; font-size: 19px; padding: 6px 18px; }
+.trow .tnext:disabled { opacity: 1; background: var(--gold-l); box-shadow: 0 4px 0 var(--gold-d); }
 </style>
 </head>
 <body>
@@ -1214,6 +1228,7 @@ button.chip:active { background: var(--night-2); }
 <div id="app">
   <header class="bar" id="bar" hidden>
     <button class="chip" id="homeBtn" aria-label="回首頁">🏠</button>
+    <button class="chip" id="helpChip" aria-label="怎麼玩">❓</button>
     <span class="chip" id="verChip"></span>
     <span class="spacer"></span>
     <button class="chip fsbtn" aria-label="全螢幕"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
@@ -1237,6 +1252,7 @@ button.chip:active { background: var(--night-2); }
         <button class="sbtn" id="cabinBtn" aria-label="聖誕小屋"><span class="si2">🏡</span><span class="sl" data-zy>聖誕小屋</span></button>
         <button class="sbtn" id="adventBtn" aria-label="簽到"><span class="si2">🗓️</span><span class="sl" data-zy>簽到</span></button>
         <button class="sbtn" id="bagBtn" aria-label="禮物袋"><span class="si2">🎒</span><span class="sl" data-zy>禮物袋</span></button>
+        <button class="sbtn" id="helpBtn" aria-label="怎麼玩"><span class="si2">❓</span><span class="sl" data-zy>怎麼玩</span></button>
         <span class="sep"></span>
         <button class="sbtn fsbtn" aria-label="全螢幕"><span class="si2"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></span><span class="sl" data-zy>全螢幕</span></button>
         <button class="sbtn" id="parentBtn" aria-label="家長"><span class="si2">👨‍👩‍👧</span><span class="sl" data-zy>家長</span></button>
@@ -1597,7 +1613,7 @@ const ZHUYIN = {
   角:'ㄐㄧㄠˇ',話:'ㄏㄨㄚˋ',誰:'ㄕㄟˊ',請:'ㄑㄧㄥˇ',讓:'ㄖㄤˋ',貓:'ㄇㄠ',車:'ㄔㄜ',迪:'ㄉㄧˊ',送:'ㄙㄨㄥˋ',進:'ㄐㄧㄣˋ',
   遞:'ㄉㄧˋ',配:'ㄆㄟˋ',重:'ㄔㄨㄥˊ',金:'ㄐㄧㄣ',鈴:'ㄌㄧㄥˊ',錯:'ㄘㄨㄛˋ',鎮:'ㄓㄣˋ',鐺:'ㄉㄤ',長:'ㄓㄤˇ',門:'ㄇㄣˊ',
   閉:'ㄅㄧˋ',間:'ㄐㄧㄢ',降:'ㄐㄧㄤˋ',限:'ㄒㄧㄢˋ',階:'ㄐㄧㄝ',面:'ㄇㄧㄢˋ',頁:'ㄧㄝˋ',頭:'ㄊㄡˊ',餅:'ㄅㄧㄥˇ',首:'ㄕㄡˇ',
-  住:'ㄓㄨˋ',嗎:'˙ㄇㄚ',慢:'ㄇㄢˋ',
+  住:'ㄓㄨˋ',世:'ㄕˋ',些:'ㄒㄧㄝ',何:'ㄏㄜˊ',叉:'ㄔㄚ',叭:'˙ㄅㄚ',告:'ㄍㄠˋ',商:'ㄕㄤ',喇:'ㄌㄚˇ',喜:'ㄒㄧˇ',嗨:'ㄏㄞ',圓:'ㄩㄢˊ',域:'ㄩˋ',帶:'ㄉㄞˋ',序:'ㄒㄩˋ',店:'ㄉㄧㄢˋ',案:'ㄢˋ',歡:'ㄏㄨㄢ',烏:'ㄨ',照:'ㄓㄠˋ',界:'ㄐㄧㄝˋ',覺:'ㄐㄩㄝˊ',訴:'ㄙㄨˋ',買:'ㄇㄞˇ',順:'ㄕㄨㄣˋ',龜:'ㄍㄨㄟ',嗎:'˙ㄇㄚ',慢:'ㄇㄢˋ',
   久:'ㄐㄧㄡˇ',事:'ㄕˋ',什:'ㄕㄣˊ',介:'ㄐㄧㄝˋ',他:'ㄊㄚ',作:'ㄗㄨㄛˋ',便:'ㄅㄧㄢˋ',候:'˙ㄏㄡ',偵:'ㄓㄣ',克:'ㄎㄜˋ',兌:'ㄉㄨㄟˋ',其:'ㄑㄧˊ',區:'ㄑㄩ',午:'ㄨˇ',只:'ㄓˇ',叫:'ㄐㄧㄠˋ',同:'ㄊㄨㄥˊ',咕:'ㄍㄨ',問:'ㄨㄣˋ',嚕:'ㄌㄨ',因:'ㄧㄣ',園:'ㄩㄢˊ',外:'ㄨㄞˋ',始:'ㄕˇ',密:'ㄇㄧˋ',實:'ㄕˊ',左:'ㄗㄨㄛˇ',師:'ㄕ',幾:'ㄐㄧˇ',張:'ㄓㄤ',念:'ㄋㄧㄢˋ',情:'ㄑㄧㄥˊ',懂:'ㄉㄨㄥˇ',戳:'ㄔㄨㄛ',指:'ㄓˇ',探:'ㄊㄢˋ',推:'ㄊㄨㄟ',改:'ㄍㄞˇ',故:'ㄍㄨˋ',整:'ㄓㄥˇ',數:'ㄕㄨˋ',方:'ㄈㄤ',早:'ㄗㄠˇ',晚:'ㄨㄢˇ',東:'ㄉㄨㄥ',楚:'˙ㄔㄨ',樣:'ㄧㄤˋ',氣:'ㄑㄧˋ',淇:'ㄑㄧˊ',淋:'ㄌㄧㄣˊ',清:'ㄑㄧㄥ',準:'ㄓㄨㄣˇ',為:'ㄨㄟˋ',畫:'ㄏㄨㄚˋ',相:'ㄒㄧㄤˋ',知:'ㄓ',短:'ㄉㄨㄢˇ',碼:'ㄇㄚˇ',社:'ㄕㄜˋ',祕:'ㄇㄧˋ',積:'ㄐㄧ',簿:'ㄅㄨˋ',紙:'ㄓˇ',紹:'ㄕㄠˋ',組:'ㄗㄨˇ',聊:'ㄌㄧㄠˊ',肚:'ㄉㄨˋ',被:'ㄅㄟˋ',西:'˙ㄒㄧ',計:'ㄐㄧˋ',訊:'ㄒㄩㄣˋ',訪:'ㄈㄤˇ',說:'ㄕㄨㄛ',變:'ㄅㄧㄢˋ',跟:'ㄍㄣ',道:'ㄉㄠˋ',邊:'ㄅㄧㄢ',那:'ㄋㄚˋ',針:'ㄓㄣ',陽:'ㄧㄤˊ',隨:'ㄙㄨㄟˊ',隻:'ㄓ',雷:'ㄌㄟˊ',麥:'ㄇㄞˋ',簽:'ㄑㄧㄢ',去:'ㄑㄩˋ',紋:'ㄨㄣˊ',粉:'ㄈㄣˇ',愛:'ㄞˋ',心:'ㄒㄧㄣ',吊:'ㄉㄧㄠˋ',拐:'ㄍㄨㄞˇ',杖:'ㄓㄤˋ',杯:'ㄅㄟ',蛋:'ㄉㄢˋ',糕:'ㄍㄠ',甜:'ㄊㄧㄢˊ',兔:'ㄊㄨˋ',狗:'ㄍㄡˇ',狐:'ㄏㄨˊ',狸:'˙ㄌㄧ',牆:'ㄑㄧㄤˊ',雙:'ㄕㄨㄤ',華:'ㄏㄨㄚˊ',麗:'ㄌㄧˋ',盒:'ㄏㄜˊ',俄:'ㄜˊ',羅:'ㄌㄨㄛˊ',斯:'ㄙ',鐘:'ㄓㄨㄥ',婆:'ㄆㄛˊ',鋼:'ㄍㄤ',琴:'ㄑㄧㄣˊ',所:'ㄙㄨㄛˇ',怎:'ㄗㄣˇ',麼:'˙ㄇㄜ',自:'ㄗˋ',己:'ㄐㄧˇ',寫:'ㄒㄧㄝˇ',種:'ㄓㄨㄥˇ',體:'ㄊㄧˇ',躲:'ㄉㄨㄛˇ',站:'ㄓㄢˋ',賽:'ㄙㄞˋ',跑:'ㄆㄠˇ',往:'ㄨㄤˇ',衝:'ㄔㄨㄥ',釣:'ㄉㄧㄠˋ',魚:'ㄩˊ',遊:'ㄧㄡˊ',戲:'ㄒㄧˋ',檔:'ㄉㄤˇ',度:'ㄉㄨˋ',備:'ㄅㄟˋ',份:'ㄈㄣˋ',從:'ㄘㄨㄥˊ',著:'˙ㄓㄜ',掉:'ㄉㄧㄠˋ',怪:'ㄍㄨㄞˋ',器:'ㄑㄧˋ',機:'ㄐㄧ',零:'ㄌㄧㄥˊ',件:'ㄐㄧㄢˋ',修:'ㄒㄧㄡ',理:'ㄌㄧˇ',賓:'ㄅㄧㄣ',連:'ㄌㄧㄢˊ',條:'ㄊㄧㄠˊ',丟:'ㄉㄧㄡ',敗:'ㄅㄞˋ',穿:'ㄔㄨㄢ',衣:'ㄧ',服:'˙ㄈㄨ',身:'ㄕㄣ',泡:'ㄆㄠˋ',像:'ㄒㄧㄤˋ',和:'ㄏㄜˊ',圍:'ㄨㄟˊ',水:'ㄕㄨㄟˇ',旋:'ㄒㄩㄢˊ',木:'ㄇㄨˋ',馬:'ㄇㄚˇ',偶:'ㄡˇ',胡:'ㄏㄨˊ',桃:'ㄊㄠˊ',鉗:'ㄑㄧㄢˊ',箱:'ㄒㄧㄤ',戴:'ㄉㄞˋ',巾:'ㄐㄧㄣ',桶:'ㄊㄨㄥˇ',塗:'ㄊㄨˊ',顯:'ㄒㄧㄢˇ',示:'ㄕˋ',拖:'ㄊㄨㄛ',或:'ㄏㄨㄛˋ',男:'ㄋㄢˊ',女:'ㄋㄩˇ',生:'ㄕㄥ',還:'ㄏㄞˊ',分:'ㄈㄣ',享:'ㄒㄧㄤˇ',螢:'ㄧㄥˊ',幕:'ㄇㄨˋ',轉:'ㄓㄨㄢˇ',橫:'ㄏㄥˊ',製:'ㄓˋ',貼:'ㄊㄧㄝ',框:'ㄎㄨㄤ',綠:'ㄌㄩˋ',白:'ㄅㄞˊ',典:'ㄉㄧㄢˇ',棵:'ㄎㄜ',紅:'ㄏㄨㄥˊ',藍:'ㄌㄢˊ',蝴:'ㄏㄨˊ',蝶:'ㄉㄧㄝˊ',結:'ㄐㄧㄝˊ',跳:'ㄊㄧㄠˋ',視:'ㄕˋ',窗:'ㄔㄨㄤ',辦:'ㄅㄢˋ',法:'ㄈㄚˇ',直:'ㄓˊ',接:'ㄐㄧㄝ',影:'ㄧㄥˇ',像:'ㄒㄧㄤˋ',電:'ㄉㄧㄢˋ',腦:'ㄋㄠˇ',右:'ㄧㄡˋ',鍵:'ㄐㄧㄢˋ',另:'ㄌㄧㄥˋ',移:'ㄧˊ',動:'ㄉㄨㄥˋ',高:'ㄍㄠ',鵝:'ㄜˊ',鷹:'ㄧㄥ',鹿:'ㄌㄨˋ',麋:'ㄇㄧˊ'
 };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -1859,6 +1875,7 @@ function show(name) {
     $('#starCount').textContent = totalStars();
   }
   ({ profiles: renderProfiles, home: renderHome, map: renderMap, bag: renderBag, cabin: renderCabin, advent: renderAdvent, parent: renderParent }[name] || (() => {}))();
+  if (P() && ['home', 'map', 'cabin'].includes(name)) maybeTour(tourKeyFor(name));
 }
 
 /* ---------- profiles ---------- */
@@ -1978,6 +1995,11 @@ $('#adventBtn').onclick = () => { adventPage = null; show('advent'); };
 $('#bagBtn').onclick = () => { bagVer = null; show('bag'); };
 $('#parentBtn').onclick = parentGate;
 $('#homeBtn').onclick = () => show('home');
+$('#helpBtn').onclick = () => replayTour('home');
+$('#helpChip').onclick = () => {
+  const name = SCREENS.find(n => !$('#' + n).hidden);
+  if (TOURS[tourKeyFor(name)]) replayTour(name); else toast('這一頁直接點點看就可以了！');
+};
 
 /* ---------- world map ---------- */
 const NODE_POS = {
@@ -2096,6 +2118,7 @@ function startStage(s) {
   const kind = realKind(s), W = WORLDS[s.w];
   current = { type: 'stage', def: s, kind };
   const ctx = openGame(`${s.id} ${KIND[kind][0]}`, KIND[kind][1], W.key);
+  maybeTour('game', 900);
   ctx.pool = stagePool(s); ctx.w = s.w;
   if (kind === 'grammar') return GAMES.grammar(ctx, ADV_TOPIC[s.w]);
   if (kind === 'time' || kind === 'mix') return GAMES.grammar(ctx, kind);
@@ -4463,6 +4486,8 @@ function renderParent() {
     ${secretParentHTML(p)}
     <div class="psec"><h3>休息提醒</h3><p>連續玩到設定的時間，麋鹿會溫和地提醒休息（不會強制停止）。</p>
       <select id="remindSel" aria-label="休息提醒">${[15, 20, 30, 0].map(m => `<option value="${m}" ${p.remindMin === m ? 'selected' : ''}>${m ? m + ' 分鐘' : '關閉'}</option>`).join('')}</select></div>
+    <div class="psec"><h3>新手導覽</h3><p>第一次打開首頁、地圖、關卡、跟著說和聖誕小屋時，小夥伴會帶孩子看一次怎麼玩。孩子也可以隨時按 ❓ 再看一次。</p>
+      <div class="row"><button class="btn alt" id="tourReset">重新顯示所有導覽</button></div></div>
     <div class="psec"><h3>備份進度（建議每週一次）</h3>
       <p>進度存在這台平板的瀏覽器裡。清除瀏覽器資料、用無痕模式、或 iPad 上超過 7 天沒打開網頁，進度都可能不見。</p>
       <p>👉 最保險：在 Safari 按「分享 → 加入主畫面」，以後都從主畫面的圖示打開遊戲，再加上定期備份。</p>
@@ -4478,6 +4503,7 @@ function renderParent() {
       <div class="row"><button class="btn" id="bkLoad">還原成新的小精靈</button></div></div>
     <div class="psec"><h3>刪除這個小精靈</h3><p>會刪除 ${esc(p.name)} 在這台平板上的所有進度，無法復原。</p>
       <div class="row"><button class="btn red" id="delBtn">刪除</button></div></div>`;
+  $('#tourReset').onclick = () => { p.tours = {}; save(); toast('好了！下次打開每一頁都會再介紹一次'); };
   $('#remindSel').onchange = e => { p.remindMin = +e.target.value; nextRemind = p.remindMin ? sessionSec + p.remindMin * 60 : Infinity; save(); };
   const stamp = () => { p.backupAt = Date.now(); save(); };
   const makeCode = () => { stamp(); $('#bkOut').value = 'XMAS1:' + btoa(unescape(encodeURIComponent(JSON.stringify(p)))); };
@@ -4882,6 +4908,7 @@ function sayAlong(text, cb) {
       micClose();
       endRow.hidden = false;
       endRow.querySelector('[data-a="play"]').hidden = !url;
+      maybeTour('say2', 300);
     });
   };
   const voice = (rate = SRATE) => {
@@ -4889,7 +4916,7 @@ function sayAlong(text, cb) {
     speakThen(text, rate, ms => {
       talking = false;
       if (!alive() || closed) return;
-      if (phase === 'voice') { voiceMs = ms; need = Math.max(700, Math.min(3000, ms * .45)); phase = 'ready'; goB.hidden = false; setStat('準備好了，就按麥克風開始說！'); }
+      if (phase === 'voice') { voiceMs = ms; need = Math.max(700, Math.min(3000, ms * .45)); phase = 'ready'; goB.hidden = false; setStat('準備好了，就按麥克風開始說！'); maybeTour('say1', 200); }
       else if (phase === 'listen') setStat('🎤 換你說！');
     });
   };
@@ -6168,6 +6195,137 @@ function bindSecretParent(p) {
   $('#zhRateSel').onchange = e => { devPref('xmas-zh-rate', e.target.value); trySay(); };
   $('#zhTry').onclick = trySay;
   $('#enRateSel').onchange = e => { devPref('xmas-en-rate', e.target.value); SRATE = +e.target.value; speak('It is an egg.', SRATE); };
+}
+
+
+/* ================= first-time guided tour ================= */
+// each screen explains itself the first time an elf sees it; tap: the child must press the lit button to go on
+const TOURS = {
+  home: [
+    { sel: '#buddyPet', zh: '嗨！我是你的夥伴。我來帶你看看怎麼玩！' },
+    { sel: '#missionBox', zh: '這是今天的任務。完成任務，可以拿到鈴鐺！' },
+    { sel: '#chestBtn', zh: '過關會拿到星星。集滿 5 顆星，就能打開星星寶箱。' },
+    { sel: '#side', zh: '這裡有聖誕小屋、簽到和禮物袋。鈴鐺可以在小屋買裝飾喔！' },
+    { sel: '#vers .vbtn[data-v="basic"]', zh: '第一次玩，先從初階開始冒險吧！', tap: true }
+  ],
+  map: [
+    { sel: '#wtabs', zh: '這裡可以換不同的世界。過完一個世界，下一個就會打開。' },
+    { sel: '#bar .chip:nth-last-child(-n+2)', all: true, zh: '這裡是你拿到的鈴鐺和星星。' },
+    { sel: '#mapBox .station.next', zh: '發亮的就是下一關。點它開始玩！', tap: true }
+  ],
+  smap: [
+    { sel: '#wtabs', zh: '祕密任務有三個區域，可以照任何順序玩。' },
+    { sel: '#mapBox .station.next', zh: '發亮的是下一關。每一關開始前，小老師會先說明喔！', tap: true }
+  ],
+  game: [
+    { sel: '#gTitle', zh: '這裡會告訴你，這一關要做什麼。' },
+    { sel: '#stage .say', zh: '按紅色的喇叭，可以再聽一次。' },
+    { sel: '#stage .opts, #stage .wopts, #stage .bgrid, #stage .holes, #stage', zh: '點你覺得對的答案。答錯沒關係，可以再試一次！' },
+    { sel: '#dots', zh: '這些圓點是進度。全部亮起來，就過關了！' },
+    { sel: '#quitBtn', zh: '想回地圖，就按這裡。' }
+  ],
+  say1: [
+    { sel: '.sayover .sayrow .say', zh: '按喇叭，可以再聽一次。' },
+    { sel: '.sayover .slowb', zh: '按烏龜，會念得更慢。' },
+    { sel: '.sayover .saygo', zh: '準備好了，就按麥克風，跟著說一次！', tap: true }
+  ],
+  say2: [
+    { sel: '.sayover [data-a="play"]', zh: '按這裡，可以聽聽你自己的聲音。' },
+    { sel: '.sayover [data-a="redo"]', zh: '想再說一次，就按這裡。' },
+    { sel: '.sayover .tipx', zh: '不想說的時候，按叉叉就可以跳過。' },
+    { sel: '.sayover [data-a="next"]', zh: '說完了，就按下一題！', tap: true }
+  ],
+  cabin: [
+    { sel: '#shop', zh: '這是商店。用鈴鐺買你喜歡的裝飾！' },
+    { sel: '#cabinCv', zh: '買好的裝飾會放進小屋。用手指拖拖看，放到你喜歡的地方。' },
+    { sel: '#postcardBtn', zh: '還可以做一張聖誕明信片，送給家人！' }
+  ]
+};
+let touring = null;
+const tourSeen = key => { const p = P(); return !p || !!(p.tours && p.tours[key]); };
+function maybeTour(key, wait = 600, tries = 6) {
+  if (tourSeen(key)) return;
+  setTimeout(() => {
+    if (tourSeen(key)) return;
+    // a tour whose button has gone (the screen changed) gives way; one still showing is waited for
+    if (touring && !touring.showing()) touring.end();
+    if (touring || !$('#modal').hidden) { if (tries) maybeTour(key, 800, tries - 1); return; }
+    runTour(key);
+  }, wait);
+}
+// "a, b, c": the first of these that is on screen (querySelector would take whichever comes first in the page)
+const tourFind = sel => sel.split(', ').map(x => document.querySelector(x)).find(el => el && el.offsetParent !== null && el.getBoundingClientRect().width > 0) || null;
+function runTour(key) {
+  const p = P(); if (!p || touring || !$('#modal').hidden) return;
+  const steps = TOURS[key].filter(st => st.all ? document.querySelector(st.sel) : tourFind(st.sel));
+  p.tours = p.tours || {}; p.tours[key] = 1; save();
+  if (!steps.length) return;
+  const ov = document.createElement('div'); ov.className = 'tour';
+  ov.innerHTML = `<div class="tspot"></div><div class="tbub"><span class="tbud">${curBuddySVG()}</span>
+      <div class="ttext"><p></p><div class="trow"><button class="btn alt tskip">${zy('跳過')}</button><button class="btn tnext"></button></div></div></div>`;
+  document.body.appendChild(ov);
+  const spot = ov.querySelector('.tspot'), bub = ov.querySelector('.tbub'), txt = ov.querySelector('.ttext p'), nextB = ov.querySelector('.tnext');
+  let k = 0, target = null, lit = null;
+  touring = { end, showing: () => !!(target && target.isConnected && target.offsetParent !== null) };
+  function end() {
+    if (!touring) return;
+    touring = null; paceToken++; if (canSpeak) speechSynthesis.cancel();
+    removeEventListener('resize', place); ov.remove();
+  }
+  // the lit box around the button (or around several, when the step names a group)
+  function place() {
+    const st = steps[k]; if (!st) return;
+    const els = st.all ? [...document.querySelectorAll(st.sel)] : [tourFind(st.sel)];
+    target = els[0];
+    if (!target || !target.isConnected) { end(); return; }
+    const rs = els.map(e => e.getBoundingClientRect());
+    const r = { left: Math.min(...rs.map(x => x.left)), top: Math.min(...rs.map(x => x.top)), right: Math.max(...rs.map(x => x.right)), bottom: Math.max(...rs.map(x => x.bottom)) };
+    const pad = 8, vw = innerWidth, vh = innerHeight;
+    lit = { left: r.left - pad, top: r.top - pad, right: r.right + pad, bottom: r.bottom + pad };
+    Object.assign(spot.style, { left: r.left - pad + 'px', top: r.top - pad + 'px', width: r.right - r.left + pad * 2 + 'px', height: r.bottom - r.top + pad * 2 + 'px' });
+    // set the width first: the height of the bubble depends on it
+    const bw = Math.min(460, vw - 32); bub.style.width = bw + 'px';
+    const bh = bub.offsetHeight || 170;
+    // below the button, else above it, else beside a tall one, else at the bottom of the screen
+    const below = vh - r.bottom > bh + 30, above = r.top > bh + 30, mid = (r.top + r.bottom) / 2 - bh / 2;
+    let top, left = (r.left + r.right) / 2 - bw / 2;
+    if (below) top = r.bottom + 20;
+    else if (above) top = r.top - bh - 20;
+    else if (r.left > bw + 36) { top = mid; left = r.left - bw - 20; }
+    else if (vw - r.right > bw + 36) { top = mid; left = r.right + 20; }
+    else top = vh - bh - 16;
+    left = Math.max(16, Math.min(vw - bw - 16, left));
+    Object.assign(bub.style, { left: left + 'px', top: Math.max(16, Math.min(vh - bh - 16, top)) + 'px' });
+  }
+  function show() {
+    const st = steps[k];
+    txt.innerHTML = zy(st.zh);
+    nextB.innerHTML = zy(st.tap ? '👆 按亮亮的地方' : k < steps.length - 1 ? '知道了 ➜' : '開始玩！');
+    nextB.disabled = !!st.tap;
+    ov.classList.toggle('tap', !!st.tap);
+    place(); requestAnimationFrame(place);
+    speakPaced(zhParts(st.zh));
+  }
+  nextB.onclick = () => { if (steps[k].tap) return; k++; if (k >= steps.length) end(); else show(); };
+  ov.querySelector('.tskip').onclick = end;
+  // on a tap step, a tap inside the lit box goes through to the real button
+  ov.addEventListener('click', e => {
+    if (e.target.closest('.tbub') || !steps[k] || !steps[k].tap) return;
+    const r = lit;
+    if (!r || e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
+    ov.style.display = 'none';
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    end();
+    if (el) el.click();
+  });
+  addEventListener('resize', place);
+  show();
+}
+function tourKeyFor(name) { return name === 'map' ? (version === 'secret' ? 'smap' : 'map') : name; }
+function replayTour(name) {
+  const p = P(), key = tourKeyFor(name);
+  if (p && p.tours) delete p.tours[key];
+  runTour(key);
 }
 
 /* ================= start ================= */
