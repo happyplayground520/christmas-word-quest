@@ -4758,7 +4758,9 @@ const TIPS = {
 };
 // Chinese with English words inside: the Chinese voice rushes through "a" or "an",
 // so each English word is read by the English voice, slowly, between the Chinese parts
-function zhParts(text, slow = 1) {
+// plain: everyday speed with short pauses (the guided tour); otherwise the slow teaching speed
+function zhParts(text, slow = 1, plain = false) {
+  if (plain) return zhParts(text).map(([t, zh]) => [t, zh, zh ? .95 : .8, zh ? 60 : 120]);
   return text.replace(/a、e、i、o、u/g, 'A, E, I, O, U').split(/(?<=[。！？，：])/)
     .flatMap(sen => sen.split(/([A-Za-z][A-Za-z' ,]*[A-Za-z]|[A-Za-z])/))
     .map(x => x.trim().replace(/^[.,!?]+\s*/, '')).filter(x => x && !/^[，。、：！？「」…\s]+$/.test(x))
@@ -6304,7 +6306,7 @@ function runTour(key) {
     nextB.disabled = !!st.tap;
     ov.classList.toggle('tap', !!st.tap);
     place(); requestAnimationFrame(place);
-    speakPaced(zhParts(st.zh));
+    speakPaced(zhParts(st.zh, 1, true));
   }
   nextB.onclick = () => { if (steps[k].tap) return; k++; if (k >= steps.length) end(); else show(); };
   ov.querySelector('.tskip').onclick = end;
