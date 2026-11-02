@@ -1305,8 +1305,8 @@ button.chip:active { background: var(--night-2); }
 .mail.send { transform: translateY(-60vh) scale(.3) rotate(-12deg); opacity: 0; }
 
 /* ---------- cabin rooms ---------- */
-.rooms { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
-.rtab { flex: none; display: inline-flex; align-items: center; gap: 6px; border: none; border-radius: 999px; padding: 6px 14px; min-height: 48px; background: rgba(14,28,58,.84); color: var(--snow); font-size: 18px; font-weight: 700; box-shadow: 0 4px 0 rgba(0,0,0,.3); }
+.rooms { display: flex; flex-wrap: wrap; gap: 8px; padding: 2px 0 4px; }
+.rtab { flex: none; display: inline-flex; align-items: center; gap: 6px; border: none; border-radius: 999px; padding: 4px 12px; min-height: 46px; background: rgba(14,28,58,.84); color: var(--snow); font-size: 18px; font-weight: 700; box-shadow: 0 4px 0 rgba(0,0,0,.3); }
 .rtab .ri { font-size: 24px; line-height: 1; }
 .rtab.on { background: var(--gold-l); color: var(--ink); box-shadow: 0 4px 0 var(--gold-d); }
 .rtab.locked { opacity: .8; }
@@ -4806,7 +4806,7 @@ function minutes(p, days) {
 async function saveBackupFile(profiles, label) {
   const now = Date.now();
   profiles.forEach(x => { x.backupAt = now; }); save();
-  const name = `聖誕單字大冒險-${label}-${todayStr()}.json`, text = JSON.stringify({ app: 'xmas-word-quest', v: 3, profiles });
+  const d = new Date(), name = `聖誕單字大冒險-${label}-${todayStr()}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.json`, text = JSON.stringify({ app: 'xmas-word-quest', v: 3, profiles });
   try {
     if (window.claude && claude.use) {
       const dl = downloadsCap || await withinMs(claude.use('downloads').catch(() => null), 3000);
