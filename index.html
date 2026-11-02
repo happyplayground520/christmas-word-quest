@@ -3606,7 +3606,9 @@ const TREE_STYLES = [
 const treeStyle = () => TREE_STYLES.find(t => t.id === (P().treeStyle || 'fir')) || TREE_STYLES[0];
 function drawTreeShape(g, st = treeStyle()) {
   const cx = 1180;
-  if (st.id === 'emoji') { emojiAt(g, '🎄', cx, 615, 680); return; }
+  // the classic tree used to be the 🎄 emoji blown up, which the iPad only has as a small picture, so it went blurry;
+  // now it is drawn in the same cartoon style so it stays sharp at any size
+  if (st.id === 'emoji') { drawClassicTree(g, cx); return; }
   // pot and trunk
   g.fillStyle = '#6b3f22'; g.fillRect(cx - 30, 850, 60, 60);
   g.fillStyle = '#c43a3f'; g.beginPath(); g.moveTo(cx - 74, 895); g.lineTo(cx + 74, 895); g.lineTo(cx + 58, 950); g.lineTo(cx - 58, 950); g.closePath(); g.fill();
@@ -3638,6 +3640,34 @@ function drawTreeShape(g, st = treeStyle()) {
       g.restore();
     }
   });
+}
+function drawClassicTree(g, cx) {
+  g.fillStyle = '#8a5a35'; g.fillRect(cx - 34, 830, 68, 100);
+  g.fillStyle = '#6b3f22'; g.fillRect(cx + 6, 830, 28, 100);
+  // three rounded tiers, a lighter left side and a darker right side
+  [[300, 560, 170], [440, 720, 235], [590, 880, 300]].reverse().forEach(([t, b, hw]) => {
+    const tier = (fill, x0, x1) => {
+      g.fillStyle = fill; g.beginPath(); g.moveTo(cx, t);
+      g.quadraticCurveTo(cx + (x1 - cx) * .35, t + (b - t) * .6, x1, b - 18);
+      g.quadraticCurveTo(x1 + 6, b + 10, x1 - 30, b + 6);
+      g.lineTo(x0 + 30, b + 6);
+      g.quadraticCurveTo(x0 - 6, b + 10, x0, b - 18);
+      g.quadraticCurveTo(cx + (x0 - cx) * .35, t + (b - t) * .6, cx, t);
+      g.closePath(); g.fill();
+    };
+    tier('#2f9e44', cx - hw, cx + hw);
+    g.save(); g.beginPath(); g.rect(cx, 0, hw + 20, 1000); g.clip(); tier('#238636', cx - hw, cx + hw); g.restore();
+  });
+  // round ornaments with a shine
+  [[cx - 70, 470, '#e5484d'], [cx + 60, 520, '#3b82f6'], [cx - 120, 650, '#ffc53d'], [cx + 110, 680, '#e5484d'], [cx - 10, 620, '#9b5de5'],
+   [cx - 190, 820, '#3b82f6'], [cx - 40, 790, '#ffc53d'], [cx + 160, 830, '#9b5de5'], [cx + 50, 860, '#e5484d']].forEach(([x, y, c]) => {
+    g.fillStyle = c; g.beginPath(); g.arc(x, y, 24, 0, 6.283); g.fill();
+    g.fillStyle = 'rgba(255,255,255,.65)'; g.beginPath(); g.arc(x - 8, y - 8, 7, 0, 6.283); g.fill();
+  });
+  // a gold star on top
+  g.fillStyle = '#ffc53d'; g.strokeStyle = '#c98a12'; g.lineWidth = 6; g.lineJoin = 'round'; g.beginPath();
+  for (let i = 0; i < 10; i++) { const r = i % 2 ? 26 : 62, a = -Math.PI / 2 + i * Math.PI / 5; g.lineTo(cx + r * Math.cos(a), 270 + r * Math.sin(a)); }
+  g.closePath(); g.fill(); g.stroke();
 }
 function emojiAt(g, e, x, y, size) {
   g.font = `${size}px ${EMOJI_FONT}`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(e, x, y);
