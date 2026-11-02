@@ -1305,6 +1305,15 @@ button.chip:active { background: var(--night-2); }
 .mail .mline { display: flex; gap: 18px; flex-wrap: wrap; min-height: 1.4em; font-family: var(--f-word); font-weight: 700; font-size: clamp(20px, 4cqh, 30px); color: var(--ink); }
 .mail .tboard { height: min(48cqh, 400px); box-shadow: none; background: transparent; }
 .mail.send { transform: translateY(-60vh) scale(.3) rotate(-12deg); opacity: 0; }
+
+/* ---------- cabin rooms ---------- */
+.rooms { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+.rtab { flex: none; display: inline-flex; align-items: center; gap: 6px; border: none; border-radius: 999px; padding: 6px 14px; min-height: 48px; background: rgba(14,28,58,.84); color: var(--snow); font-size: 18px; font-weight: 700; box-shadow: 0 4px 0 rgba(0,0,0,.3); }
+.rtab .ri { font-size: 24px; line-height: 1; }
+.rtab.on { background: var(--gold-l); color: var(--ink); box-shadow: 0 4px 0 var(--gold-d); }
+.rtab.locked { opacity: .8; }
+.rtab small { font-size: 14px; color: var(--gold); white-space: nowrap; }
+.rtab.on small { color: var(--gold-d); }
 </style>
 </head>
 <body>
@@ -1380,6 +1389,7 @@ button.chip:active { background: var(--night-2); }
   <section class="screen" id="cabin" hidden>
     <div class="cabin">
       <div class="cabin-view">
+        <div class="rooms" id="roomTabs"></div>
         <canvas id="cabinCv" width="1600" height="1000" aria-label="聖誕小屋"></canvas>
         <div class="row"><button class="btn" id="postcardBtn" data-zy>💌 做明信片</button><p class="ctip" id="cabinTip"></p></div>
         <div class="treepick"><span class="ctip" data-zy>🎄 換一棵樹：</span><span id="treePick" class="treepick"></span></div>
@@ -1709,7 +1719,7 @@ const ZHUYIN = {
   角:'ㄐㄧㄠˇ',話:'ㄏㄨㄚˋ',誰:'ㄕㄟˊ',請:'ㄑㄧㄥˇ',讓:'ㄖㄤˋ',貓:'ㄇㄠ',車:'ㄔㄜ',迪:'ㄉㄧˊ',送:'ㄙㄨㄥˋ',進:'ㄐㄧㄣˋ',
   遞:'ㄉㄧˋ',配:'ㄆㄟˋ',重:'ㄔㄨㄥˊ',金:'ㄐㄧㄣ',鈴:'ㄌㄧㄥˊ',錯:'ㄘㄨㄛˋ',鎮:'ㄓㄣˋ',鐺:'ㄉㄤ',長:'ㄓㄤˇ',門:'ㄇㄣˊ',
   閉:'ㄅㄧˋ',間:'ㄐㄧㄢ',降:'ㄐㄧㄤˋ',限:'ㄒㄧㄢˋ',階:'ㄐㄧㄝ',面:'ㄇㄧㄢˋ',頁:'ㄧㄝˋ',頭:'ㄊㄡˊ',餅:'ㄅㄧㄥˇ',首:'ㄕㄡˇ',
-  住:'ㄓㄨˋ',寄:'ㄐㄧˋ',描:'ㄇㄧㄠˊ',筆:'ㄅㄧˇ',霜:'ㄕㄨㄤ',偷:'ㄊㄡ',催:'ㄘㄨㄟ',內:'ㄋㄟˋ',凍:'ㄉㄨㄥˋ',塊:'ㄎㄨㄞˋ',搗:'ㄉㄠˇ',擋:'ㄉㄤˇ',毛:'ㄇㄠˊ',皮:'ㄆㄧˊ',調:'ㄊㄧㄠˊ',走:'ㄗㄡˇ',趕:'ㄍㄢˇ',路:'ㄌㄨˋ',鴉:'ㄧㄚ',世:'ㄕˋ',些:'ㄒㄧㄝ',何:'ㄏㄜˊ',叉:'ㄔㄚ',叭:'˙ㄅㄚ',告:'ㄍㄠˋ',商:'ㄕㄤ',喇:'ㄌㄚˇ',喜:'ㄒㄧˇ',嗨:'ㄏㄞ',圓:'ㄩㄢˊ',域:'ㄩˋ',帶:'ㄉㄞˋ',序:'ㄒㄩˋ',店:'ㄉㄧㄢˋ',案:'ㄢˋ',歡:'ㄏㄨㄢ',烏:'ㄨ',照:'ㄓㄠˋ',界:'ㄐㄧㄝˋ',覺:'ㄐㄩㄝˊ',訴:'ㄙㄨˋ',買:'ㄇㄞˇ',順:'ㄕㄨㄣˋ',龜:'ㄍㄨㄟ',嗎:'˙ㄇㄚ',慢:'ㄇㄢˋ',
+  住:'ㄓㄨˋ',具:'ㄐㄩˋ',刀:'ㄉㄠ',剪:'ㄐㄧㄢˇ',吉:'ㄐㄧˊ',型:'ㄒㄧㄥˊ',城:'ㄔㄥˊ',堡:'ㄅㄠˇ',壺:'ㄏㄨˊ',夜:'ㄧㄝˋ',奶:'ㄋㄞˇ',客:'ㄎㄜˋ',室:'ㄕˋ',廳:'ㄊㄧㄥ',書:'ㄕㄨ',月:'ㄩㄝˋ',模:'ㄇㄛˊ',派:'ㄆㄞˋ',流:'ㄌㄧㄡˊ',牛:'ㄋㄧㄡˊ',獨:'ㄉㄨˊ',獸:'ㄕㄡˋ',箏:'˙ㄓㄥ',箭:'ㄐㄧㄢˋ',籠:'ㄌㄨㄥˊ',縫:'ㄈㄥˊ',罐:'ㄍㄨㄢˋ',臥:'ㄨㄛˋ',茶:'ㄔㄚˊ',草:'ㄘㄠˇ',莓:'ㄇㄟˊ',蔔:'˙ㄅㄛ',蘋:'ㄆㄧㄥˊ',蘿:'ㄌㄨㄛˊ',鎚:'ㄔㄨㄟˊ',鐵:'ㄊㄧㄝˇ',院:'ㄩㄢˋ',雞:'ㄐㄧ',餐:'ㄘㄢ',鬆:'ㄙㄨㄥ',鳥:'ㄋㄧㄠˇ',鼓:'ㄍㄨˇ',鼠:'ㄕㄨˇ',寄:'ㄐㄧˋ',描:'ㄇㄧㄠˊ',筆:'ㄅㄧˇ',霜:'ㄕㄨㄤ',偷:'ㄊㄡ',催:'ㄘㄨㄟ',內:'ㄋㄟˋ',凍:'ㄉㄨㄥˋ',塊:'ㄎㄨㄞˋ',搗:'ㄉㄠˇ',擋:'ㄉㄤˇ',毛:'ㄇㄠˊ',皮:'ㄆㄧˊ',調:'ㄊㄧㄠˊ',走:'ㄗㄡˇ',趕:'ㄍㄢˇ',路:'ㄌㄨˋ',鴉:'ㄧㄚ',世:'ㄕˋ',些:'ㄒㄧㄝ',何:'ㄏㄜˊ',叉:'ㄔㄚ',叭:'˙ㄅㄚ',告:'ㄍㄠˋ',商:'ㄕㄤ',喇:'ㄌㄚˇ',喜:'ㄒㄧˇ',嗨:'ㄏㄞ',圓:'ㄩㄢˊ',域:'ㄩˋ',帶:'ㄉㄞˋ',序:'ㄒㄩˋ',店:'ㄉㄧㄢˋ',案:'ㄢˋ',歡:'ㄏㄨㄢ',烏:'ㄨ',照:'ㄓㄠˋ',界:'ㄐㄧㄝˋ',覺:'ㄐㄩㄝˊ',訴:'ㄙㄨˋ',買:'ㄇㄞˇ',順:'ㄕㄨㄣˋ',龜:'ㄍㄨㄟ',嗎:'˙ㄇㄚ',慢:'ㄇㄢˋ',
   久:'ㄐㄧㄡˇ',事:'ㄕˋ',什:'ㄕㄣˊ',介:'ㄐㄧㄝˋ',他:'ㄊㄚ',作:'ㄗㄨㄛˋ',便:'ㄅㄧㄢˋ',候:'˙ㄏㄡ',偵:'ㄓㄣ',克:'ㄎㄜˋ',兌:'ㄉㄨㄟˋ',其:'ㄑㄧˊ',區:'ㄑㄩ',午:'ㄨˇ',只:'ㄓˇ',叫:'ㄐㄧㄠˋ',同:'ㄊㄨㄥˊ',咕:'ㄍㄨ',問:'ㄨㄣˋ',嚕:'ㄌㄨ',因:'ㄧㄣ',園:'ㄩㄢˊ',外:'ㄨㄞˋ',始:'ㄕˇ',密:'ㄇㄧˋ',實:'ㄕˊ',左:'ㄗㄨㄛˇ',師:'ㄕ',幾:'ㄐㄧˇ',張:'ㄓㄤ',念:'ㄋㄧㄢˋ',情:'ㄑㄧㄥˊ',懂:'ㄉㄨㄥˇ',戳:'ㄔㄨㄛ',指:'ㄓˇ',探:'ㄊㄢˋ',推:'ㄊㄨㄟ',改:'ㄍㄞˇ',故:'ㄍㄨˋ',整:'ㄓㄥˇ',數:'ㄕㄨˋ',方:'ㄈㄤ',早:'ㄗㄠˇ',晚:'ㄨㄢˇ',東:'ㄉㄨㄥ',楚:'˙ㄔㄨ',樣:'ㄧㄤˋ',氣:'ㄑㄧˋ',淇:'ㄑㄧˊ',淋:'ㄌㄧㄣˊ',清:'ㄑㄧㄥ',準:'ㄓㄨㄣˇ',為:'ㄨㄟˋ',畫:'ㄏㄨㄚˋ',相:'ㄒㄧㄤˋ',知:'ㄓ',短:'ㄉㄨㄢˇ',碼:'ㄇㄚˇ',社:'ㄕㄜˋ',祕:'ㄇㄧˋ',積:'ㄐㄧ',簿:'ㄅㄨˋ',紙:'ㄓˇ',紹:'ㄕㄠˋ',組:'ㄗㄨˇ',聊:'ㄌㄧㄠˊ',肚:'ㄉㄨˋ',被:'ㄅㄟˋ',西:'˙ㄒㄧ',計:'ㄐㄧˋ',訊:'ㄒㄩㄣˋ',訪:'ㄈㄤˇ',說:'ㄕㄨㄛ',變:'ㄅㄧㄢˋ',跟:'ㄍㄣ',道:'ㄉㄠˋ',邊:'ㄅㄧㄢ',那:'ㄋㄚˋ',針:'ㄓㄣ',陽:'ㄧㄤˊ',隨:'ㄙㄨㄟˊ',隻:'ㄓ',雷:'ㄌㄟˊ',麥:'ㄇㄞˋ',簽:'ㄑㄧㄢ',去:'ㄑㄩˋ',紋:'ㄨㄣˊ',粉:'ㄈㄣˇ',愛:'ㄞˋ',心:'ㄒㄧㄣ',吊:'ㄉㄧㄠˋ',拐:'ㄍㄨㄞˇ',杖:'ㄓㄤˋ',杯:'ㄅㄟ',蛋:'ㄉㄢˋ',糕:'ㄍㄠ',甜:'ㄊㄧㄢˊ',兔:'ㄊㄨˋ',狗:'ㄍㄡˇ',狐:'ㄏㄨˊ',狸:'˙ㄌㄧ',牆:'ㄑㄧㄤˊ',雙:'ㄕㄨㄤ',華:'ㄏㄨㄚˊ',麗:'ㄌㄧˋ',盒:'ㄏㄜˊ',俄:'ㄜˊ',羅:'ㄌㄨㄛˊ',斯:'ㄙ',鐘:'ㄓㄨㄥ',婆:'ㄆㄛˊ',鋼:'ㄍㄤ',琴:'ㄑㄧㄣˊ',所:'ㄙㄨㄛˇ',怎:'ㄗㄣˇ',麼:'˙ㄇㄜ',自:'ㄗˋ',己:'ㄐㄧˇ',寫:'ㄒㄧㄝˇ',種:'ㄓㄨㄥˇ',體:'ㄊㄧˇ',躲:'ㄉㄨㄛˇ',站:'ㄓㄢˋ',賽:'ㄙㄞˋ',跑:'ㄆㄠˇ',往:'ㄨㄤˇ',衝:'ㄔㄨㄥ',釣:'ㄉㄧㄠˋ',魚:'ㄩˊ',遊:'ㄧㄡˊ',戲:'ㄒㄧˋ',檔:'ㄉㄤˇ',度:'ㄉㄨˋ',備:'ㄅㄟˋ',份:'ㄈㄣˋ',從:'ㄘㄨㄥˊ',著:'˙ㄓㄜ',掉:'ㄉㄧㄠˋ',怪:'ㄍㄨㄞˋ',器:'ㄑㄧˋ',機:'ㄐㄧ',零:'ㄌㄧㄥˊ',件:'ㄐㄧㄢˋ',修:'ㄒㄧㄡ',理:'ㄌㄧˇ',賓:'ㄅㄧㄣ',連:'ㄌㄧㄢˊ',條:'ㄊㄧㄠˊ',丟:'ㄉㄧㄡ',敗:'ㄅㄞˋ',穿:'ㄔㄨㄢ',衣:'ㄧ',服:'˙ㄈㄨ',身:'ㄕㄣ',泡:'ㄆㄠˋ',像:'ㄒㄧㄤˋ',和:'ㄏㄜˊ',圍:'ㄨㄟˊ',水:'ㄕㄨㄟˇ',旋:'ㄒㄩㄢˊ',木:'ㄇㄨˋ',馬:'ㄇㄚˇ',偶:'ㄡˇ',胡:'ㄏㄨˊ',桃:'ㄊㄠˊ',鉗:'ㄑㄧㄢˊ',箱:'ㄒㄧㄤ',戴:'ㄉㄞˋ',巾:'ㄐㄧㄣ',桶:'ㄊㄨㄥˇ',塗:'ㄊㄨˊ',顯:'ㄒㄧㄢˇ',示:'ㄕˋ',拖:'ㄊㄨㄛ',或:'ㄏㄨㄛˋ',男:'ㄋㄢˊ',女:'ㄋㄩˇ',生:'ㄕㄥ',還:'ㄏㄞˊ',分:'ㄈㄣ',享:'ㄒㄧㄤˇ',螢:'ㄧㄥˊ',幕:'ㄇㄨˋ',轉:'ㄓㄨㄢˇ',橫:'ㄏㄥˊ',製:'ㄓˋ',貼:'ㄊㄧㄝ',框:'ㄎㄨㄤ',綠:'ㄌㄩˋ',白:'ㄅㄞˊ',典:'ㄉㄧㄢˇ',棵:'ㄎㄜ',紅:'ㄏㄨㄥˊ',藍:'ㄌㄢˊ',蝴:'ㄏㄨˊ',蝶:'ㄉㄧㄝˊ',結:'ㄐㄧㄝˊ',跳:'ㄊㄧㄠˋ',視:'ㄕˋ',窗:'ㄔㄨㄤ',辦:'ㄅㄢˋ',法:'ㄈㄚˇ',直:'ㄓˊ',接:'ㄐㄧㄝ',影:'ㄧㄥˇ',像:'ㄒㄧㄤˋ',電:'ㄉㄧㄢˋ',腦:'ㄋㄠˇ',右:'ㄧㄡˋ',鍵:'ㄐㄧㄢˋ',另:'ㄌㄧㄥˋ',移:'ㄧˊ',動:'ㄉㄨㄥˋ',高:'ㄍㄠ',鵝:'ㄜˊ',鷹:'ㄧㄥ',鹿:'ㄌㄨˋ',麋:'ㄇㄧˊ'
 };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -3691,6 +3701,7 @@ function baseBox(d) {
   if (TALL[d.id]) return [d.x - d.size * .3, d.y - d.size * .55, d.size * .6, d.size * 1.08];
   if (d.id === 'piano') return [d.x - d.size * .5, d.y - d.size * .47, d.size, d.size * .95];
   if (d.id === 'gingerman') return [d.x - 50, d.y - 60, 100, 120];
+  if (d.draw === 'igloo') return [d.x - d.size * .5, d.y - d.size * .25, d.size, d.size * .5];
   if (d.id === 'wreath') return [700, 195, 200, 200];
   return [d.x - d.size / 2, d.y - d.size / 2, d.size, d.size];
 }
@@ -3776,6 +3787,7 @@ function emojiAt(g, e, x, y, size) {
 }
 function drawCabin(g, owned) {
   // fixed 1600x1000 drawing; the caller scales the context
+  if (curRoom() !== 'living') { drawRoomBg(g, curRoom()); drawRoomDecos(g, owned); return; }
   const wall = g.createLinearGradient(0, 0, 0, 760); wall.addColorStop(0, '#5a3a2a'); wall.addColorStop(1, '#3e281d');
   g.fillStyle = wall; g.fillRect(0, 0, 1600, 760);
   g.fillStyle = 'rgba(0,0,0,.18)'; for (let x = 0; x < 1600; x += 100) g.fillRect(x, 0, 4, 760);
@@ -3796,8 +3808,12 @@ function drawCabin(g, owned) {
   g.fillStyle = fl; g.fillRect(0, 760, 1600, 240);
   g.fillStyle = 'rgba(0,0,0,.2)'; for (let y = 800; y < 1000; y += 46) g.fillRect(0, y, 1600, 3);
   g.fillStyle = '#2b1a10'; g.fillRect(0, 752, 1600, 14);
+  drawRoomDecos(g, owned);
+}
+// the decorations of the room in use, back to front; the one being dragged on top
+function drawRoomDecos(g, owned) {
   const now = performance.now(), dragId = drag && drag.moved ? drag.d.id : null;
-  const order = DECOS.filter(x => owned.includes(x.id) && x.id !== 'sleigh')
+  const order = roomDecos().filter(x => owned.includes(x.id) && x.id !== 'sleigh')
     .sort((a, b) => (a.id === dragId) - (b.id === dragId) || a.layer - b.layer);
   for (const d of order) {
     const t = bounce[d.id] ? (now - bounce[d.id]) / 450 : 1;
@@ -3889,6 +3905,146 @@ function drawBow(g, x, y, s) {
   g.fillStyle = '#ff6b73'; g.beginPath(); g.arc(x, y, s * .22, 0, 6.283); g.fill();
 }
 const TALL = { santa: 1, mrsclaus: 1, elf: 1, nutcracker: 1 };
+/* ---------- more rooms: each has its own background, its own decorations and its own layout ---------- */
+const ROOMS = [
+  { id: 'living', name: '客廳', icon: '🛋️', cost: 0 },
+  { id: 'bedroom', name: '臥室', icon: '🛏️', cost: 30 },
+  { id: 'kitchen', name: '廚房', icon: '🍪', cost: 30 },
+  { id: 'yard', name: '雪地院子', icon: '⛄', cost: 30 },
+  { id: 'workshop', name: '精靈工坊', icon: '🔨', cost: 30 }
+];
+// same fields as the living room's list; draw: a drawn figure instead of an emoji
+const ROOM_DECOS = {
+  bedroom: [
+    ['b_teddy', '泰迪熊', 'teddy bear', 's', 6, '🧸', 560, 640, 110, 4], ['b_star', '星星夜燈', 'star night light', 's', 6, '🌟', 1340, 470, 90, 3],
+    ['b_books', '故事書', 'storybooks', 's', 6, '📚', 1180, 470, 90, 3], ['b_sock', '聖誕襪', 'stocking', 's', 6, '🧦', 760, 300, 90, 3],
+    ['b_balloon', '氣球', 'balloon', 's', 6, '🎈', 1480, 300, 100, 3], ['b_unicorn', '獨角獸玩偶', 'unicorn toy', 's', 6, '🦄', 1050, 880, 110, 4],
+    ['b_bunny', '兔子玩偶', 'bunny toy', 's', 6, '🐰', 1230, 900, 100, 4], ['b_moon', '月亮燈', 'moon lamp', 's', 6, '🌙', 980, 200, 90, 3],
+    ['b_frame', '全家福相框', 'family photo', 'm', 15, '🖼️', 1260, 230, 120, 3], ['b_puzzle', '拼圖', 'puzzle', 'm', 15, '🧩', 860, 900, 100, 4],
+    ['b_guitar', '小吉他', 'guitar', 'm', 15, '🎸', 1480, 720, 140, 3], ['b_dolls', '娃娃', 'dolls', 'm', 15, '🪆', 1100, 470, 80, 4],
+    ['b_castle', '玩具城堡', 'toy castle', 'l', 30, '🏰', 1400, 870, 150, 4], ['b_rocket', '火箭模型', 'rocket', 'l', 30, '🚀', 1520, 470, 110, 3]
+  ],
+  kitchen: [
+    ['k_cookies', '聖誕餅乾', 'cookies', 's', 6, '🍪', 640, 560, 80, 4], ['k_milk', '給聖誕老人的牛奶', 'milk for Santa', 's', 6, '🥛', 740, 555, 80, 4],
+    ['k_carrot', '給麋鹿的紅蘿蔔', 'carrots', 's', 6, '🥕', 840, 560, 80, 4], ['k_cupcake', '杯子蛋糕', 'cupcake', 's', 6, '🧁', 1090, 820, 80, 4],
+    ['k_apple', '蘋果', 'apple', 's', 6, '🍎', 1180, 825, 70, 4], ['k_candy', '糖果罐', 'candy', 's', 6, '🍬', 1350, 330, 70, 4],
+    ['k_cocoa', '熱可可', 'hot cocoa', 's', 6, '☕', 1270, 820, 75, 4], ['k_berry', '草莓', 'strawberries', 's', 6, '🍓', 1460, 330, 70, 4],
+    ['k_cake', '聖誕蛋糕', 'Christmas cake', 'm', 15, '🍰', 1340, 810, 100, 4], ['k_pie', '派', 'pie', 'm', 15, '🥧', 520, 560, 90, 4],
+    ['k_pancake', '鬆餅', 'pancakes', 'm', 15, '🥞', 1180, 330, 80, 4], ['k_teapot', '茶壺', 'teapot', 'm', 15, '🫖', 1230, 330, 80, 4],
+    ['k_turkey', '火雞大餐', 'turkey dinner', 'l', 30, '🍗', 1200, 810, 110, 4], ['k_bigcake', '生日大蛋糕', 'big cake', 'l', 30, '🎂', 980, 800, 130, 4]
+  ],
+  yard: [
+    ['y_bird', '小鳥', 'bird', 's', 6, '🐦', 330, 460, 80, 3], ['y_squirrel', '松鼠', 'squirrel', 's', 6, '🐿️', 470, 860, 90, 4],
+    ['y_lantern', '燈籠', 'lantern', 's', 6, '🏮', 1080, 420, 80, 3], ['y_fox', '狐狸', 'fox', 's', 6, '🦊', 640, 880, 100, 4],
+    ['y_rabbit', '雪兔', 'snow rabbit', 's', 6, '🐇', 1440, 900, 90, 4], ['y_flake', '大雪花', 'snowflake', 's', 6, '❄️', 900, 180, 90, 3],
+    ['y_star', '流星', 'shooting star', 's', 6, '🌠', 1200, 150, 100, 2], ['y_mitten', '雪地手套', 'mittens', 's', 6, '🧤', 820, 930, 70, 4],
+    ['y_snowman', '大雪人', 'snowman', 'm', 15, '⛄', 1250, 780, 170, 3], ['y_sled', '雪橇', 'sled', 'm', 15, '🛷', 940, 900, 130, 4],
+    ['y_deer', '麋鹿', 'reindeer', 'm', 15, '🦌', 230, 800, 150, 3], ['y_penguin', '企鵝', 'penguin', 'm', 15, '🐧', 1050, 860, 110, 4],
+    ['y_santa', '院子裡的聖誕老人', 'Santa', 'l', 30, null, 640, 760, 250, 3, 'santa'], ['y_igloo', '冰屋', 'igloo', 'l', 30, null, 1450, 760, 260, 2, 'igloo']
+  ],
+  workshop: [
+    ['w_hammer', '小鐵鎚', 'hammer', 's', 6, '🔨', 640, 560, 70, 4], ['w_yoyo', '溜溜球', 'yo-yo', 's', 6, '🪀', 760, 560, 70, 4],
+    ['w_scissors', '剪刀', 'scissors', 's', 6, '✂️', 880, 560, 70, 4], ['w_gift', '禮物', 'gift', 's', 6, '🎁', 1000, 555, 80, 4],
+    ['w_kite', '風箏', 'kite', 's', 6, '🪁', 1460, 250, 110, 3], ['w_ball', '皮球', 'ball', 's', 6, '⚽', 520, 900, 80, 4],
+    ['w_teddy', '縫好的熊', 'teddy bear', 's', 6, '🧸', 1300, 300, 80, 4], ['w_paint', '顏料', 'paints', 's', 6, '🎨', 1140, 555, 80, 4],
+    ['w_train', '玩具火車', 'toy train', 'm', 15, '🚂', 820, 900, 110, 4], ['w_robot', '機器人', 'robot', 'm', 15, '🤖', 1150, 880, 110, 4],
+    ['w_car', '玩具車', 'toy car', 'm', 15, '🚗', 1000, 920, 90, 4], ['w_drum', '小鼓', 'drum', 'm', 15, '🥁', 1400, 300, 80, 4],
+    ['w_elf', '工坊小精靈', 'elf', 'l', 30, null, 300, 780, 230, 4, 'elf'], ['w_carousel', '旋轉木馬', 'carousel', 'l', 30, '🎠', 1400, 860, 140, 4]
+  ]
+};
+Object.keys(ROOM_DECOS).forEach(r => {
+  ROOM_DECOS[r] = ROOM_DECOS[r].map(([id, zh, en, tier, cost, emo, x, y, size, layer, draw]) => ({ id, zh, en, tier, cost, emo, x, y, size, layer, draw, room: r }));
+  ROOM_DECOS[r].filter(d => d.draw === 'santa' || d.draw === 'elf').forEach(d => { TALL[d.id] = 1; });
+});
+const curRoom = () => (P() && P().room) || 'living';
+const roomDecos = (room = curRoom()) => room === 'living' ? DECOS : ROOM_DECOS[room];
+const roomOpen = (r, p = P()) => r === 'living' || (p.rooms || []).includes(r);
+
+function drawIgloo(g, x, y, k) {
+  g.save(); g.translate(x, y); g.scale(k, k);
+  g.fillStyle = '#eef6ff'; g.strokeStyle = '#a9c8e8'; g.lineWidth = 4;
+  g.beginPath(); g.arc(0, 60, 120, Math.PI, 0); g.closePath(); g.fill(); g.stroke();
+  for (let r = 0; r < 3; r++) { g.beginPath(); g.moveTo(-120 + r * 4, 60 - r * 38); g.lineTo(120 - r * 4, 60 - r * 38); g.stroke(); }
+  [[-80, 22], [0, 22], [80, 22], [-40, -16], [40, -16], [0, -54]].forEach(([bx, by]) => { g.beginPath(); g.moveTo(bx, by + 38); g.lineTo(bx, by); g.stroke(); });
+  g.fillStyle = '#2b3f63'; g.beginPath(); g.arc(0, 60, 44, Math.PI, 0); g.closePath(); g.fill();
+  g.fillStyle = '#ffd36b'; g.globalAlpha = .5; g.beginPath(); g.arc(0, 60, 30, Math.PI, 0); g.closePath(); g.fill(); g.globalAlpha = 1;
+  g.restore();
+}
+
+// the four new rooms, drawn in the same 1600 x 1000 box as the living room
+function drawRoomBg(g, room) {
+  const rect = (c, x, y, w, h) => { g.fillStyle = c; g.fillRect(x, y, w, h); };
+  const win = (x, y, w, h, night = true) => {
+    rect('#e9dccb', x - 16, y - 16, w + 32, h + 32);
+    const sk = g.createLinearGradient(0, y, 0, y + h); sk.addColorStop(0, night ? '#0d1b3a' : '#7cc0f5'); sk.addColorStop(1, night ? '#2b4a85' : '#cfe8ff');
+    g.fillStyle = sk; g.fillRect(x, y, w, h);
+    g.fillStyle = '#fff'; g.globalAlpha = .7; for (let i = 0; i < 14; i++) { g.beginPath(); g.arc(x + 15 + (i * 61) % (w - 30), y + 15 + (i * 43) % (h - 40), 2.5, 0, 6.283); g.fill(); } g.globalAlpha = 1;
+    rect('#e9dccb', x + w / 2 - 7, y, 14, h); rect('#e9dccb', x, y + h / 2 - 7, w, 14);
+  };
+  if (room === 'bedroom') {
+    rect('#a9c4ec', 0, 0, 1600, 760);
+    g.fillStyle = 'rgba(255,255,255,.35)';
+    for (let i = 0; i < 40; i++) { const x = (i * 157) % 1600, y = 40 + (i * 97) % 680; g.beginPath(); for (let k = 0; k < 10; k++) { const r = k % 2 ? 6 : 14, a = -Math.PI / 2 + k * Math.PI / 5; g.lineTo(x + r * Math.cos(a), y + r * Math.sin(a)); } g.fill(); }
+    win(620, 140, 300, 260);
+    g.fillStyle = '#fff1c7'; g.beginPath(); g.arc(860, 200, 24, 0, 6.283); g.fill();
+    rect('#f0d6e8', 0, 760, 1600, 240); g.fillStyle = 'rgba(0,0,0,.06)'; for (let x = 0; x < 1600; x += 80) g.fillRect(x, 760, 3, 240);
+    // the bed
+    rect('#8a5a35', 60, 420, 30, 420); rect('#8a5a35', 440, 560, 26, 280);
+    rect('#b5784a', 70, 640, 400, 60); rect('#ffffff', 80, 590, 380, 70);
+    g.fillStyle = '#e5484d'; g.beginPath(); g.moveTo(180, 585); g.lineTo(465, 585); g.lineTo(470, 700); g.lineTo(180, 700); g.fill();
+    g.fillStyle = '#fff'; for (let x = 200; x < 460; x += 40) { g.beginPath(); g.arc(x, 620, 7, 0, 6.283); g.fill(); g.beginPath(); g.arc(x + 20, 665, 7, 0, 6.283); g.fill(); }
+    g.fillStyle = '#fffaf2'; g.beginPath(); g.ellipse(135, 580, 55, 28, 0, 0, 6.283); g.fill();
+    // a shelf and a round rug
+    rect('#b5784a', 1040, 510, 520, 20); rect('#8a5a35', 1060, 530, 12, 40); rect('#8a5a35', 1530, 530, 12, 40);
+    g.fillStyle = '#ffd6e7'; g.beginPath(); g.ellipse(950, 900, 320, 70, 0, 0, 6.283); g.fill();
+  } else if (room === 'kitchen') {
+    rect('#fff3dc', 0, 0, 1600, 760);
+    g.strokeStyle = 'rgba(201,138,18,.18)'; g.lineWidth = 2;
+    for (let y = 0; y < 760; y += 60) { g.beginPath(); g.moveTo(0, y); g.lineTo(1600, y); g.stroke(); }
+    for (let x = 0; x < 1600; x += 60) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, 760); g.stroke(); }
+    win(110, 120, 300, 240, false);
+    // counter with cupboards, the oven, and a high shelf
+    rect('#d9a066', 440, 600, 1160, 30); rect('#b77b42', 440, 630, 1160, 130);
+    for (let x = 460; x < 1580; x += 190) { rect('#c48b4f', x, 645, 170, 100); rect('#8a5a35', x + 78, 690, 14, 14); }
+    rect('#5a6577', 80, 480, 300, 280); rect('#2b3242', 110, 560, 240, 160); rect('#ffb36b', 120, 570, 220, 140);
+    g.globalAlpha = .5; rect('#ff8c1a', 120, 650, 220, 60); g.globalAlpha = 1;
+    [140, 200, 260, 320].forEach(x => { g.fillStyle = '#1b1f29'; g.beginPath(); g.arc(x, 515, 12, 0, 6.283); g.fill(); });
+    rect('#b5784a', 1120, 370, 440, 18);
+    // checkered floor and a table
+    for (let y = 760; y < 1000; y += 60) for (let x = 0; x < 1600; x += 60) rect(((x + y) / 60) % 2 ? '#e8eef8' : '#c9d6ea', x, y, 60, 60);
+    rect('#c48b4f', 900, 850, 560, 26); rect('#8a5a35', 930, 876, 20, 120); rect('#8a5a35', 1410, 876, 20, 120);
+  } else if (room === 'yard') {
+    const sk = g.createLinearGradient(0, 0, 0, 700); sk.addColorStop(0, '#0b1733'); sk.addColorStop(1, '#2d4f8f');
+    g.fillStyle = sk; g.fillRect(0, 0, 1600, 760);
+    g.fillStyle = '#fff'; for (let i = 0; i < 70; i++) { g.globalAlpha = .4 + (i % 5) / 8; g.beginPath(); g.arc((i * 233) % 1600, (i * 71) % 600, 1.5 + (i % 3), 0, 6.283); g.fill(); } g.globalAlpha = 1;
+    g.fillStyle = '#fff4c4'; g.beginPath(); g.arc(1420, 130, 60, 0, 6.283); g.fill();
+    // far hills, pine trees, the cabin wall at the back
+    g.fillStyle = '#c9dcf5'; g.beginPath(); g.moveTo(0, 620); g.quadraticCurveTo(400, 480, 800, 600); g.quadraticCurveTo(1200, 500, 1600, 610); g.lineTo(1600, 760); g.lineTo(0, 760); g.fill();
+    [[120, 600, 1], [260, 640, .8], [1000, 590, .9], [1550, 620, 1.1]].forEach(([x, y, s]) => {
+      g.fillStyle = '#1d6b47'; [0, 1, 2].forEach(t => { g.beginPath(); g.moveTo(x, y - 230 * s + t * 70 * s); g.lineTo(x - (60 + t * 25) * s, y - 110 * s + t * 70 * s); g.lineTo(x + (60 + t * 25) * s, y - 110 * s + t * 70 * s); g.fill(); });
+      g.fillStyle = '#fff'; g.beginPath(); g.ellipse(x, y - 225 * s, 18 * s, 8 * s, 0, 0, 6.283); g.fill();
+    });
+    g.fillStyle = '#6e4529'; g.fillRect(460, 330, 360, 330); g.fillStyle = '#ffffff'; g.beginPath(); g.moveTo(430, 340); g.lineTo(640, 220); g.lineTo(850, 340); g.fill();
+    g.fillStyle = '#ffd36b'; g.fillRect(520, 400, 90, 90); g.fillRect(680, 400, 90, 90); g.fillStyle = '#4b2e1c'; g.fillRect(605, 520, 70, 140);
+    // snow on the ground
+    g.fillStyle = '#f5f9ff'; g.beginPath(); g.moveTo(0, 700); g.quadraticCurveTo(800, 640, 1600, 700); g.lineTo(1600, 1000); g.lineTo(0, 1000); g.fill();
+    g.fillStyle = 'rgba(140,180,230,.25)'; for (let i = 0; i < 12; i++) { g.beginPath(); g.ellipse((i * 147) % 1600, 780 + (i * 53) % 200, 60, 10, 0, 0, 6.283); g.fill(); }
+  } else if (room === 'workshop') {
+    rect('#7a4e2e', 0, 0, 1600, 760); g.fillStyle = 'rgba(0,0,0,.15)'; for (let x = 0; x < 1600; x += 80) g.fillRect(x, 0, 5, 760);
+    // a warm lamp, shelves of toys, the big workbench
+    g.strokeStyle = '#2b1a10'; g.lineWidth = 4; g.beginPath(); g.moveTo(800, 0); g.lineTo(800, 120); g.stroke();
+    g.fillStyle = '#2f7d4f'; g.beginPath(); g.moveTo(740, 160); g.lineTo(860, 160); g.lineTo(830, 120); g.lineTo(770, 120); g.fill();
+    const glow = g.createRadialGradient(800, 170, 10, 800, 170, 380); glow.addColorStop(0, 'rgba(255,220,140,.45)'); glow.addColorStop(1, 'rgba(255,220,140,0)');
+    g.fillStyle = glow; g.fillRect(400, 100, 800, 600);
+    rect('#b5784a', 1220, 350, 360, 18); rect('#b5784a', 1220, 180, 360, 18);
+    rect('#c48b4f', 460, 600, 800, 34); rect('#8a5a35', 490, 634, 26, 130); rect('#8a5a35', 1210, 634, 26, 130);
+    g.fillStyle = '#e5484d'; g.beginPath(); g.moveTo(80, 380); g.lineTo(240, 380); g.lineTo(240, 560); g.lineTo(80, 560); g.fill();
+    g.fillStyle = '#ffc53d'; g.fillRect(150, 380, 20, 180); g.fillRect(80, 460, 160, 20);
+    const fl = g.createLinearGradient(0, 760, 0, 1000); fl.addColorStop(0, '#5e3a22'); fl.addColorStop(1, '#3e2616');
+    g.fillStyle = fl; g.fillRect(0, 760, 1600, 240); g.fillStyle = 'rgba(0,0,0,.2)'; for (let y = 800; y < 1000; y += 46) g.fillRect(0, y, 1600, 3);
+  }
+}
+
 const CRITTER = {
   bunny: { body: '#f6f3f0', dark: '#d9d0c7', ear: '#ffb3c7', nose: '#ff8fb0' },
   kitty: { body: '#f6a54b', dark: '#d07a22', ear: '#ffc9a8', nose: '#ff8f8f' },
@@ -4142,6 +4298,9 @@ function drawClaus(g, x, y, k, mrs) {
 }
 // one decoration at its unmoved spot (callers translate/scale the context)
 function drawDeco(g, d) {
+  if (d.draw === 'santa') { drawClaus(g, d.x, d.y, d.size / 260, false); return; }
+  if (d.draw === 'elf') { drawElf(g, d.x, d.y, d.size / 260); return; }
+  if (d.draw === 'igloo') { drawIgloo(g, d.x, d.y, d.size / 260); return; }
   if (d.id === 'santa' || d.id === 'mrsclaus') { drawClaus(g, d.x, d.y, d.size / 260, d.id === 'mrsclaus'); return; }
   if (d.id === 'elf') { drawElf(g, d.x, d.y, d.size / 260); return; }
   if (d.id === 'nutcracker') { drawNutcracker(g, d.x, d.y, d.size / 260); return; }
@@ -4324,8 +4483,29 @@ $('#treePick').addEventListener('click', e => {
   bounce.tree = performance.now(); speak('Christmas tree');
   renderTreePick(); paintCabin();
 });
+let roomConfirm = null;
+function renderRoomTabs() {
+  const p = P(), cur = curRoom();
+  $('#roomTabs').innerHTML = ROOMS.map(r => {
+    const open = roomOpen(r.id, p);
+    return `<button class="rtab ${r.id === cur ? 'on' : ''} ${open ? '' : 'locked'}" data-room="${r.id}"><span class="ri">${r.icon}</span><span>${zy(r.name)}</span>${open ? '' : `<small>${roomConfirm === r.id ? zy('確定？') : '🔒 🔔 ' + r.cost}</small>`}</button>`;
+  }).join('');
+}
+$('#roomTabs').addEventListener('click', e => {
+  const b = e.target.closest('.rtab'); if (!b) return;
+  const p = P(), r = ROOMS.find(x => x.id === b.dataset.room);
+  if (!roomOpen(r.id, p)) {
+    if (p.bells < r.cost) { sfx.no(); toast(`還差 ${r.cost - p.bells} 個鈴鐺，就能打開${r.name}`); return; }
+    if (roomConfirm !== r.id) { roomConfirm = r.id; renderRoomTabs(); return; }
+    p.bells -= r.cost; p.rooms = [...(p.rooms || []), r.id]; sfx.win(); toast(`🎉 ${r.name}打開了！`);
+    $('#bellCount').textContent = p.bells;
+  }
+  roomConfirm = null; p.room = r.id; save(); confirmId = null; renderCabin();
+});
 function renderCabin() {
   const p = P();
+  renderRoomTabs();
+  $('.treepick').hidden = curRoom() !== 'living';
   renderTreePick();
   paintCabin();
   $('#cabinTip').innerHTML = zy('按住裝飾可以移動，點一下可以聽英文！');
@@ -4334,7 +4514,7 @@ function renderCabin() {
     <p class="ctip">${zy('🔔 怎麼拿：過關、每日任務、每天簽到、星星寶箱。')}</p>
     <p class="ctip">${zy('已經有的裝飾，按「👀 顯示」可以收起來，不會出現在明信片上。')}</p>` + tiers.map(([t, name, note]) =>
     `<h3>${zy(name)}　<small style="font-weight:400;color:var(--frost);font-size:15px">${zy(note)}</small></h3>` +
-    DECOS.filter(d => d.tier === t).map(d => {
+    roomDecos().filter(d => d.tier === t).map(d => {
       let btn;
       if (p.owned.includes(d.id)) {
         const off = (p.hidden || []).includes(d.id);
@@ -4348,7 +4528,7 @@ function renderCabin() {
     }).join('')).join('');
   // small pictures of the drawn decorations, so the wreath no longer borrows the bow emoji
   $('#shop').querySelectorAll('.sicv').forEach(cv => {
-    const d = DECOS.find(x => x.id === cv.dataset.d), g = cv.getContext('2d');
+    const d = roomDecos().find(x => x.id === cv.dataset.d), g = cv.getContext('2d');
     // the wall lights show one swag, the tree lights show on a tree, so the picture says what you get
     const [bx, by, bw, bh] = d.id === 'lights' ? [60, 0, 520, 200] : baseBox(d), k = 92 / Math.max(bw, bh);
     g.setTransform(k, 0, 0, k, 52 - (bx + bw / 2) * k, 52 - (by + bh / 2) * k);
@@ -4362,11 +4542,11 @@ $('#shop').addEventListener('click', e => {
     const p = P(), id = tg.dataset.toggle; p.hidden = p.hidden || [];
     p.hidden = p.hidden.includes(id) ? p.hidden.filter(x => x !== id) : [...p.hidden, id];
     save(); sfx.flip();
-    if (!p.hidden.includes(id)) { bounce[id] = performance.now(); speak(DECOS.find(d => d.id === id).en); }
+    if (!p.hidden.includes(id)) { bounce[id] = performance.now(); speak(roomDecos().find(d => d.id === id).en); }
     renderCabin(); return;
   }
   const b = e.target.closest('[data-buy]'); if (!b) return;
-  const d = DECOS.find(x => x.id === b.dataset.buy), p = P();
+  const d = roomDecos().find(x => x.id === b.dataset.buy), p = P();
   if (confirmId !== d.id) { confirmId = d.id; renderCabin(); return; }
   confirmId = null;
   if (p.bells < d.cost) return;
@@ -4381,7 +4561,7 @@ function cabinPoint(e) {
 }
 $('#cabinCv').addEventListener('pointerdown', e => {
   const { x, y } = cabinPoint(e);
-  const hit = DECOS.filter(d => shownDecos().includes(d.id) && GRABBABLE(d)).sort((a, b) => b.layer - a.layer)
+  const hit = roomDecos().filter(d => shownDecos().includes(d.id) && GRABBABLE(d)).sort((a, b) => b.layer - a.layer)
     .find(d => { const [bx, by, bw, bh] = decoBox(d); return x >= bx && x <= bx + bw && y >= by && y <= by + bh; });
   if (!hit) return;
   const q = decoPos(hit);
