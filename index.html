@@ -739,7 +739,7 @@ button.chip:active { background: var(--night-2); }
 .overlay {
   position: fixed; inset: 0; z-index: 5; display: grid; place-items: center;
   padding: 20px max(16px, env(safe-area-inset-right, 0px)) 20px max(16px, env(safe-area-inset-left, 0px));
-  background: rgba(8,16,36,.74); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  background: rgba(8,16,36,.78);
 }
 #modal { z-index: 6; }
 .panel {
@@ -4515,7 +4515,7 @@ function renderRoomTabs() {
   const p = P(), cur = curRoom();
   $('#roomTabs').innerHTML = ROOMS.map(r => {
     const open = roomOpen(r.id, p);
-    return `<button class="rtab ${r.id === cur ? 'on' : ''} ${open ? '' : 'locked'}" data-room="${r.id}"><span class="ri">${r.icon}</span><span>${zy(r.name)}</span>${open ? '' : `<small>${roomConfirm === r.id ? zy('確定？') : '🔒 🔔 ' + r.cost}</small>`}</button>`;
+    return `<button class="rtab ${r.id === cur ? 'on' : ''} ${open ? '' : 'locked'}" data-room="${r.id}"><span class="ri">${r.icon}</span><span>${zy(r.name)}</span>${open ? '' : `<small>${'🔒 🔔 ' + r.cost}</small>`}</button>`;
   }).join('');
 }
 $('#roomTabs').addEventListener('click', e => {
@@ -4523,11 +4523,19 @@ $('#roomTabs').addEventListener('click', e => {
   const p = P(), r = ROOMS.find(x => x.id === b.dataset.room);
   if (!roomOpen(r.id, p)) {
     if (p.bells < r.cost) { sfx.no(); toast(`還差 ${r.cost - p.bells} 個鈴鐺，就能打開${r.name}`); return; }
-    if (roomConfirm !== r.id) { roomConfirm = r.id; renderRoomTabs(); return; }
-    p.bells -= r.cost; p.rooms = [...(p.rooms || []), r.id]; sfx.win(); toast(`🎉 ${r.name}打開了！`);
-    $('#bellCount').textContent = p.bells;
+    openModal(`<span style="font-size:64px;line-height:1">${r.icon}</span><h2>${zy(`要打開${r.name}嗎？`)}</h2>
+      <p>${zy(`要用掉 🔔 ${r.cost}（你有 🔔 ${p.bells}）`)}</p>
+      <div class="row"><button class="btn alt" data-close>${zy('先不要')}</button><button class="btn" id="roomYes">${zy('打開！')}</button></div>`);
+    $('#roomYes').onclick = () => {
+      closeModal();
+      if (p.bells < r.cost || roomOpen(r.id, p)) return;
+      p.bells -= r.cost; p.rooms = [...(p.rooms || []), r.id]; sfx.win(); toast(`🎉 ${r.name}打開了！`);
+      $('#bellCount').textContent = p.bells;
+      p.room = r.id; save(); confirmId = null; renderCabin();
+    };
+    return;
   }
-  roomConfirm = null; p.room = r.id; save(); confirmId = null; renderCabin();
+  p.room = r.id; save(); confirmId = null; renderCabin();
 });
 function renderCabin() {
   const p = P();
@@ -4537,9 +4545,7 @@ function renderCabin() {
   paintCabin();
   $('#cabinTip').innerHTML = zy('按住裝飾可以移動，點一下可以聽英文！');
   const tiers = [['s', '小裝飾 🔔 6', '每天玩就能換一兩個'], ['m', '中裝飾 🔔 15', '存一兩天'], ['l', '大裝飾 🔔 30', '存兩三天']];
-  $('#shop').innerHTML = `<p class="ctip">${zy(`你有 🔔 ${p.bells}。所有裝飾都用鈴鐺換！`)}</p>
-    <p class="ctip">${zy('🔔 怎麼拿：過關、每日任務、每天簽到、星星寶箱。')}</p>
-    <p class="ctip">${zy('已經有的裝飾，按「👀 顯示」可以收起來，不會出現在明信片上。')}</p>` + tiers.map(([t, name, note]) =>
+  $('#shop').innerHTML = tiers.map(([t, name, note]) =>
     `<h3>${zy(name)}　<small style="font-weight:400;color:var(--frost);font-size:15px">${zy(note)}</small></h3>` +
     roomDecos().filter(d => d.tier === t).map(d => {
       let btn;
