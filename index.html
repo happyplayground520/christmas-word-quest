@@ -1235,6 +1235,15 @@ button.chip:active { background: var(--night-2); }
 .trow { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
 .trow .btn { min-height: 48px; font-size: 19px; padding: 6px 18px; }
 .trow .tnext:disabled { opacity: 1; background: var(--gold-l); box-shadow: 0 4px 0 var(--gold-d); }
+
+/* ---------- daily play limit ---------- */
+.lockscr { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 16px; background: rgba(8,16,36,.9); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.lockcard { width: min(520px, 100%); background: var(--snow); color: var(--ink); border-radius: 30px; padding: 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; box-shadow: 0 10px 0 var(--frost-d); }
+.lockcard .lbud { width: 110px; height: 110px; }
+.lockcard .lbud svg { width: 100%; height: 100%; display: block; }
+.lockcard h2 { margin: 0; font-size: 28px; color: var(--berry-d); }
+.lockcard p { margin: 0; font-size: 20px; color: var(--ink-2); line-height: 1.9; }
+.lockcard input { font: inherit; font-size: 24px; width: 100%; max-width: 240px; padding: 10px 16px; border-radius: 16px; border: 3px solid var(--frost-d); text-align: center; color: var(--ink); background: #fff; color-scheme: light; }
 </style>
 </head>
 <body>
@@ -4480,12 +4489,12 @@ $('#agrid').addEventListener('click', e => {
 
 /* ================= parent / teacher page (adults; no 注音) ================= */
 function parentGate() {
-  const a = 12 + Math.floor(Math.random() * 30), b = 11 + Math.floor(Math.random() * 30);
-  openModal(`<h2 style="font-family:var(--f-body)">家長／老師</h2><p>請回答：${a} + ${b} = ?</p>
+  const [a, b, c] = mathQuestion();
+  openModal(`<h2 style="font-family:var(--f-body)">家長／老師</h2><p>請回答：${a} × ${b} = ?</p>
     <input type="number" inputmode="numeric" id="gateIn" aria-label="答案">
     <div class="row"><button class="btn alt" data-close>取消</button><button class="btn" id="gateOk">進入</button></div>`);
   const inp = $('#gateIn'); inp.focus();
-  const ok = () => { if (+inp.value === a + b) { closeModal(); show('parent'); } else { inp.value = ''; inp.focus(); sfx.no(); } };
+  const ok = () => { if (+inp.value === c) { closeModal(); show('parent'); } else { inp.value = ''; inp.focus(); sfx.no(); } };
   $('#gateOk').onclick = ok; inp.onkeydown = e => { if (e.key === 'Enter') ok(); };
 }
 function minutes(p, days) {
@@ -4549,6 +4558,10 @@ function renderParent() {
         <div class="pstat"><b>${p.bells}<em>個</em></b><span>鈴鐺</span></div></div></div>
     ${ver || '<div class="psec"><p>還沒有開始玩任何版本。</p></div>'}
     ${secretParentHTML(p)}
+    <div class="psec"><h3>每天的遊戲時間上限</h3>
+      <p>今天已經玩了 <b>${minutes(p, 1)}</b> 分鐘。時間到了會出現「今天的遊戲時間到了」，要家長答一題乘法才能解鎖；正在玩的那一關可以先玩完（最多再 5 分鐘）。結束前 5 分鐘會先提醒。</p>
+      <select id="limitSel" aria-label="每天的遊戲時間上限">${[0, 20, 30, 45, 60, 90].map(m => `<option value="${m}" ${(p.limitMin || 0) === m ? 'selected' : ''}>${m ? m + ' 分鐘' : '不限制'}</option>`).join('')}</select>
+      ${p.unlock && p.unlock.date === todayStr() ? `<p>今天已經解鎖：${p.unlock.free ? '不限時間' : `多 ${p.unlock.extra} 分鐘`}。</p><div class="row"><button class="btn alt" id="unlockClear">取消今天的解鎖</button></div>` : ''}</div>
     <div class="psec"><h3>休息提醒</h3><p>連續玩到設定的時間，麋鹿會溫和地提醒休息（不會強制停止）。</p>
       <select id="remindSel" aria-label="休息提醒">${[15, 20, 30, 0].map(m => `<option value="${m}" ${p.remindMin === m ? 'selected' : ''}>${m ? m + ' 分鐘' : '關閉'}</option>`).join('')}</select></div>
     <div class="psec"><h3>新手導覽</h3><p>第一次打開首頁、地圖、關卡、跟著說和聖誕小屋時，小夥伴會帶孩子看一次怎麼玩。孩子也可以隨時按 ❓ 再看一次。</p>
@@ -4569,6 +4582,8 @@ function renderParent() {
     <div class="psec"><h3>刪除這個小精靈</h3><p>會刪除 ${esc(p.name)} 在這台平板上的所有進度，無法復原。</p>
       <div class="row"><button class="btn red" id="delBtn">刪除</button></div></div>`;
   $('#tourReset').onclick = () => { p.tours = {}; save(); toast('好了！下次打開每一頁都會再介紹一次'); };
+  $('#limitSel').onchange = e => { p.limitMin = +e.target.value; save(); };
+  if ($('#unlockClear')) $('#unlockClear').onclick = () => { delete p.unlock; save(); renderParent(); };
   $('#remindSel').onchange = e => { p.remindMin = +e.target.value; nextRemind = p.remindMin ? sessionSec + p.remindMin * 60 : Infinity; save(); };
   const stamp = () => { p.backupAt = Date.now(); save(); };
   const makeCode = () => { stamp(); $('#bkOut').value = 'XMAS1:' + btoa(unescape(encodeURIComponent(JSON.stringify(p)))); };
@@ -4629,6 +4644,7 @@ let sessionSec = 0, nextRemind = Infinity;
 function startSession() {
   sessionSec = 0;
   const p = P(); nextRemind = p && p.remindMin ? p.remindMin * 60 : Infinity;
+  setTimeout(checkLimit, 600);
   if (p && adventReady()) setTimeout(() => toast('🗓️ 今天可以簽到了！'), 900);
 }
 setInterval(() => {
@@ -4643,7 +4659,7 @@ setInterval(() => {
     el.hidden = false; speak("Let's rest our eyes!", 0.9);
     $('#remindOk').onclick = () => { el.hidden = true; };
   }
-  save();
+  save(); checkLimit();
 }, 10000);
 
 /* ================= falling snow ================= */
@@ -6406,6 +6422,60 @@ function replayTour(name) {
   const p = P(), key = tourKeyFor(name);
   if (p && p.tours) delete p.tours[key];
   runTour(key);
+}
+
+
+/* ================= daily play limit: when today's time is used up, a grown-up unlocks with a multiplication question ================= */
+// 12-19 times 3-9: easy for a grown-up, out of reach for a first grader
+function mathQuestion() { const a = 12 + Math.floor(Math.random() * 8), b = 3 + Math.floor(Math.random() * 7); return [a, b, a * b]; }
+// seconds of play left today, or Infinity when there is no limit
+function limitLeft(p = P()) {
+  if (!p || !p.limitMin) return Infinity;
+  const u = p.unlock && p.unlock.date === todayStr() ? p.unlock : null;
+  if (u && u.free) return Infinity;
+  return p.limitMin * 60 + (u ? u.extra * 60 : 0) - (p.play[todayStr()] || 0);
+}
+let warnedSoon = false;
+function checkLimit() {
+  const p = P(); if (!p || !$('#profiles').hidden || !$('#parent').hidden) return;
+  const left = limitLeft(p);
+  if (left > 300) { warnedSoon = false; return; }
+  if (left > 0) { if (!warnedSoon) { warnedSoon = true; toast(`再玩 ${Math.ceil(left / 60)} 分鐘，今天的遊戲時間就到了`); } return; }
+  // a stage already being played may be finished, for up to 5 more minutes
+  if (run && run.alive && left > -300) return;
+  showLock();
+}
+function showLock() {
+  if ($('#lock')) return;
+  stopRun(); $('#result').hidden = true; closeModal();
+  const el = document.createElement('div'); el.id = 'lock'; el.className = 'lockscr';
+  const front = () => {
+    el.innerHTML = `<div class="lockcard"><span class="lbud">${curBuddySVG()}</span><h2>${zy('今天的遊戲時間到了！')}</h2>
+      <p>${zy('讓眼睛休息一下，明天再來玩吧！')}</p><button class="btn alt" id="lockAdult">家長解鎖</button></div>`;
+    $('#lockAdult').onclick = ask;
+  };
+  const ask = () => {
+    const [a, b, c] = mathQuestion();
+    el.innerHTML = `<div class="lockcard"><h2 style="font-family:var(--f-body)">家長解鎖</h2><p>請回答：${a} × ${b} = ?</p>
+      <input type="number" inputmode="numeric" id="unIn" aria-label="答案">
+      <div class="row"><button class="btn alt" id="unBack">返回</button><button class="btn" id="unOk">確定</button></div></div>`;
+    const inp = $('#unIn'); inp.focus();
+    const ok = () => { if (+inp.value === c) choose(); else { inp.value = ''; inp.focus(); sfx.no(); } };
+    $('#unOk').onclick = ok; inp.onkeydown = e => { if (e.key === 'Enter') ok(); };
+    $('#unBack').onclick = front;
+  };
+  const choose = () => {
+    el.innerHTML = `<div class="lockcard"><h2 style="font-family:var(--f-body)">要讓孩子再玩多久？</h2>
+      <div class="row"><button class="btn" data-m="15">再玩 15 分鐘</button><button class="btn" data-m="30">再玩 30 分鐘</button><button class="btn alt" data-m="free">今天不限時間</button></div></div>`;
+    el.querySelectorAll('[data-m]').forEach(b => b.onclick = () => {
+      const p = P(), t = todayStr(), was = p.unlock && p.unlock.date === t ? p.unlock : { date: t, extra: 0 };
+      // the extra time counts from now: whatever was played past the limit is forgiven
+      const over = Math.max(0, -limitLeft(p));
+      p.unlock = b.dataset.m === 'free' ? { date: t, free: 1 } : { date: t, extra: was.extra + Math.ceil(over / 60) + +b.dataset.m };
+      save(); el.remove(); warnedSoon = false; show('home');
+    });
+  };
+  document.body.appendChild(el); front(); speak('See you tomorrow!', 0.9);
 }
 
 /* ================= start ================= */
