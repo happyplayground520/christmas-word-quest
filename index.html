@@ -3,8 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#0e1c3a">
 <style>
-:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+:root { box-sizing: border-box; background: #0e1c3a; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
 body { margin: 0; }
 [hidden] { display: none !important; }
 </style>
@@ -40,6 +44,7 @@ body { margin: 0; }
 }
 * { box-sizing: border-box; }
 html, body { height: 100%; }
+html { background: #0e1c3a; }
 body {
   margin: 0; overflow: hidden;
   background: radial-gradient(ellipse at 50% -10%, var(--night-2), var(--night) 70%);
@@ -4546,7 +4551,7 @@ function renderCabin() {
   $('#cabinTip').innerHTML = zy('按住裝飾可以移動，點一下可以聽英文！');
   const tiers = [['s', '小裝飾 🔔 6', '每天玩就能換一兩個'], ['m', '中裝飾 🔔 15', '存一兩天'], ['l', '大裝飾 🔔 30', '存兩三天']];
   $('#shop').innerHTML = tiers.map(([t, name, note]) =>
-    `<h3>${zy(name)}　<small style="font-weight:400;color:var(--frost);font-size:15px">${zy(note)}</small></h3>` +
+    `<h3>${zy(name)}</h3>` +
     roomDecos().filter(d => d.tier === t).map(d => {
       let btn;
       if (p.owned.includes(d.id)) {
