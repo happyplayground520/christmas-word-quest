@@ -841,6 +841,9 @@ button.chip:active { background: var(--night-2); }
 .tp { border: none; border-radius: 16px; padding: 4px 8px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px; background: rgba(245,248,255,.1); color: var(--snow); font-size: 15px; font-weight: 700; }
 .tp canvas { width: 54px; height: 64px; }
 .tp.on { background: var(--gold-l); color: var(--ink); box-shadow: 0 0 0 3px var(--gold); }
+.sizerow { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 6px 10px; border-radius: 16px; background: rgba(255,197,61,.16); }
+.sizerow .szname { font-weight: 700; color: var(--gold); margin-right: 4px; }
+.sizerow .btn { min-height: 44px; padding: 4px 14px; font-size: 17px; }
 .peoplepick { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .pp { border: none; border-radius: 16px; padding: 4px 8px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px; background: rgba(245,248,255,.1); color: var(--snow); font-size: 14px; font-weight: 700; }
 .pp .pv canvas { width: 54px; height: 64px; display: block; }
@@ -1449,6 +1452,7 @@ button.chip:active { background: var(--night-2); }
       <div class="cabin-view">
         <div class="rooms" id="roomTabs"></div>
         <canvas id="cabinCv" width="1600" height="1000" aria-label="聖誕小屋"></canvas>
+        <div class="sizerow" id="sizeRow" hidden><span class="szname"></span><button class="btn alt" data-z="-" data-zy>➖ 變小</button><button class="btn alt" data-z="+" data-zy>➕ 變大</button><button class="btn alt" data-z="0" data-zy>↺ 原來大小</button></div>
         <div class="row"><button class="btn" id="postcardBtn" data-zy>💌 做明信片</button><p class="ctip" id="cabinTip"></p></div>
         <div class="treepick"><span class="ctip" data-zy>🎄 換一棵樹：</span><span id="treePick" class="treepick"></span></div>
         <div class="peoplepick"><span class="ctip" data-zy>👪 選人物：</span><span id="peoplePick" class="peoplepick"></span></div>
@@ -1790,7 +1794,7 @@ const ZHUYIN = {
   角:'ㄐㄧㄠˇ',話:'ㄏㄨㄚˋ',誰:'ㄕㄟˊ',請:'ㄑㄧㄥˇ',讓:'ㄖㄤˋ',貓:'ㄇㄠ',車:'ㄔㄜ',迪:'ㄉㄧˊ',送:'ㄙㄨㄥˋ',進:'ㄐㄧㄣˋ',
   遞:'ㄉㄧˋ',配:'ㄆㄟˋ',重:'ㄔㄨㄥˊ',金:'ㄐㄧㄣ',鈴:'ㄌㄧㄥˊ',錯:'ㄘㄨㄛˋ',鎮:'ㄓㄣˋ',鐺:'ㄉㄤ',長:'ㄓㄤˇ',門:'ㄇㄣˊ',
   閉:'ㄅㄧˋ',間:'ㄐㄧㄢ',降:'ㄐㄧㄤˋ',限:'ㄒㄧㄢˋ',階:'ㄐㄧㄝ',面:'ㄇㄧㄢˋ',頁:'ㄧㄝˋ',頭:'ㄊㄡˊ',餅:'ㄅㄧㄥˇ',首:'ㄕㄡˇ',
-  住:'ㄓㄨˋ',項:'ㄒㄧㄤˋ',紫:'ㄗˇ',孩:'ㄏㄞˊ',爺:'ㄧㄝˊ',橡:'ㄒㄧㄤˋ',步:'ㄅㄨˋ',河:'ㄏㄜˊ',海:'ㄏㄞˇ',豹:'ㄅㄠˋ',主:'ㄓㄨˇ',代:'ㄉㄞˋ',公:'ㄍㄨㄥ',利:'ㄌㄧˋ',刺:'ㄘˋ',力:'ㄌㄧˋ',包:'ㄅㄠ',升:'ㄕㄥ',印:'ㄧㄣˋ',司:'ㄙ',咖:'ㄎㄚ',啡:'ㄈㄟ',噴:'ㄆㄣ',團:'ㄊㄨㄢˊ',士:'ㄕˋ',夾:'ㄐㄧㄚ',尺:'ㄔˇ',巢:'ㄔㄠˊ',巧:'ㄑㄧㄠˇ',帳:'ㄓㄤˋ',彎:'ㄨㄢ',恐:'ㄎㄨㄥˇ',扭:'ㄋㄧㄡˇ',披:'ㄆㄧ',抱:'ㄅㄠˋ',拉:'ㄌㄚ',摩:'ㄇㄛˊ',斑:'ㄅㄢ',枕:'ㄓㄣˇ',柴:'ㄔㄞˊ',梯:'ㄊㄧ',椅:'ㄧˇ',橘:'ㄐㄩˊ',汁:'ㄓ',池:'ㄔˊ',洋:'ㄧㄤˊ',湯:'ㄊㄤ',滑:'ㄏㄨㄚˊ',漂:'ㄆㄧㄠ',灰:'ㄏㄨㄟ',爆:'ㄅㄠˋ',犬:'ㄑㄩㄢˇ',狼:'ㄌㄤˊ',獵:'ㄌㄧㄝˋ',瓜:'ㄍㄨㄚ',碟:'ㄉㄧㄝˊ',磁:'ㄘˊ',篷:'ㄆㄥˊ',籃:'ㄌㄢˊ',米:'ㄇㄧˇ',絲:'ㄙ',緞:'ㄉㄨㄢˋ',義:'ㄧˋ',腳:'ㄐㄧㄠˇ',菇:'ㄍㄨ',萄:'˙ㄊㄠ',落:'ㄌㄨㄛˋ',葉:'ㄧㄝˋ',葡:'ㄆㄨˊ',蕉:'ㄐㄧㄠ',薩:'ㄙㄚˋ',蘑:'ㄇㄛˊ',虎:'ㄏㄨˇ',虹:'ㄏㄨㄥˊ',蜂:'ㄈㄥ',蜜:'ㄇㄧˋ',蝟:'ㄨㄟˋ',螺:'ㄌㄨㄛˊ',輪:'ㄌㄨㄣˊ',運:'ㄩㄣˋ',鍋:'ㄍㄨㄛ',鏡:'ㄐㄧㄥˋ',鞋:'ㄒㄧㄝˊ',頌:'ㄙㄨㄥˋ',飛:'ㄈㄟ',香:'ㄒㄧㄤ',骰:'ㄕㄞˇ',髮:'ㄈㄚˇ',鬧:'ㄋㄠˋ',鯨:'ㄐㄧㄥ',鹽:'ㄧㄢˊ',麵:'ㄇㄧㄢˋ',黃:'ㄏㄨㄤˊ',黑:'ㄏㄟ',龍:'ㄌㄨㄥˊ',提:'ㄊㄧˊ',標:'ㄅㄧㄠ',煙:'ㄧㄢ',籤:'ㄑㄧㄢ',具:'ㄐㄩˋ',刀:'ㄉㄠ',剪:'ㄐㄧㄢˇ',吉:'ㄐㄧˊ',型:'ㄒㄧㄥˊ',城:'ㄔㄥˊ',堡:'ㄅㄠˇ',壺:'ㄏㄨˊ',夜:'ㄧㄝˋ',奶:'ㄋㄞˇ',客:'ㄎㄜˋ',室:'ㄕˋ',廳:'ㄊㄧㄥ',書:'ㄕㄨ',月:'ㄩㄝˋ',模:'ㄇㄛˊ',派:'ㄆㄞˋ',流:'ㄌㄧㄡˊ',牛:'ㄋㄧㄡˊ',獨:'ㄉㄨˊ',獸:'ㄕㄡˋ',箏:'˙ㄓㄥ',箭:'ㄐㄧㄢˋ',籠:'ㄌㄨㄥˊ',縫:'ㄈㄥˊ',罐:'ㄍㄨㄢˋ',臥:'ㄨㄛˋ',茶:'ㄔㄚˊ',草:'ㄘㄠˇ',莓:'ㄇㄟˊ',蔔:'˙ㄅㄛ',蘋:'ㄆㄧㄥˊ',蘿:'ㄌㄨㄛˊ',鎚:'ㄔㄨㄟˊ',鐵:'ㄊㄧㄝˇ',院:'ㄩㄢˋ',雞:'ㄐㄧ',餐:'ㄘㄢ',鬆:'ㄙㄨㄥ',鳥:'ㄋㄧㄠˇ',鼓:'ㄍㄨˇ',鼠:'ㄕㄨˇ',寄:'ㄐㄧˋ',描:'ㄇㄧㄠˊ',筆:'ㄅㄧˇ',霜:'ㄕㄨㄤ',偷:'ㄊㄡ',催:'ㄘㄨㄟ',內:'ㄋㄟˋ',凍:'ㄉㄨㄥˋ',塊:'ㄎㄨㄞˋ',搗:'ㄉㄠˇ',擋:'ㄉㄤˇ',毛:'ㄇㄠˊ',皮:'ㄆㄧˊ',調:'ㄊㄧㄠˊ',走:'ㄗㄡˇ',趕:'ㄍㄢˇ',路:'ㄌㄨˋ',鴉:'ㄧㄚ',世:'ㄕˋ',些:'ㄒㄧㄝ',何:'ㄏㄜˊ',叉:'ㄔㄚ',叭:'˙ㄅㄚ',告:'ㄍㄠˋ',商:'ㄕㄤ',喇:'ㄌㄚˇ',喜:'ㄒㄧˇ',嗨:'ㄏㄞ',圓:'ㄩㄢˊ',域:'ㄩˋ',帶:'ㄉㄞˋ',序:'ㄒㄩˋ',店:'ㄉㄧㄢˋ',案:'ㄢˋ',歡:'ㄏㄨㄢ',烏:'ㄨ',照:'ㄓㄠˋ',界:'ㄐㄧㄝˋ',覺:'ㄐㄩㄝˊ',訴:'ㄙㄨˋ',買:'ㄇㄞˇ',順:'ㄕㄨㄣˋ',龜:'ㄍㄨㄟ',嗎:'˙ㄇㄚ',慢:'ㄇㄢˋ',
+  住:'ㄓㄨˋ',原:'ㄩㄢˊ',項:'ㄒㄧㄤˋ',紫:'ㄗˇ',孩:'ㄏㄞˊ',爺:'ㄧㄝˊ',橡:'ㄒㄧㄤˋ',步:'ㄅㄨˋ',河:'ㄏㄜˊ',海:'ㄏㄞˇ',豹:'ㄅㄠˋ',主:'ㄓㄨˇ',代:'ㄉㄞˋ',公:'ㄍㄨㄥ',利:'ㄌㄧˋ',刺:'ㄘˋ',力:'ㄌㄧˋ',包:'ㄅㄠ',升:'ㄕㄥ',印:'ㄧㄣˋ',司:'ㄙ',咖:'ㄎㄚ',啡:'ㄈㄟ',噴:'ㄆㄣ',團:'ㄊㄨㄢˊ',士:'ㄕˋ',夾:'ㄐㄧㄚ',尺:'ㄔˇ',巢:'ㄔㄠˊ',巧:'ㄑㄧㄠˇ',帳:'ㄓㄤˋ',彎:'ㄨㄢ',恐:'ㄎㄨㄥˇ',扭:'ㄋㄧㄡˇ',披:'ㄆㄧ',抱:'ㄅㄠˋ',拉:'ㄌㄚ',摩:'ㄇㄛˊ',斑:'ㄅㄢ',枕:'ㄓㄣˇ',柴:'ㄔㄞˊ',梯:'ㄊㄧ',椅:'ㄧˇ',橘:'ㄐㄩˊ',汁:'ㄓ',池:'ㄔˊ',洋:'ㄧㄤˊ',湯:'ㄊㄤ',滑:'ㄏㄨㄚˊ',漂:'ㄆㄧㄠ',灰:'ㄏㄨㄟ',爆:'ㄅㄠˋ',犬:'ㄑㄩㄢˇ',狼:'ㄌㄤˊ',獵:'ㄌㄧㄝˋ',瓜:'ㄍㄨㄚ',碟:'ㄉㄧㄝˊ',磁:'ㄘˊ',篷:'ㄆㄥˊ',籃:'ㄌㄢˊ',米:'ㄇㄧˇ',絲:'ㄙ',緞:'ㄉㄨㄢˋ',義:'ㄧˋ',腳:'ㄐㄧㄠˇ',菇:'ㄍㄨ',萄:'˙ㄊㄠ',落:'ㄌㄨㄛˋ',葉:'ㄧㄝˋ',葡:'ㄆㄨˊ',蕉:'ㄐㄧㄠ',薩:'ㄙㄚˋ',蘑:'ㄇㄛˊ',虎:'ㄏㄨˇ',虹:'ㄏㄨㄥˊ',蜂:'ㄈㄥ',蜜:'ㄇㄧˋ',蝟:'ㄨㄟˋ',螺:'ㄌㄨㄛˊ',輪:'ㄌㄨㄣˊ',運:'ㄩㄣˋ',鍋:'ㄍㄨㄛ',鏡:'ㄐㄧㄥˋ',鞋:'ㄒㄧㄝˊ',頌:'ㄙㄨㄥˋ',飛:'ㄈㄟ',香:'ㄒㄧㄤ',骰:'ㄕㄞˇ',髮:'ㄈㄚˇ',鬧:'ㄋㄠˋ',鯨:'ㄐㄧㄥ',鹽:'ㄧㄢˊ',麵:'ㄇㄧㄢˋ',黃:'ㄏㄨㄤˊ',黑:'ㄏㄟ',龍:'ㄌㄨㄥˊ',提:'ㄊㄧˊ',標:'ㄅㄧㄠ',煙:'ㄧㄢ',籤:'ㄑㄧㄢ',具:'ㄐㄩˋ',刀:'ㄉㄠ',剪:'ㄐㄧㄢˇ',吉:'ㄐㄧˊ',型:'ㄒㄧㄥˊ',城:'ㄔㄥˊ',堡:'ㄅㄠˇ',壺:'ㄏㄨˊ',夜:'ㄧㄝˋ',奶:'ㄋㄞˇ',客:'ㄎㄜˋ',室:'ㄕˋ',廳:'ㄊㄧㄥ',書:'ㄕㄨ',月:'ㄩㄝˋ',模:'ㄇㄛˊ',派:'ㄆㄞˋ',流:'ㄌㄧㄡˊ',牛:'ㄋㄧㄡˊ',獨:'ㄉㄨˊ',獸:'ㄕㄡˋ',箏:'˙ㄓㄥ',箭:'ㄐㄧㄢˋ',籠:'ㄌㄨㄥˊ',縫:'ㄈㄥˊ',罐:'ㄍㄨㄢˋ',臥:'ㄨㄛˋ',茶:'ㄔㄚˊ',草:'ㄘㄠˇ',莓:'ㄇㄟˊ',蔔:'˙ㄅㄛ',蘋:'ㄆㄧㄥˊ',蘿:'ㄌㄨㄛˊ',鎚:'ㄔㄨㄟˊ',鐵:'ㄊㄧㄝˇ',院:'ㄩㄢˋ',雞:'ㄐㄧ',餐:'ㄘㄢ',鬆:'ㄙㄨㄥ',鳥:'ㄋㄧㄠˇ',鼓:'ㄍㄨˇ',鼠:'ㄕㄨˇ',寄:'ㄐㄧˋ',描:'ㄇㄧㄠˊ',筆:'ㄅㄧˇ',霜:'ㄕㄨㄤ',偷:'ㄊㄡ',催:'ㄘㄨㄟ',內:'ㄋㄟˋ',凍:'ㄉㄨㄥˋ',塊:'ㄎㄨㄞˋ',搗:'ㄉㄠˇ',擋:'ㄉㄤˇ',毛:'ㄇㄠˊ',皮:'ㄆㄧˊ',調:'ㄊㄧㄠˊ',走:'ㄗㄡˇ',趕:'ㄍㄢˇ',路:'ㄌㄨˋ',鴉:'ㄧㄚ',世:'ㄕˋ',些:'ㄒㄧㄝ',何:'ㄏㄜˊ',叉:'ㄔㄚ',叭:'˙ㄅㄚ',告:'ㄍㄠˋ',商:'ㄕㄤ',喇:'ㄌㄚˇ',喜:'ㄒㄧˇ',嗨:'ㄏㄞ',圓:'ㄩㄢˊ',域:'ㄩˋ',帶:'ㄉㄞˋ',序:'ㄒㄩˋ',店:'ㄉㄧㄢˋ',案:'ㄢˋ',歡:'ㄏㄨㄢ',烏:'ㄨ',照:'ㄓㄠˋ',界:'ㄐㄧㄝˋ',覺:'ㄐㄩㄝˊ',訴:'ㄙㄨˋ',買:'ㄇㄞˇ',順:'ㄕㄨㄣˋ',龜:'ㄍㄨㄟ',嗎:'˙ㄇㄚ',慢:'ㄇㄢˋ',
   久:'ㄐㄧㄡˇ',事:'ㄕˋ',什:'ㄕㄣˊ',介:'ㄐㄧㄝˋ',他:'ㄊㄚ',作:'ㄗㄨㄛˋ',便:'ㄅㄧㄢˋ',候:'˙ㄏㄡ',偵:'ㄓㄣ',克:'ㄎㄜˋ',兌:'ㄉㄨㄟˋ',其:'ㄑㄧˊ',區:'ㄑㄩ',午:'ㄨˇ',只:'ㄓˇ',叫:'ㄐㄧㄠˋ',同:'ㄊㄨㄥˊ',咕:'ㄍㄨ',問:'ㄨㄣˋ',嚕:'ㄌㄨ',因:'ㄧㄣ',園:'ㄩㄢˊ',外:'ㄨㄞˋ',始:'ㄕˇ',密:'ㄇㄧˋ',實:'ㄕˊ',左:'ㄗㄨㄛˇ',師:'ㄕ',幾:'ㄐㄧˇ',張:'ㄓㄤ',念:'ㄋㄧㄢˋ',情:'ㄑㄧㄥˊ',懂:'ㄉㄨㄥˇ',戳:'ㄔㄨㄛ',指:'ㄓˇ',探:'ㄊㄢˋ',推:'ㄊㄨㄟ',改:'ㄍㄞˇ',故:'ㄍㄨˋ',整:'ㄓㄥˇ',數:'ㄕㄨˋ',方:'ㄈㄤ',早:'ㄗㄠˇ',晚:'ㄨㄢˇ',東:'ㄉㄨㄥ',楚:'˙ㄔㄨ',樣:'ㄧㄤˋ',氣:'ㄑㄧˋ',淇:'ㄑㄧˊ',淋:'ㄌㄧㄣˊ',清:'ㄑㄧㄥ',準:'ㄓㄨㄣˇ',為:'ㄨㄟˋ',畫:'ㄏㄨㄚˋ',相:'ㄒㄧㄤˋ',知:'ㄓ',短:'ㄉㄨㄢˇ',碼:'ㄇㄚˇ',社:'ㄕㄜˋ',祕:'ㄇㄧˋ',積:'ㄐㄧ',簿:'ㄅㄨˋ',紙:'ㄓˇ',紹:'ㄕㄠˋ',組:'ㄗㄨˇ',聊:'ㄌㄧㄠˊ',肚:'ㄉㄨˋ',被:'ㄅㄟˋ',西:'˙ㄒㄧ',計:'ㄐㄧˋ',訊:'ㄒㄩㄣˋ',訪:'ㄈㄤˇ',說:'ㄕㄨㄛ',變:'ㄅㄧㄢˋ',跟:'ㄍㄣ',道:'ㄉㄠˋ',邊:'ㄅㄧㄢ',那:'ㄋㄚˋ',針:'ㄓㄣ',陽:'ㄧㄤˊ',隨:'ㄙㄨㄟˊ',隻:'ㄓ',雷:'ㄌㄟˊ',麥:'ㄇㄞˋ',簽:'ㄑㄧㄢ',去:'ㄑㄩˋ',紋:'ㄨㄣˊ',粉:'ㄈㄣˇ',愛:'ㄞˋ',心:'ㄒㄧㄣ',吊:'ㄉㄧㄠˋ',拐:'ㄍㄨㄞˇ',杖:'ㄓㄤˋ',杯:'ㄅㄟ',蛋:'ㄉㄢˋ',糕:'ㄍㄠ',甜:'ㄊㄧㄢˊ',兔:'ㄊㄨˋ',狗:'ㄍㄡˇ',狐:'ㄏㄨˊ',狸:'˙ㄌㄧ',牆:'ㄑㄧㄤˊ',雙:'ㄕㄨㄤ',華:'ㄏㄨㄚˊ',麗:'ㄌㄧˋ',盒:'ㄏㄜˊ',俄:'ㄜˊ',羅:'ㄌㄨㄛˊ',斯:'ㄙ',鐘:'ㄓㄨㄥ',婆:'ㄆㄛˊ',鋼:'ㄍㄤ',琴:'ㄑㄧㄣˊ',所:'ㄙㄨㄛˇ',怎:'ㄗㄣˇ',麼:'˙ㄇㄜ',自:'ㄗˋ',己:'ㄐㄧˇ',寫:'ㄒㄧㄝˇ',種:'ㄓㄨㄥˇ',體:'ㄊㄧˇ',躲:'ㄉㄨㄛˇ',站:'ㄓㄢˋ',賽:'ㄙㄞˋ',跑:'ㄆㄠˇ',往:'ㄨㄤˇ',衝:'ㄔㄨㄥ',釣:'ㄉㄧㄠˋ',魚:'ㄩˊ',遊:'ㄧㄡˊ',戲:'ㄒㄧˋ',檔:'ㄉㄤˇ',度:'ㄉㄨˋ',備:'ㄅㄟˋ',份:'ㄈㄣˋ',從:'ㄘㄨㄥˊ',著:'˙ㄓㄜ',掉:'ㄉㄧㄠˋ',怪:'ㄍㄨㄞˋ',器:'ㄑㄧˋ',機:'ㄐㄧ',零:'ㄌㄧㄥˊ',件:'ㄐㄧㄢˋ',修:'ㄒㄧㄡ',理:'ㄌㄧˇ',賓:'ㄅㄧㄣ',連:'ㄌㄧㄢˊ',條:'ㄊㄧㄠˊ',丟:'ㄉㄧㄡ',敗:'ㄅㄞˋ',穿:'ㄔㄨㄢ',衣:'ㄧ',服:'˙ㄈㄨ',身:'ㄕㄣ',泡:'ㄆㄠˋ',像:'ㄒㄧㄤˋ',和:'ㄏㄜˊ',圍:'ㄨㄟˊ',水:'ㄕㄨㄟˇ',旋:'ㄒㄩㄢˊ',木:'ㄇㄨˋ',馬:'ㄇㄚˇ',偶:'ㄡˇ',胡:'ㄏㄨˊ',桃:'ㄊㄠˊ',鉗:'ㄑㄧㄢˊ',箱:'ㄒㄧㄤ',戴:'ㄉㄞˋ',巾:'ㄐㄧㄣ',桶:'ㄊㄨㄥˇ',塗:'ㄊㄨˊ',顯:'ㄒㄧㄢˇ',示:'ㄕˋ',拖:'ㄊㄨㄛ',或:'ㄏㄨㄛˋ',男:'ㄋㄢˊ',女:'ㄋㄩˇ',生:'ㄕㄥ',還:'ㄏㄞˊ',分:'ㄈㄣ',享:'ㄒㄧㄤˇ',螢:'ㄧㄥˊ',幕:'ㄇㄨˋ',轉:'ㄓㄨㄢˇ',橫:'ㄏㄥˊ',製:'ㄓˋ',貼:'ㄊㄧㄝ',框:'ㄎㄨㄤ',綠:'ㄌㄩˋ',白:'ㄅㄞˊ',典:'ㄉㄧㄢˇ',棵:'ㄎㄜ',紅:'ㄏㄨㄥˊ',藍:'ㄌㄢˊ',蝴:'ㄏㄨˊ',蝶:'ㄉㄧㄝˊ',結:'ㄐㄧㄝˊ',跳:'ㄊㄧㄠˋ',視:'ㄕˋ',窗:'ㄔㄨㄤ',辦:'ㄅㄢˋ',法:'ㄈㄚˇ',直:'ㄓˊ',接:'ㄐㄧㄝ',影:'ㄧㄥˇ',像:'ㄒㄧㄤˋ',電:'ㄉㄧㄢˋ',腦:'ㄋㄠˇ',右:'ㄧㄡˋ',鍵:'ㄐㄧㄢˋ',另:'ㄌㄧㄥˋ',移:'ㄧˊ',動:'ㄉㄨㄥˋ',高:'ㄍㄠ',鵝:'ㄜˊ',鷹:'ㄧㄥ',鹿:'ㄌㄨˋ',麋:'ㄇㄧˊ'
 };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -3976,6 +3980,8 @@ const bounce = {};
 // the tree lights hang on the tree and go wherever it goes; they are never grabbed on their own
 const MOVABLE = d => d.id !== 'lights' && d.id !== 'sleigh' && d.id !== 'treelights';
 const GRABBABLE = d => d.id !== 'treelights';
+const SIZABLE = d => MOVABLE(d) && !['tree', 'star', 'rug', 'fireplace', 'wreath'].includes(d.id);
+const decoScale = d => (SIZABLE(d) && ((P() && P().scale) || {})[d.id]) || 1;
 function decoPos(d) {
   const pos = P().pos || {}, q = pos[d.id];
   if (d.id === 'treelights') return pos.tree || { x: d.x, y: d.y };
@@ -4004,8 +4010,9 @@ function baseBox(d) {
   return [d.x - d.size / 2, d.y - d.size / 2, d.size, d.size];
 }
 function decoBox(d) {
-  const q = decoPos(d), b = baseBox(d);
-  return [b[0] + q.x - d.x, b[1] + q.y - d.y, b[2], b[3]];
+  const q = decoPos(d), b = baseBox(d), s = decoScale(d);
+  // a resized decoration grows or shrinks around its middle
+  return [b[0] + q.x - d.x + b[2] * (1 - s) / 2, b[1] + q.y - d.y + b[3] * (1 - s) / 2, b[2] * s, b[3] * s];
 }
 // trees the child can choose from; the drawn ones have no baked-in ornaments so children hang their own
 const TREE_STYLES = [
@@ -4116,7 +4123,7 @@ function drawRoomDecos(g, owned) {
     .sort((a, b) => (a.id === dragId) - (b.id === dragId) || a.layer - b.layer);
   for (const d of order) {
     const t = bounce[d.id] ? (now - bounce[d.id]) / 450 : 1;
-    const k = d.id === dragId ? 1.1 : t < 1 ? 1 + .18 * Math.sin(Math.PI * t) : 1;
+    const k = (d.id === dragId ? 1.1 : t < 1 ? 1 + .18 * Math.sin(Math.PI * t) : 1) * decoScale(d);
     const [bx, by, bw, bh] = decoBox(d), cx = bx + bw / 2, cy = by + bh / 2, q = decoPos(d);
     g.save(); g.translate(cx, cy); g.scale(k, k); g.translate(-cx, -cy);
     g.translate(q.x - d.x, q.y - d.y);
@@ -4506,17 +4513,17 @@ function placeAll(room, items) {
   (room === 'living' ? DECOS : ROOM_DECOS[room]).push(...placed);
 });
 // people for every room, bought with bells: the child picks who is in the picture, so hats and scarves have someone to wear them;
-// drawn just behind the table and floor things, so a hat dragged onto a person sits on top
+// drawn behind every other decoration, so a hat or scarf dragged onto a person sits on top
 const PEOPLE = [['girl', '女孩', 'girl'], ['boy', '男孩', 'boy'], ['mom', '媽媽', 'mom'], ['dad', '爸爸', 'dad'],
   ['grandma', '奶奶', 'grandma'], ['grandpa', '爺爺', 'grandpa'], ['baby', '小寶寶', 'baby'],
   ['santa', '聖誕老人', 'Santa'], ['mrs', '聖誕老太太', 'Mrs. Claus'], ['elf', '小精靈', 'elf']];
 const PERSON_COST = 15;
 ['living', 'bedroom', 'kitchen', 'yard', 'workshop'].forEach(room => {
   const pre = room === 'living' ? 'l' : room[0];
-  const items = PEOPLE.map(([v, zh, en]) => ({ id: `${pre}_p_${v}`, zh, en, tier: 'p', cost: PERSON_COST, emo: null, person: v, size: 230, layer: 2.5, row: 'f', room }));
+  const items = PEOPLE.map(([v, zh, en]) => ({ id: `${pre}_p_${v}`, zh, en, tier: 'p', cost: PERSON_COST, emo: null, person: v, size: 420, layer: 1.5, row: 'f', room }));
   items.forEach(d => { TALL[d.id] = 1; });
   // standing on the floor with the whole figure in the picture
-  (room === 'living' ? DECOS : ROOM_DECOS[room]).push(...placeAll(room, items).map(d => ({ ...d, y: Math.min(d.y, 850) })));
+  (room === 'living' ? DECOS : ROOM_DECOS[room]).push(...placeAll(room, items).map(d => ({ ...d, y: Math.min(d.y, 760) })));
 });
 const PERSON_LOOK = {
   girl:    { sc: .8, hair: '#7a4424', style: 'pigtails', top: '#e5484d', dress: 70, leg: '#ffffff', shoe: '#c43a3f', collar: '#ffffff', bow: '#ffc53d' },
@@ -4582,6 +4589,23 @@ function drawPerson(g, x, y, k, who) {
   g.strokeStyle = '#b5523d'; g.lineWidth = 3; g.lineCap = 'round'; g.beginPath(); g.arc(0, -65, 8, .3, Math.PI - .3); g.stroke();
   if (L.glasses) { g.strokeStyle = '#7a6a5a'; g.lineWidth = 2.5; g.beginPath(); g.arc(-10, -74, 8, 0, 6.283); g.moveTo(18, -74); g.arc(10, -74, 8, 0, 6.283); g.moveTo(-2, -75); g.lineTo(2, -75); g.stroke(); }
   if (L.stache) { g.fillStyle = L.hair; oval(-7, -62, 9, 4.5, .2); oval(7, -62, 9, 4.5, -.2); }
+  g.restore();
+}
+// a scarf drawn as worn: a wrap that sits round a neck and one end hanging down, so it fits on a person
+function drawScarf(g, x, y, size) {
+  const k = size / 100;
+  g.save(); g.translate(x, y); g.scale(k, k);
+  const red = '#e5484d', dk = '#b8343a';
+  // the hanging end, behind the wrap
+  g.fillStyle = dk; g.beginPath(); g.moveTo(12, 0); g.lineTo(34, -2); g.lineTo(36, 44); g.lineTo(14, 46); g.closePath(); g.fill();
+  g.fillStyle = '#ffffff'; g.fillRect(14, 18, 21, 5); g.fillRect(14, 30, 22, 5);
+  g.strokeStyle = dk; g.lineWidth = 3; g.lineCap = 'round';
+  for (let i = 0; i < 5; i++) { g.beginPath(); g.moveTo(16 + i * 4.6, 46); g.lineTo(16 + i * 4.6, 54); g.stroke(); }
+  // the wrap round the neck
+  g.fillStyle = red; g.beginPath(); g.moveTo(-48, -16); g.quadraticCurveTo(0, 4, 48, -16); g.lineTo(46, 4); g.quadraticCurveTo(0, 26, -46, 4); g.closePath(); g.fill();
+  g.strokeStyle = '#ffffff'; g.lineWidth = 5;
+  [-26, 26].forEach(sx => { g.beginPath(); g.moveTo(sx, -8 + Math.abs(sx) * -.12); g.lineTo(sx, 12 + Math.abs(sx) * -.12); g.stroke(); });
+  g.fillStyle = 'rgba(0,0,0,.12)'; g.beginPath(); g.moveTo(-46, 4); g.quadraticCurveTo(0, 26, 46, 4); g.quadraticCurveTo(0, 18, -46, 4); g.fill();
   g.restore();
 }
 // a small picture of one person, for the picker and the buy question
@@ -4805,6 +4829,7 @@ function drawDeco(g, d) {
   if (d.id === 'nutcracker') { drawNutcracker(g, d.x, d.y, d.size / 260); return; }
   if (d.critter) { drawCritter(g, d.x, d.y, d.size / 200, d.critter); return; }
   if (d.person) { drawPerson(g, d.x, d.y, d.size / 260, d.person); return; }
+  if (d.en === 'scarf') { drawScarf(g, d.x, d.y, d.size); return; }
   if (CRITTER[d.id]) { drawCritter(g, d.x, d.y, d.size / 200, d.id); return; }
   if (d.id === 'angel') { drawAngel(g, d.x, d.y, d.size / 200); return; }
   if (d.id === 'globe') { drawGlobe(g, d.x, d.y, d.size / 150); return; }
@@ -4962,10 +4987,32 @@ function drawDeco(g, d) {
 }
 let cabinAnim = 0, confirmId = null, drag = null;
 const shownDecos = () => { const p = P(), off = p.hidden || []; return p.owned.filter(id => !off.includes(id)); };
+let sizeId = null;
+const sizeDeco = () => sizeId && shownDecos().includes(sizeId) ? roomDecos().find(d => d.id === sizeId) || null : null;
+function renderSizeRow() {
+  const d = sizeDeco(), row = $('#sizeRow');
+  row.hidden = !d;
+  if (d) row.querySelector('.szname').innerHTML = zy(`${d.zh}`);
+}
+$('#sizeRow').addEventListener('click', e => {
+  const b = e.target.closest('[data-z]'), d = sizeDeco(); if (!b || !d) return;
+  const p = P(); p.scale = p.scale || {};
+  const now = decoScale(d), z = b.dataset.z;
+  const next = z === '0' ? 1 : Math.max(.5, Math.min(2.5, now * (z === '+' ? 1.2 : 1 / 1.2)));
+  if (Math.abs(next - 1) < .02) delete p.scale[d.id]; else p.scale[d.id] = +next.toFixed(3);
+  if (next === now && z !== '0') sfx.no(); else sfx.flip();
+  save(); paintCabin();
+});
 function paintCabin() {
   const cv = $('#cabinCv'), g = cv.getContext('2d');
   g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, 1600, 1000);
   drawCabin(g, shownDecos());
+  const sd = sizeDeco();
+  if (sd) {
+    const [bx, by, bw, bh] = decoBox(sd);
+    g.save(); g.strokeStyle = '#ffc53d'; g.lineWidth = 5; g.setLineDash([16, 10]); g.strokeRect(bx - 6, by - 6, bw + 12, bh + 12); g.restore();
+  }
+  renderSizeRow();
   cancelAnimationFrame(cabinAnim);
   if (Object.values(bounce).some(t => performance.now() - t < 450)) cabinAnim = requestAnimationFrame(paintCabin);
 }
@@ -5072,7 +5119,7 @@ function renderCabin() {
   $('.treepick').hidden = curRoom() !== 'living';
   renderTreePick(); renderWallPick(); renderPeoplePick();
   paintCabin();
-  $('#cabinTip').innerHTML = zy('按住裝飾可以移動，點一下可以聽英文！');
+  $('#cabinTip').innerHTML = zy('按住裝飾可以移動，點一下可以聽英文，還能變大變小！');
   const tiers = [['s', '小裝飾 🔔 6', '每天玩就能換一兩個'], ['m', '中裝飾 🔔 15', '存一兩天'], ['l', '大裝飾 🔔 30', '存兩三天']];
   $('#shop').innerHTML = tiers.map(([t, name, note]) =>
     `<h3>${zy(name)}</h3>` +
@@ -5125,7 +5172,7 @@ $('#cabinCv').addEventListener('pointerdown', e => {
   const { x, y } = cabinPoint(e);
   const hit = roomDecos().filter(d => shownDecos().includes(d.id) && GRABBABLE(d)).sort((a, b) => b.layer - a.layer)
     .find(d => { const [bx, by, bw, bh] = decoBox(d); return x >= bx && x <= bx + bw && y >= by && y <= by + bh; });
-  if (!hit) return;
+  if (!hit) { if (sizeId) { sizeId = null; paintCabin(); } return; }
   const q = decoPos(hit);
   drag = { d: hit, sx: x, sy: y, ox: q.x - x, oy: q.y - y, moved: false };
   try { e.currentTarget.setPointerCapture(e.pointerId); } catch (err) {}
@@ -5145,6 +5192,7 @@ function endDrag() {
   drag = null;
   if (moved) { save(); tone(660, 0, .1, 'triangle', .07); }
   else { bounce[d.id] = performance.now(); speak(d.en); }
+  sizeId = SIZABLE(d) ? d.id : null;
   paintCabin();
 }
 $('#cabinCv').addEventListener('pointerup', endDrag);
