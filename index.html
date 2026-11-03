@@ -2402,8 +2402,8 @@ function quiz(el, cfg) {
         i++; later(round, 1400);
       } else {
         b.classList.add('wrong'); mistakes++; wrong = true; sfx.no();
-        // the star review names the wrong pick: its word shows and is said
-        if (cfg.nameWrong) { b.classList.add('named'); cheer([[opts[+b.dataset.k].w, false, 0.8]]); } else cheer();
+        // name the wrong pick: its word shows and is said, so a miss still teaches a word
+        b.classList.add('named'); cheer([[opts[+b.dataset.k].w, false, 0.8]]);
         if (cfg.listenOnly && ++tries >= 2) promptEl.querySelector('.word-prompt').hidden = false;  // show the word after two misses
         if (cfg.onWrong) cfg.onWrong();
         sayBtn.classList.remove('wiggle'); void sayBtn.offsetWidth; sayBtn.classList.add('wiggle');
@@ -2480,7 +2480,7 @@ function pickWord(el, cfg) {
         if (cfg.onCorrect) cfg.onCorrect(i);
         i++; later(round, 1400);
       } else {
-        b.classList.add('wrong'); mistakes++; wrong = true; sfx.no(); cheer();
+        b.classList.add('wrong'); mistakes++; wrong = true; sfx.no(); cheer([[opts[+b.dataset.k].w, false, 0.8]]);
         if (cfg.onWrong) cfg.onWrong();
         sayBtn.classList.remove('wiggle'); void sayBtn.offsetWidth; sayBtn.classList.add('wiggle');
       }
@@ -2637,7 +2637,7 @@ const GAMES = {
           }
         } else {
           inner.classList.remove('wob'); void inner.offsetWidth; inner.classList.add('wob');
-          sfx.no(); mistakes++; roundWrong = true;
+          sfx.no(); mistakes++; roundWrong = true; cheer([[c.w, false, 0.8]]);
           el.querySelector('.tag')?.remove();
           el.insertAdjacentHTML('beforeend', `<span class="tag">${c.w}</span>`);
           setTimeout(() => el.querySelector('.tag')?.remove(), 1400);
@@ -2733,7 +2733,7 @@ const GAMES = {
             later(() => speak(w), 200);
             i++; later(round, 1500);
           } else {
-            b.classList.add('wrong'); mistakes++; wrong = true; sfx.no(); cheer();
+            b.classList.add('wrong'); mistakes++; wrong = true; sfx.no(); cheer([[b.dataset.c.toUpperCase(), false, 0.8]]);
           }
         });
       }
@@ -2855,7 +2855,7 @@ const GAMES = {
           }
         } else {
           b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
-          mistakes++; wrong = true; sfx.no(); cheer();
+          mistakes++; wrong = true; sfx.no(); cheer([[b.dataset.w, false, 0.8]]);
         }
       });
     }
@@ -2973,7 +2973,7 @@ const GAMES = {
         } else later(next, 1100);
       } else {
         c.classList.remove('wrong'); void c.offsetWidth; c.classList.add('wrong');
-        mistakes++; wrongNow = true; sfx.no(); cheer();
+        mistakes++; wrongNow = true; sfx.no(); cheer([[items[k].w, false, 0.8]]);
         if (++tries >= 2) word.hidden = false;
       }
     });
@@ -3138,7 +3138,7 @@ const GAMES = {
           later(() => speak(it.s.replace('___', it.a), 0.8), 200);
           i++; later(round, 2600);
         } else {
-          b.classList.add('wrong'); mistakes++; wrong = true; sfx.no(); cheer();
+          b.classList.add('wrong'); mistakes++; wrong = true; sfx.no(); cheer([[it.s.replace('___', b.dataset.o), false, 0.8]]);
         }
       });
     }
@@ -3210,7 +3210,7 @@ const GAMES = {
           if (--left === 0) { r++; later(round, 1300); }
         } else {
           house.classList.remove('wrong'); void house.offsetWidth; house.classList.add('wrong');
-          mistakes++; missed.add(w); sfx.no(); cheer();
+          mistakes++; missed.add(w); sfx.no(); cheer([[house.dataset.w, false, 0.8]]);
         }
       };
       lettersEl.querySelectorAll('.letter').forEach(L => L.addEventListener('pointerdown', e => {
@@ -3326,7 +3326,7 @@ const GAMES = {
         } else {
           b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
           setTimeout(() => b.classList.remove('wrong'), 450);
-          mistakes++; wrong = true; sfx.no(); cheer();
+          mistakes++; wrong = true; sfx.no(); cheer([[b.dataset.c.toUpperCase(), false, 0.8]]);
         }
       });
     }
@@ -3367,7 +3367,7 @@ const GAMES = {
     let weak = all.filter(it => isWeak(it.w)).sort((a, b) => l.words[b.w].bad - l.words[a.w].bad).slice(0, 8);
     if (weak.length < 6) weak = [...weak, ...sample(all.filter(it => !weak.includes(it) && l.words[it.w]?.ok), 6 - weak.length)];
     if (weak.length < 6) weak = [...weak, ...sample(openPool().filter(it => !weak.includes(it)), 6 - weak.length)];
-    quiz(ctx.stage, { targets: shuffle(weak), pool: all, nOpt: ctx.nOpt, learned: ctx.learned, nameWrong: true,
+    quiz(ctx.stage, { targets: shuffle(weak), pool: all, nOpt: ctx.nOpt, learned: ctx.learned,
                       onDone: m => later(() => ctx.done(m), 300) });
   }
 };
@@ -6284,7 +6284,7 @@ SGAMES.blocks = (ctx, def) => {
         if (pos === ps.length) { sfx.ok(); i++; sFinishRound(ctx, it, wrong, it.say, round); }
       } else {
         b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
-        mistakes++; wrong = true; sfx.no(); cheer();
+        mistakes++; wrong = true; sfx.no(); cheer([[b.dataset.w.replace(/[.!?,]/g, ''), false, SRATE]]);
         if (pos === 0 && /^[A-Z]/.test(ps[0])) toast('句子第一個字是大寫字母開頭的喔');
       }
     });
@@ -6378,7 +6378,7 @@ SGAMES.album = (ctx, def) => {
       if (b.dataset.w === ps[pos]) {
         slots.children[pos].textContent = ps[pos]; slots.children[pos].classList.add('filled'); b.classList.add('used'); sfx.flip(); hideCheer(); pos++;
         if (pos === ps.length) { sfx.ok(); play.querySelector('.otiles').remove(); secondPart(); }
-      } else { b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); mistakes++; wrong = true; sfx.no(); cheer(); }
+      } else { b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); mistakes++; wrong = true; sfx.no(); cheer([[b.dataset.w.replace(/[.!?,]/g, ''), false, SRATE]]); }
     });
     let sealed = false;
     function secondPart() {
