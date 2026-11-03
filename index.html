@@ -77,9 +77,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-block: 12px;
 }
-/* when the page runs under the status bar (the home-screen icon), iPadOS blurs a band below it,
-   so the buttons move down past it; with no status bar above the page the min() is 0 and nothing moves */
-#app { --sbar: min(env(safe-area-inset-top, 0px) * 100, 60px); padding-top: calc(12px + var(--sbar)); }
+/* opened from the home-screen icon, iPadOS blurs a band at the top of the screen, so the buttons move down past it */
+#app { --sbar: 0px; padding-top: calc(12px + var(--sbar)); }
+@media (display-mode: standalone), (display-mode: fullscreen) { #app { --sbar: 60px; } }
+.webapp #app { --sbar: 60px; }
 .screen { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 14px; }
 .scroll { overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
@@ -1461,6 +1462,8 @@ button.chip:active { background: var(--night-2); }
 <div class="reward" id="reward" hidden></div>
 
 <script>
+// the home-screen icon on iOS (older iPadOS does not report it through display-mode)
+if (navigator.standalone) document.documentElement.classList.add('webapp');
 const $ = s => document.querySelector(s);
 const R = Math.round;
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
