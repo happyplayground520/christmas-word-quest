@@ -832,6 +832,9 @@ button.chip:active { background: var(--night-2); }
 .tp { border: none; border-radius: 16px; padding: 4px 8px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px; background: rgba(245,248,255,.1); color: var(--snow); font-size: 15px; font-weight: 700; }
 .tp canvas { width: 54px; height: 64px; }
 .tp.on { background: var(--gold-l); color: var(--ink); box-shadow: 0 0 0 3px var(--gold); }
+.wallpick { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.wc { width: 44px; height: 44px; border-radius: 50%; border: 3px solid rgba(255,255,255,.7); background: var(--c); box-shadow: 0 3px 0 rgba(0,0,0,.25); }
+.wc.on { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-l); }
 .shop { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
 .shop h3 { margin: 10px 0 2px; font-size: 19px; color: var(--gold); }
 .sitem { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 18px; background: rgba(245,248,255,.1); }
@@ -1428,6 +1431,7 @@ button.chip:active { background: var(--night-2); }
         <canvas id="cabinCv" width="1600" height="1000" aria-label="聖誕小屋"></canvas>
         <div class="row"><button class="btn" id="postcardBtn" data-zy>💌 做明信片</button><p class="ctip" id="cabinTip"></p></div>
         <div class="treepick"><span class="ctip" data-zy>🎄 換一棵樹：</span><span id="treePick" class="treepick"></span></div>
+        <div class="wallpick" hidden><span class="ctip" data-zy>🎨 換牆壁顏色：</span><span id="wallPick" class="wallpick"></span></div>
       </div>
       <div class="shop" id="shop"></div>
     </div>
@@ -4183,6 +4187,10 @@ Object.keys(ROOM_DECOS).forEach(r => {
   ROOM_DECOS[r] = ROOM_DECOS[r].map(([id, zh, en, tier, cost, emo, x, y, size, layer, draw]) => ({ id, zh, en, tier, cost, emo, x, y, size, layer, draw, room: r }));
   ROOM_DECOS[r].filter(d => d.draw === 'santa' || d.draw === 'elf').forEach(d => { TALL[d.id] = 1; });
 });
+const WALL_COLORS = [['blue', '#a9c4ec'], ['pink', '#f6c6d8'], ['green', '#c8ecd6'], ['yellow', '#fff0a8'], ['purple', '#d8c8f2'],
+  ['orange', '#ffd3b0'], ['white', '#fff3dc'], ['brown', '#7a4e2e'], ['red', '#b8434a']];
+const WALL_DEFAULT = { bedroom: '#a9c4ec', kitchen: '#fff3dc', workshop: '#7a4e2e' };
+const wallOf = room => ((P() && P().walls) || {})[room] || WALL_DEFAULT[room];
 const curRoom = () => (P() && P().room) || 'living';
 const roomDecos = (room = curRoom()) => room === 'living' ? DECOS : ROOM_DECOS[room];
 const roomOpen = (r, p = P()) => r === 'living' || (p.rooms || []).includes(r);
@@ -4209,7 +4217,7 @@ function drawRoomBg(g, room) {
     rect('#e9dccb', x + w / 2 - 7, y, 14, h); rect('#e9dccb', x, y + h / 2 - 7, w, 14);
   };
   if (room === 'bedroom') {
-    rect('#a9c4ec', 0, 0, 1600, 760);
+    rect(wallOf('bedroom'), 0, 0, 1600, 760);
     g.fillStyle = 'rgba(255,255,255,.35)';
     for (let i = 0; i < 40; i++) { const x = (i * 157) % 1600, y = 40 + (i * 97) % 680; g.beginPath(); for (let k = 0; k < 10; k++) { const r = k % 2 ? 6 : 14, a = -Math.PI / 2 + k * Math.PI / 5; g.lineTo(x + r * Math.cos(a), y + r * Math.sin(a)); } g.fill(); }
     win(620, 140, 300, 260);
@@ -4225,7 +4233,7 @@ function drawRoomBg(g, room) {
     rect('#b5784a', 1040, 510, 520, 20); rect('#8a5a35', 1060, 530, 12, 40); rect('#8a5a35', 1530, 530, 12, 40);
     g.fillStyle = '#ffd6e7'; g.beginPath(); g.ellipse(950, 900, 320, 70, 0, 0, 6.283); g.fill();
   } else if (room === 'kitchen') {
-    rect('#fff3dc', 0, 0, 1600, 760);
+    rect(wallOf('kitchen'), 0, 0, 1600, 760);
     g.strokeStyle = 'rgba(201,138,18,.18)'; g.lineWidth = 2;
     for (let y = 0; y < 760; y += 60) { g.beginPath(); g.moveTo(0, y); g.lineTo(1600, y); g.stroke(); }
     for (let x = 0; x < 1600; x += 60) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, 760); g.stroke(); }
@@ -4257,7 +4265,7 @@ function drawRoomBg(g, room) {
     g.fillStyle = '#f5f9ff'; g.beginPath(); g.moveTo(0, 700); g.quadraticCurveTo(800, 640, 1600, 700); g.lineTo(1600, 1000); g.lineTo(0, 1000); g.fill();
     g.fillStyle = 'rgba(140,180,230,.25)'; for (let i = 0; i < 12; i++) { g.beginPath(); g.ellipse((i * 147) % 1600, 780 + (i * 53) % 200, 60, 10, 0, 0, 6.283); g.fill(); }
   } else if (room === 'workshop') {
-    rect('#7a4e2e', 0, 0, 1600, 760); g.fillStyle = 'rgba(0,0,0,.15)'; for (let x = 0; x < 1600; x += 80) g.fillRect(x, 0, 5, 760);
+    rect(wallOf('workshop'), 0, 0, 1600, 760); g.fillStyle = 'rgba(0,0,0,.15)'; for (let x = 0; x < 1600; x += 80) g.fillRect(x, 0, 5, 760);
     // a warm lamp, shelves of toys, the big workbench
     g.strokeStyle = '#2b1a10'; g.lineWidth = 4; g.beginPath(); g.moveTo(800, 0); g.lineTo(800, 120); g.stroke();
     g.fillStyle = '#2f7d4f'; g.beginPath(); g.moveTo(740, 160); g.lineTo(860, 160); g.lineTo(830, 120); g.lineTo(770, 120); g.fill();
@@ -4819,6 +4827,16 @@ $('#treePick').addEventListener('click', e => {
   bounce.tree = performance.now(); speak('Christmas tree');
   renderTreePick(); paintCabin();
 });
+function renderWallPick() {
+  const room = curRoom(), cur = wallOf(room);
+  $('.wallpick').hidden = !WALL_DEFAULT[room];
+  $('#wallPick').innerHTML = WALL_COLORS.map(([w, c]) => `<button class="wc ${c === cur ? 'on' : ''}" data-c="${c}" data-w="${w}" style="--c:${c}" aria-label="${w}"></button>`).join('');
+}
+$('#wallPick').addEventListener('click', e => {
+  const b = e.target.closest('.wc'); if (!b) return;
+  const p = P(); p.walls = { ...(p.walls || {}), [curRoom()]: b.dataset.c }; save();
+  speak(b.dataset.w); renderWallPick(); paintCabin();
+});
 let roomConfirm = null;
 function renderRoomTabs() {
   const p = P(), cur = curRoom();
@@ -4850,7 +4868,7 @@ function renderCabin() {
   const p = P();
   renderRoomTabs();
   $('.treepick').hidden = curRoom() !== 'living';
-  renderTreePick();
+  renderTreePick(); renderWallPick();
   paintCabin();
   $('#cabinTip').innerHTML = zy('按住裝飾可以移動，點一下可以聽英文！');
   const tiers = [['s', '小裝飾 🔔 6', '每天玩就能換一兩個'], ['m', '中裝飾 🔔 15', '存一兩天'], ['l', '大裝飾 🔔 30', '存兩三天']];
@@ -5177,7 +5195,7 @@ function renderParent() {
       <p>今天已經玩了 <b>${minutes(p, 1)}</b> 分鐘。時間到了會出現「今天的遊戲時間到了」，要家長答一題乘法才能解鎖；正在玩的那一關可以先玩完（最多再 5 分鐘）。結束前 5 分鐘會先提醒。</p>
       <select id="limitSel" aria-label="每天的遊戲時間上限">${[0, 20, 30, 45, 60, 90].map(m => `<option value="${m}" ${(p.limitMin || 0) === m ? 'selected' : ''}>${m ? m + ' 分鐘' : '不限制'}</option>`).join('')}</select>
       ${p.unlock && p.unlock.date === todayStr() ? `<p>今天已經解鎖：${p.unlock.free ? '不限時間' : `多 ${p.unlock.extra} 分鐘`}。</p><div class="row"><button class="btn alt" id="unlockClear">取消今天的解鎖</button></div>` : ''}</div>
-    <div class="psec"><h3>音樂和音效</h3><p>背景音樂是音樂盒演奏的傳統聖誕歌，只在首頁、地圖和小屋播放；關卡裡不播，唸英文時會自動停一下。這些設定只存在這台平板。</p>
+    <div class="psec"><h3>音樂和音效</h3><p>背景音樂是輕柔鋼琴版的傳統聖誕歌，只在首頁、地圖和小屋播放；關卡裡不播，唸英文時會自動停一下。這些設定只存在這台平板。</p>
       <div class="sndrow"><label>背景音樂 <select id="musicSel">${[['on', '開'], ['off', '關']].map(([v, t]) => `<option value="${v}" ${snd.music === v ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
         <label>聖誕音效 <select id="sfxSel">${[['on', '開'], ['off', '關']].map(([v, t]) => `<option value="${v}" ${snd.sfx === v ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
         <label>音量 <select id="volSel">${[['s', '小'], ['m', '中'], ['l', '大']].map(([v, t]) => `<option value="${v}" ${snd.vol === v ? 'selected' : ''}>${t}</option>`).join('')}</select></label></div></div>
