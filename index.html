@@ -5709,7 +5709,14 @@ function sayAlong(text, cb) {
 function nudge(def) { toast(def.hint); }
 function sFinishRound(ctx, q, wrong, sentence, next) {
   srec(q, wrong); ctx.learned.add(sentence);
-  later(() => sayAlong(sentence, next), 700);
+  later(() => sayOrHear(ctx, sentence, next), 700);
+}
+// saying every sentence in a row tires a young child: every other one is only read aloud to listen to
+function sayOrHear(ctx, sentence, next) {
+  ctx.sayN = (ctx.sayN || 0) + 1;
+  if (ctx.sayN % 2) { sayAlong(sentence, next); return; }
+  toast('👂 聽一聽這句');
+  speakThen(sentence, SRATE, () => later(next, 700));
 }
 // gift box in a colour; size 'big' | 'small' | ''
 const giftHTML = (c, size = '') => `<span class="gift ${size}" style="--g:${COLOR[c]};--r:${c === 'yellow' || c === 'orange' ? '#e5484d' : '#ffc53d'}"></span>`;
@@ -6382,7 +6389,7 @@ SGAMES.qBingo = (ctx, def) => {
       busy = true; marked.add(k); c.classList.add('marked'); sfx.ok(); hideCheer(); setDots(9, marked.size);
       const line = LINES.find(L => L.every(x => marked.has(x)));
       srec(call, wrongNow); ctx.learned.add(call.say);
-      later(() => sayAlong(call.say, () => {
+      later(() => sayOrHear(ctx, call.say, () => {
         if (line) {
           over = true; line.forEach(x => els[x].classList.add('win'));
           sfx.win(); speak('Bingo!', 0.9); later(() => ctx.done(mistakes), 1800);
@@ -6739,7 +6746,7 @@ SGAMES.today = (ctx, def) => {
   const tq = ctx.stage.querySelector('.tq'), story = ctx.stage.querySelector('.tstory');
   const add = s => { lines.push(s); story.innerHTML = lines.map(x => `<p>${esc(x)}</p>`).join(''); };
   let place = null, who = null;
-  const say = (s, next) => { ctx.learned.add(s); srec({ say: s }, false); later(() => sayAlong(s, next), 500); };
+  const say = (s, next) => { ctx.learned.add(s); srec({ say: s }, false); later(() => sayOrHear(ctx, s, next), 500); };
   setDots(5, 0);
   const qs = [
     () => { const ch = sample(PLACES, 6); picAsk(ctx, tq, pickOne(['Where did you go today?', 'Did you go anywhere today?', 'Where did you go?']), ch.map(p => [p[0], p[1]]), k => { place = ch[k]; next(`I went to ${place[1]}.`); }); },
@@ -6764,7 +6771,7 @@ SGAMES.interview = (ctx, def) => {
   ctx.stage.innerHTML = `<div class="todayg intv"><div class="ihead"><span class="santaf">🎅</span><span class="mic">🎤</span></div><div class="tq"></div><div class="tstory"></div></div>`;
   const tq = ctx.stage.querySelector('.tq'), story = ctx.stage.querySelector('.tstory');
   const add = s => { lines.push(s); story.innerHTML = lines.map(x => `<p>${esc(x)}</p>`).join(''); };
-  const said = (s, next) => { add(s); ctx.learned.add(s); later(() => sayAlong(s, next), 500); };
+  const said = (s, next) => { add(s); ctx.learned.add(s); later(() => sayOrHear(ctx, s, next), 500); };
   const replyStep = turn => cb => {
     const [line] = turn.santa ? turn.santa() : [turn.ask];
     tq.innerHTML = `<div class="sentrow"><div class="sentence">${esc(turn.garble ? 'What… is… your…' : line)}</div><button class="say" aria-label="聽">🔊</button></div><div class="copts"></div>`;
