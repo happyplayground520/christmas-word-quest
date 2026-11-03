@@ -3138,7 +3138,7 @@ const GAMES = {
           later(() => speak(it.s.replace('___', it.a), 0.8), 200);
           i++; later(round, 2600);
         } else {
-          b.classList.add('wrong'); mistakes++; wrong = true; sfx.no(); cheer([[it.s.replace('___', b.dataset.o), false, 0.8]]);
+          b.classList.add('wrong'); mistakes++; wrong = true; sfx.no(); cheer([[b.dataset.o, false, 0.8]]);
         }
       });
     }
@@ -5568,7 +5568,7 @@ SGAMES.aanSort = (ctx, def) => {
       later(() => bag.classList.remove('gulp'), 600);
       i++; sFinishRound(ctx, it, wrong, it.say, round);
     } else {
-      mistakes++; wrong = true; sfx.no(); cheer([[`${a} ${it.w}`, false, SRATE]]);
+      mistakes++; wrong = true; sfx.no(); cheer([[a, false, SRATE]]);
       bag.classList.remove('wrong'); void bag.offsetWidth; bag.classList.add('wrong');
       if (wrong && ++picked >= 2) nudge(def);
     }
@@ -5769,7 +5769,7 @@ SGAMES.story = (ctx, def) => {
       if (b < st.s.length) speak(said, SRATE);
       if (b >= st.s.length) { busy = true; i++; sFinishRound(ctx, st, wrong, st.say, round); }
     } else {
-      mistakes++; wrong = true; sfx.no(); cheer([[said, false, SRATE]]);
+      mistakes++; wrong = true; sfx.no(); cheer([[o, false, SRATE]]);
       btn.classList.remove('wrong'); void btn.offsetWidth; btn.classList.add('wrong'); later(() => btn.classList.remove('wrong'), 500);
       if (++misses === 2) toast(st.a[b] === 'the' ? '說過的、指定的、只有一個的 → the' : st.a[b] === 'an' ? 'a e i o u 開頭的音 → an' : '第一次說到、隨便一個 → a');
     }
@@ -5821,7 +5821,7 @@ SGAMES.artBoss = (ctx, def) => {
       later(() => { ball.hidden = true; hp--; drawHp(); tone(140, 0, .25, 'triangle', .14); foe.classList.remove('hit'); void foe.offsetWidth; foe.classList.add('hit'); }, 600);
       i++; sFinishRound(ctx, it, wrong, it.say, round);
     } else {
-      mistakes++; wrong = true; sfx.no(); cheer([[fillBlank(it.s, o), false, SRATE]]);
+      mistakes++; wrong = true; sfx.no(); cheer([[o, false, SRATE]]);
       btn.classList.remove('wrong'); void btn.offsetWidth; btn.classList.add('wrong'); later(() => btn.classList.remove('wrong'), 500);
     }
   });
@@ -5936,7 +5936,7 @@ SGAMES.what = (ctx, def) => {
       } else {
         b.classList.add('wrong'); later(() => b.classList.remove('wrong'), 700);
         mistakes++; wrong = true; sfx.no();
-        cheer([[t.kind === 'color' ? `It is ${o}.` : t.kind === 'can' ? t.say.replace(t.ans, o) : `It is ${o}.`, false, SRATE]]);
+        cheer([[o, false, SRATE]]);
       }
     }));
   }
@@ -6032,7 +6032,7 @@ SGAMES.when = (ctx, def) => {
       play.querySelectorAll('.skyp').forEach(b => b.onclick = () => {
         if (busy) return;
         if (b.dataset.s === t.s) { b.classList.add('right'); right(b); }
-        else miss(b, `I ${t.a} ${SKY[b.dataset.s][0]}.`);
+        else miss(b, SKY[b.dataset.s][0]);
       });
     } else {
       const nums = Array.from({ length: 12 }, (_, k) => k + 1);
@@ -6048,7 +6048,7 @@ SGAMES.when = (ctx, def) => {
         const h = +b.dataset.h;
         hh.style.transform = `rotate(${h * 30}deg)`;
         if (h === t.h) { b.classList.add('right'); right(b); }
-        else miss(b, `I ${t.a} at ${h} o'clock.`);
+        else miss(b, `${h} o'clock`);
       });
     }
   }
@@ -6141,7 +6141,7 @@ SGAMES.how = (ctx, def) => {
         busy = true; (t.kind === 'feel' ? face : board).textContent = map[o]; btn.remove(); sfx.ok(); hideCheer();
         i++; sFinishRound(ctx, t, wrong, t.say, round);
       } else {
-        mistakes++; wrong = true; sfx.no(); cheer([[t.kind === 'feel' ? `I am ${o}.` : `It is ${o}.`, false, SRATE]]);
+        mistakes++; wrong = true; sfx.no(); cheer([[o, false, SRATE]]);
         btn.classList.remove('wrong'); void btn.offsetWidth; btn.classList.add('wrong');
       }
     };
@@ -6191,7 +6191,7 @@ SGAMES.qBingo = (ctx, def) => {
       }), 600);
     } else {
       c.classList.remove('wrong'); void c.offsetWidth; c.classList.add('wrong');
-      mistakes++; wrongNow = true; sfx.no(); cheer([[call.a, false, SRATE]]);
+      mistakes++; wrongNow = true; sfx.no(); cheer([[cells[k], false, SRATE]]);
       if (++tries >= 2) ansEl.hidden = false;
     }
   });
@@ -6225,7 +6225,7 @@ function replyPick(host, turn, onDone) {
     wrong = true; sfx.no();
     b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
     if (k === 'short') { speak(t, SRATE); toast('只說一個字太短了！選完整的句子更棒'); }
-    else cheer([[t, false, SRATE]]);
+    else { cheer(); toast('這句沒有回答到問題，再看一次問題喔'); }
     onDone.miss && onDone.miss();
   });
 }
@@ -6326,7 +6326,7 @@ SGAMES.canRace = (ctx, def) => {
       const [ok, s] = choices[+b.dataset.k];
       if (ok) { busy = true; b.classList.add('right'); sfx.ok(); hideCheer(); i++; sFinishRound(ctx, t, wrong, t.say, round); }
       else {
-        mistakes++; miss++; wrong = true; sfx.no(); move(); cheer([[s, false, SRATE]]);
+        mistakes++; miss++; wrong = true; sfx.no(); move(); cheer();
         b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
         if (/ing\./.test(s)) toast('can 後面的動作不加 ing');
       }
@@ -6389,7 +6389,7 @@ SGAMES.album = (ctx, def) => {
         const s = opts[+b.dataset.k];
         if (sealed) return;
         if (s === second) { b.classList.add('right'); sfx.ok(); hideCheer(); finishPhoto(); }
-        else { mistakes++; wrong = true; sfx.no(); cheer([[s, false, SRATE]]); b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); toast(p.he === 'He' ? '男生用 He' : '女生用 She'); }
+        else { mistakes++; wrong = true; sfx.no(); cheer(); b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); toast(p.he === 'He' ? '男生用 He' : '女生用 She'); }
       });
     }
     function finishPhoto() {
@@ -6420,7 +6420,7 @@ SGAMES.timeline = (ctx, def) => {
       col.querySelector('.tlin').insertAdjacentHTML('beforeend', `<span>${it.e}</span>`); card.innerHTML = '';
       i++; sFinishRound(ctx, it, wrong, it.say, round);
     } else {
-      mistakes++; wrong = true; sfx.no(); cheer([[`${it.s} ${TL_COLS[col.dataset.c][0]}?`, false, SRATE]]);
+      mistakes++; wrong = true; sfx.no(); cheer([[TL_COLS[col.dataset.c][0], false, SRATE]]);
       col.classList.remove('wrong'); void col.offsetWidth; col.classList.add('wrong');
     }
   };
@@ -6477,7 +6477,7 @@ SGAMES.withMatch = (ctx, def) => {
       });
     } else {
       ln.classList.add('bad'); later(() => ln.remove(), 600);
-      mistakes++; wrongs.add(lk); sfx.no(); cheer([[`I ${p.l} with ${pairs[rk].r}?`, false, SRATE]]);
+      mistakes++; wrongs.add(lk); sfx.no(); cheer([[pairs[rk].r, false, SRATE]]);
     }
   };
   board.addEventListener('pointerdown', e => {
