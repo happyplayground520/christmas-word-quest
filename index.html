@@ -77,8 +77,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-block: 12px;
 }
-/* opened from the home-screen icon, iPadOS blurs a band below the status bar, so keep the buttons under it */
-@media (display-mode: standalone) { #app { padding-top: 52px; } }
+/* when the page runs under the status bar (the home-screen icon), iPadOS blurs a band below it,
+   so the buttons move down past it; with no status bar above the page the min() is 0 and nothing moves */
+#app { --sbar: min(env(safe-area-inset-top, 0px) * 100, 60px); padding-top: calc(12px + var(--sbar)); }
 .screen { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 14px; }
 .scroll { overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
@@ -964,7 +965,7 @@ button.chip:active { background: var(--night-2); }
   .vbtn { padding: 8px 18px; }
   .vbtn .vi { font-size: 38px; }
   .cheer { max-height: 52px; font-size: clamp(20px, 3.2vmin, 26px); }
-  #app { gap: 8px; padding-block: 8px; }
+  #app { gap: 8px; padding-block: calc(8px + var(--sbar)) 8px; }
   .screen { gap: 8px; }
   .chip { min-height: 40px; padding: 4px 12px; font-size: 17px; }
   .wtab { min-height: 44px; font-size: 15px; padding: 4px 10px; }
