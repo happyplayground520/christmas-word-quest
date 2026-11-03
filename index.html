@@ -323,6 +323,7 @@ button.chip:active { background: var(--night-2); }
 
 /* faces: emoji or a wrapped gift box in a colour */
 .emo { line-height: 1; }
+.esvg { width: 1em; height: 1em; vertical-align: -.12em; display: inline-block; }
 .gift {
   display: inline-block; width: 1em; height: .92em; position: relative; border-radius: .14em;
   background: var(--g); box-shadow: inset 0 -.12em 0 rgba(0,0,0,.18), 0 .04em 0 rgba(0,0,0,.25), 0 0 0 .03em rgba(255,255,255,.35);
@@ -1479,6 +1480,8 @@ const dayIndex = () => Math.floor(Date.parse(todayStr()) / 864e5);
 
 /* ================= word data ================= */
 const COLOR = { red: '#e5484d', blue: '#3b82f6', green: '#2fb36b', yellow: '#ffd23f', pink: '#ff8fc7', purple: '#9b5de5', orange: '#ff8c1a', white: '#f5f8ff', brown: '#9a6236', gray: '#9aa3b5', black: '#22252d', gold: '#d4a017' };
+// a small drawn picture for a word that has no fitting emoji
+const GINGER_PIC = '<svg class="esvg" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 6a17 17 0 0 1 11 30h14a9 9 0 0 1 0 18H66l9 26a9 9 0 0 1-17 6l-8-17-8 17a9 9 0 0 1-17-6l9-26H25a9 9 0 0 1 0-18h14A17 17 0 0 1 50 6z" fill="#c47a3d" stroke="#8a4b1f" stroke-width="3" stroke-linejoin="round"/><path d="M22 45h8M70 45h8M27 82l4-6M73 82l-4-6" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="44" cy="20" r="3" fill="#3a2212"/><circle cx="56" cy="20" r="3" fill="#3a2212"/><path d="M43 27q7 6 14 0" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="50" cy="44" r="3.6" fill="#e5484d"/><circle cx="50" cy="55" r="3.6" fill="#2fb36b"/><circle cx="50" cy="66" r="3.6" fill="#e5484d"/></svg>';
 const mk = arr => arr.map(x => typeof x === 'string' ? { w: x, c: COLOR[x] } : { w: x[0], e: x[1] });
 // Three separate word lists for grades 1-2 (初階), 3-4 (進階) and 5-6 (高階); no word is in two versions.
 // Each world has three groups of 8: stages 1, 2 and 3 each use one group, the boss mixes the whole world.
@@ -1534,7 +1537,7 @@ const GROUPS = {
     roof:     [mk([['jacket','🧥'],['sneakers','👟'],['sandals','🩴'],['necklace','📿'],['crown','👑'],['mittens','🧤'],['swimsuit','🩱'],['ring','💍']]),
                mk([['finger','☝️'],['thumb','👍'],['tongue','👅'],['brain','🧠'],['heart','❤️'],['lungs','🫁'],['muscle','💪'],['footprint','👣']]),
                mk([['scientist','🧑‍🔬'],['astronaut','🧑‍🚀'],['pilot','🧑‍✈️'],['artist','🧑‍🎨'],['judge','🧑‍⚖️'],['chef','🧑‍🍳'],['mechanic','🧑‍🔧'],['detective','🕵️']])],
-    extras:   [mk([['stocking','🧦'],['Christmas tree','🎄'],['sleigh','🛷'],['gingerbread','🍪'],['ice skates','⛸️'],['fireworks','🎆'],['present','🎁'],['lollipop','🍭']]),
+    extras:   [mk([['stocking','🧦'],['Christmas tree','🎄'],['sleigh','🛷'],['gingerbread',GINGER_PIC],['ice skates','⛸️'],['fireworks','🎆'],['present','🎁'],['lollipop','🍭']]),
                mk([['strawberry','🍓'],['watermelon','🍉'],['pineapple','🍍'],['tomato','🍅'],['potato','🥔'],['pumpkin','🎃'],['mushroom','🍄'],['broccoli','🥦']]),
                mk([['library','📚'],['museum','🏛️'],['stadium','🏟️'],['airport','🛫'],['supermarket','🛒'],['post office','🏤'],['factory','🏭'],['bridge','🌉']])]
   }
