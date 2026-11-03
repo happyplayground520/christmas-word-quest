@@ -164,6 +164,15 @@ button.chip:active { background: var(--night-2); }
 .mission .mtext b { font-size: 20px; color: var(--gold); }
 .mission .mtext small { color: var(--frost); font-size: 16px; }
 .mission .bar-prog { flex: 1 1 140px; max-width: 240px; }
+.mission .mhead { width: 100%; display: flex; align-items: center; gap: 6px 12px; flex-wrap: wrap; }
+.mission .mhead b { font-size: 20px; color: var(--gold); }
+.mission .mhead small { flex: 1 1 200px; color: var(--frost); font-size: 16px; }
+.mission .mlist { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+.mrow { display: flex; align-items: center; gap: 10px; border: none; border-radius: 14px; padding: 6px 12px; background: rgba(245,248,255,.08); color: var(--snow); font-size: 17px; font-weight: 700; text-align: left; }
+.mission .mrow .mi { font-size: 26px; }
+.mrow .mt { flex: 1; min-width: 0; }
+.mrow small { color: var(--gold); font-size: 15px; }
+.mrow.got { opacity: .6; }
 .bar-prog { height: 14px; border-radius: 999px; background: rgba(245,248,255,.15); overflow: hidden; }
 .bar-prog i { display: block; height: 100%; background: linear-gradient(90deg, var(--gold), #ffe08a); border-radius: inherit; }
 .whotag { display: inline-flex; align-items: center; gap: 6px; margin-left: 14px; padding: 4px 14px 4px 8px; border-radius: 999px; vertical-align: middle;
@@ -834,11 +843,18 @@ button.chip:active { background: var(--night-2); }
 .tp.on { background: var(--gold-l); color: var(--ink); box-shadow: 0 0 0 3px var(--gold); }
 .peoplepick { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .pp { border: none; border-radius: 16px; padding: 4px 8px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px; background: rgba(245,248,255,.1); color: var(--snow); font-size: 14px; font-weight: 700; }
-.pp .pe { font-size: 34px; line-height: 1.1; }
+.pp .pv canvas { width: 54px; height: 64px; display: block; }
+.pp small { font-size: 13px; color: var(--gold); }
+.pp.on small { color: var(--gold-d); }
+.buypic { display: flex; justify-content: center; }
+.buypic img { width: 108px; height: 128px; }
+.buypic .wc { width: 80px; height: 80px; }
 .pp.on { background: var(--gold-l); color: var(--ink); box-shadow: 0 0 0 3px var(--gold); }
 .wallpick { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .wc { width: 44px; height: 44px; border-radius: 50%; border: 3px solid rgba(255,255,255,.7); background: var(--c); box-shadow: 0 3px 0 rgba(0,0,0,.25); }
 .wc.on { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-l); }
+.wc { position: relative; display: inline-block; }
+.wc.lock::after { content: "🔔"; position: absolute; right: -6px; bottom: -6px; font-size: 15px; line-height: 1; }
 .shop { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
 .shop h3 { margin: 10px 0 2px; font-size: 19px; color: var(--gold); }
 .sitem { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 18px; background: rgba(245,248,255,.1); }
@@ -1687,6 +1703,8 @@ try { navigator.storage && navigator.storage.persist && navigator.storage.persis
 const backupDue = p => allStarsOf(p) >= 3 && Date.now() - (p.backupAt || 0) > 7 * 864e5;
 const allStarsOf = p => Object.values(p.levels || {}).reduce((t, l) => t + Object.values(l.stars || {}).reduce((x, y) => x + y, 0), 0);
 // elves made before the starter tree existed get one too
+store.profiles.forEach(p => { if (p.walls && !p.wallOwned) { p.wallOwned = {}; Object.entries(p.walls).forEach(([r, c]) => { p.wallOwned[r] = [c]; }); } });
+store.profiles.forEach(p => { if (!p.paidPeople) { p.owned = (p.owned || []).filter(id => !/^[lbkyw]_p_/.test(id)); p.paidPeople = 1; } });
 store.profiles.forEach(p => { if (!p.starter) { if (!p.owned.includes('tree')) p.owned.push('tree'); p.pos = p.pos || {}; p.starter = 1; } });
 function newProfile(name) {
   return { id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name, bells: 0, owned: ['tree'], pos: {}, starter: 1,
@@ -1772,7 +1790,7 @@ const ZHUYIN = {
   角:'ㄐㄧㄠˇ',話:'ㄏㄨㄚˋ',誰:'ㄕㄟˊ',請:'ㄑㄧㄥˇ',讓:'ㄖㄤˋ',貓:'ㄇㄠ',車:'ㄔㄜ',迪:'ㄉㄧˊ',送:'ㄙㄨㄥˋ',進:'ㄐㄧㄣˋ',
   遞:'ㄉㄧˋ',配:'ㄆㄟˋ',重:'ㄔㄨㄥˊ',金:'ㄐㄧㄣ',鈴:'ㄌㄧㄥˊ',錯:'ㄘㄨㄛˋ',鎮:'ㄓㄣˋ',鐺:'ㄉㄤ',長:'ㄓㄤˇ',門:'ㄇㄣˊ',
   閉:'ㄅㄧˋ',間:'ㄐㄧㄢ',降:'ㄐㄧㄤˋ',限:'ㄒㄧㄢˋ',階:'ㄐㄧㄝ',面:'ㄇㄧㄢˋ',頁:'ㄧㄝˋ',頭:'ㄊㄡˊ',餅:'ㄅㄧㄥˇ',首:'ㄕㄡˇ',
-  住:'ㄓㄨˋ',孩:'ㄏㄞˊ',爺:'ㄧㄝˊ',橡:'ㄒㄧㄤˋ',步:'ㄅㄨˋ',河:'ㄏㄜˊ',海:'ㄏㄞˇ',豹:'ㄅㄠˋ',主:'ㄓㄨˇ',代:'ㄉㄞˋ',公:'ㄍㄨㄥ',利:'ㄌㄧˋ',刺:'ㄘˋ',力:'ㄌㄧˋ',包:'ㄅㄠ',升:'ㄕㄥ',印:'ㄧㄣˋ',司:'ㄙ',咖:'ㄎㄚ',啡:'ㄈㄟ',噴:'ㄆㄣ',團:'ㄊㄨㄢˊ',士:'ㄕˋ',夾:'ㄐㄧㄚ',尺:'ㄔˇ',巢:'ㄔㄠˊ',巧:'ㄑㄧㄠˇ',帳:'ㄓㄤˋ',彎:'ㄨㄢ',恐:'ㄎㄨㄥˇ',扭:'ㄋㄧㄡˇ',披:'ㄆㄧ',抱:'ㄅㄠˋ',拉:'ㄌㄚ',摩:'ㄇㄛˊ',斑:'ㄅㄢ',枕:'ㄓㄣˇ',柴:'ㄔㄞˊ',梯:'ㄊㄧ',椅:'ㄧˇ',橘:'ㄐㄩˊ',汁:'ㄓ',池:'ㄔˊ',洋:'ㄧㄤˊ',湯:'ㄊㄤ',滑:'ㄏㄨㄚˊ',漂:'ㄆㄧㄠ',灰:'ㄏㄨㄟ',爆:'ㄅㄠˋ',犬:'ㄑㄩㄢˇ',狼:'ㄌㄤˊ',獵:'ㄌㄧㄝˋ',瓜:'ㄍㄨㄚ',碟:'ㄉㄧㄝˊ',磁:'ㄘˊ',篷:'ㄆㄥˊ',籃:'ㄌㄢˊ',米:'ㄇㄧˇ',絲:'ㄙ',緞:'ㄉㄨㄢˋ',義:'ㄧˋ',腳:'ㄐㄧㄠˇ',菇:'ㄍㄨ',萄:'˙ㄊㄠ',落:'ㄌㄨㄛˋ',葉:'ㄧㄝˋ',葡:'ㄆㄨˊ',蕉:'ㄐㄧㄠ',薩:'ㄙㄚˋ',蘑:'ㄇㄛˊ',虎:'ㄏㄨˇ',虹:'ㄏㄨㄥˊ',蜂:'ㄈㄥ',蜜:'ㄇㄧˋ',蝟:'ㄨㄟˋ',螺:'ㄌㄨㄛˊ',輪:'ㄌㄨㄣˊ',運:'ㄩㄣˋ',鍋:'ㄍㄨㄛ',鏡:'ㄐㄧㄥˋ',鞋:'ㄒㄧㄝˊ',頌:'ㄙㄨㄥˋ',飛:'ㄈㄟ',香:'ㄒㄧㄤ',骰:'ㄕㄞˇ',髮:'ㄈㄚˇ',鬧:'ㄋㄠˋ',鯨:'ㄐㄧㄥ',鹽:'ㄧㄢˊ',麵:'ㄇㄧㄢˋ',黃:'ㄏㄨㄤˊ',黑:'ㄏㄟ',龍:'ㄌㄨㄥˊ',提:'ㄊㄧˊ',標:'ㄅㄧㄠ',煙:'ㄧㄢ',籤:'ㄑㄧㄢ',具:'ㄐㄩˋ',刀:'ㄉㄠ',剪:'ㄐㄧㄢˇ',吉:'ㄐㄧˊ',型:'ㄒㄧㄥˊ',城:'ㄔㄥˊ',堡:'ㄅㄠˇ',壺:'ㄏㄨˊ',夜:'ㄧㄝˋ',奶:'ㄋㄞˇ',客:'ㄎㄜˋ',室:'ㄕˋ',廳:'ㄊㄧㄥ',書:'ㄕㄨ',月:'ㄩㄝˋ',模:'ㄇㄛˊ',派:'ㄆㄞˋ',流:'ㄌㄧㄡˊ',牛:'ㄋㄧㄡˊ',獨:'ㄉㄨˊ',獸:'ㄕㄡˋ',箏:'˙ㄓㄥ',箭:'ㄐㄧㄢˋ',籠:'ㄌㄨㄥˊ',縫:'ㄈㄥˊ',罐:'ㄍㄨㄢˋ',臥:'ㄨㄛˋ',茶:'ㄔㄚˊ',草:'ㄘㄠˇ',莓:'ㄇㄟˊ',蔔:'˙ㄅㄛ',蘋:'ㄆㄧㄥˊ',蘿:'ㄌㄨㄛˊ',鎚:'ㄔㄨㄟˊ',鐵:'ㄊㄧㄝˇ',院:'ㄩㄢˋ',雞:'ㄐㄧ',餐:'ㄘㄢ',鬆:'ㄙㄨㄥ',鳥:'ㄋㄧㄠˇ',鼓:'ㄍㄨˇ',鼠:'ㄕㄨˇ',寄:'ㄐㄧˋ',描:'ㄇㄧㄠˊ',筆:'ㄅㄧˇ',霜:'ㄕㄨㄤ',偷:'ㄊㄡ',催:'ㄘㄨㄟ',內:'ㄋㄟˋ',凍:'ㄉㄨㄥˋ',塊:'ㄎㄨㄞˋ',搗:'ㄉㄠˇ',擋:'ㄉㄤˇ',毛:'ㄇㄠˊ',皮:'ㄆㄧˊ',調:'ㄊㄧㄠˊ',走:'ㄗㄡˇ',趕:'ㄍㄢˇ',路:'ㄌㄨˋ',鴉:'ㄧㄚ',世:'ㄕˋ',些:'ㄒㄧㄝ',何:'ㄏㄜˊ',叉:'ㄔㄚ',叭:'˙ㄅㄚ',告:'ㄍㄠˋ',商:'ㄕㄤ',喇:'ㄌㄚˇ',喜:'ㄒㄧˇ',嗨:'ㄏㄞ',圓:'ㄩㄢˊ',域:'ㄩˋ',帶:'ㄉㄞˋ',序:'ㄒㄩˋ',店:'ㄉㄧㄢˋ',案:'ㄢˋ',歡:'ㄏㄨㄢ',烏:'ㄨ',照:'ㄓㄠˋ',界:'ㄐㄧㄝˋ',覺:'ㄐㄩㄝˊ',訴:'ㄙㄨˋ',買:'ㄇㄞˇ',順:'ㄕㄨㄣˋ',龜:'ㄍㄨㄟ',嗎:'˙ㄇㄚ',慢:'ㄇㄢˋ',
+  住:'ㄓㄨˋ',項:'ㄒㄧㄤˋ',紫:'ㄗˇ',孩:'ㄏㄞˊ',爺:'ㄧㄝˊ',橡:'ㄒㄧㄤˋ',步:'ㄅㄨˋ',河:'ㄏㄜˊ',海:'ㄏㄞˇ',豹:'ㄅㄠˋ',主:'ㄓㄨˇ',代:'ㄉㄞˋ',公:'ㄍㄨㄥ',利:'ㄌㄧˋ',刺:'ㄘˋ',力:'ㄌㄧˋ',包:'ㄅㄠ',升:'ㄕㄥ',印:'ㄧㄣˋ',司:'ㄙ',咖:'ㄎㄚ',啡:'ㄈㄟ',噴:'ㄆㄣ',團:'ㄊㄨㄢˊ',士:'ㄕˋ',夾:'ㄐㄧㄚ',尺:'ㄔˇ',巢:'ㄔㄠˊ',巧:'ㄑㄧㄠˇ',帳:'ㄓㄤˋ',彎:'ㄨㄢ',恐:'ㄎㄨㄥˇ',扭:'ㄋㄧㄡˇ',披:'ㄆㄧ',抱:'ㄅㄠˋ',拉:'ㄌㄚ',摩:'ㄇㄛˊ',斑:'ㄅㄢ',枕:'ㄓㄣˇ',柴:'ㄔㄞˊ',梯:'ㄊㄧ',椅:'ㄧˇ',橘:'ㄐㄩˊ',汁:'ㄓ',池:'ㄔˊ',洋:'ㄧㄤˊ',湯:'ㄊㄤ',滑:'ㄏㄨㄚˊ',漂:'ㄆㄧㄠ',灰:'ㄏㄨㄟ',爆:'ㄅㄠˋ',犬:'ㄑㄩㄢˇ',狼:'ㄌㄤˊ',獵:'ㄌㄧㄝˋ',瓜:'ㄍㄨㄚ',碟:'ㄉㄧㄝˊ',磁:'ㄘˊ',篷:'ㄆㄥˊ',籃:'ㄌㄢˊ',米:'ㄇㄧˇ',絲:'ㄙ',緞:'ㄉㄨㄢˋ',義:'ㄧˋ',腳:'ㄐㄧㄠˇ',菇:'ㄍㄨ',萄:'˙ㄊㄠ',落:'ㄌㄨㄛˋ',葉:'ㄧㄝˋ',葡:'ㄆㄨˊ',蕉:'ㄐㄧㄠ',薩:'ㄙㄚˋ',蘑:'ㄇㄛˊ',虎:'ㄏㄨˇ',虹:'ㄏㄨㄥˊ',蜂:'ㄈㄥ',蜜:'ㄇㄧˋ',蝟:'ㄨㄟˋ',螺:'ㄌㄨㄛˊ',輪:'ㄌㄨㄣˊ',運:'ㄩㄣˋ',鍋:'ㄍㄨㄛ',鏡:'ㄐㄧㄥˋ',鞋:'ㄒㄧㄝˊ',頌:'ㄙㄨㄥˋ',飛:'ㄈㄟ',香:'ㄒㄧㄤ',骰:'ㄕㄞˇ',髮:'ㄈㄚˇ',鬧:'ㄋㄠˋ',鯨:'ㄐㄧㄥ',鹽:'ㄧㄢˊ',麵:'ㄇㄧㄢˋ',黃:'ㄏㄨㄤˊ',黑:'ㄏㄟ',龍:'ㄌㄨㄥˊ',提:'ㄊㄧˊ',標:'ㄅㄧㄠ',煙:'ㄧㄢ',籤:'ㄑㄧㄢ',具:'ㄐㄩˋ',刀:'ㄉㄠ',剪:'ㄐㄧㄢˇ',吉:'ㄐㄧˊ',型:'ㄒㄧㄥˊ',城:'ㄔㄥˊ',堡:'ㄅㄠˇ',壺:'ㄏㄨˊ',夜:'ㄧㄝˋ',奶:'ㄋㄞˇ',客:'ㄎㄜˋ',室:'ㄕˋ',廳:'ㄊㄧㄥ',書:'ㄕㄨ',月:'ㄩㄝˋ',模:'ㄇㄛˊ',派:'ㄆㄞˋ',流:'ㄌㄧㄡˊ',牛:'ㄋㄧㄡˊ',獨:'ㄉㄨˊ',獸:'ㄕㄡˋ',箏:'˙ㄓㄥ',箭:'ㄐㄧㄢˋ',籠:'ㄌㄨㄥˊ',縫:'ㄈㄥˊ',罐:'ㄍㄨㄢˋ',臥:'ㄨㄛˋ',茶:'ㄔㄚˊ',草:'ㄘㄠˇ',莓:'ㄇㄟˊ',蔔:'˙ㄅㄛ',蘋:'ㄆㄧㄥˊ',蘿:'ㄌㄨㄛˊ',鎚:'ㄔㄨㄟˊ',鐵:'ㄊㄧㄝˇ',院:'ㄩㄢˋ',雞:'ㄐㄧ',餐:'ㄘㄢ',鬆:'ㄙㄨㄥ',鳥:'ㄋㄧㄠˇ',鼓:'ㄍㄨˇ',鼠:'ㄕㄨˇ',寄:'ㄐㄧˋ',描:'ㄇㄧㄠˊ',筆:'ㄅㄧˇ',霜:'ㄕㄨㄤ',偷:'ㄊㄡ',催:'ㄘㄨㄟ',內:'ㄋㄟˋ',凍:'ㄉㄨㄥˋ',塊:'ㄎㄨㄞˋ',搗:'ㄉㄠˇ',擋:'ㄉㄤˇ',毛:'ㄇㄠˊ',皮:'ㄆㄧˊ',調:'ㄊㄧㄠˊ',走:'ㄗㄡˇ',趕:'ㄍㄢˇ',路:'ㄌㄨˋ',鴉:'ㄧㄚ',世:'ㄕˋ',些:'ㄒㄧㄝ',何:'ㄏㄜˊ',叉:'ㄔㄚ',叭:'˙ㄅㄚ',告:'ㄍㄠˋ',商:'ㄕㄤ',喇:'ㄌㄚˇ',喜:'ㄒㄧˇ',嗨:'ㄏㄞ',圓:'ㄩㄢˊ',域:'ㄩˋ',帶:'ㄉㄞˋ',序:'ㄒㄩˋ',店:'ㄉㄧㄢˋ',案:'ㄢˋ',歡:'ㄏㄨㄢ',烏:'ㄨ',照:'ㄓㄠˋ',界:'ㄐㄧㄝˋ',覺:'ㄐㄩㄝˊ',訴:'ㄙㄨˋ',買:'ㄇㄞˇ',順:'ㄕㄨㄣˋ',龜:'ㄍㄨㄟ',嗎:'˙ㄇㄚ',慢:'ㄇㄢˋ',
   久:'ㄐㄧㄡˇ',事:'ㄕˋ',什:'ㄕㄣˊ',介:'ㄐㄧㄝˋ',他:'ㄊㄚ',作:'ㄗㄨㄛˋ',便:'ㄅㄧㄢˋ',候:'˙ㄏㄡ',偵:'ㄓㄣ',克:'ㄎㄜˋ',兌:'ㄉㄨㄟˋ',其:'ㄑㄧˊ',區:'ㄑㄩ',午:'ㄨˇ',只:'ㄓˇ',叫:'ㄐㄧㄠˋ',同:'ㄊㄨㄥˊ',咕:'ㄍㄨ',問:'ㄨㄣˋ',嚕:'ㄌㄨ',因:'ㄧㄣ',園:'ㄩㄢˊ',外:'ㄨㄞˋ',始:'ㄕˇ',密:'ㄇㄧˋ',實:'ㄕˊ',左:'ㄗㄨㄛˇ',師:'ㄕ',幾:'ㄐㄧˇ',張:'ㄓㄤ',念:'ㄋㄧㄢˋ',情:'ㄑㄧㄥˊ',懂:'ㄉㄨㄥˇ',戳:'ㄔㄨㄛ',指:'ㄓˇ',探:'ㄊㄢˋ',推:'ㄊㄨㄟ',改:'ㄍㄞˇ',故:'ㄍㄨˋ',整:'ㄓㄥˇ',數:'ㄕㄨˋ',方:'ㄈㄤ',早:'ㄗㄠˇ',晚:'ㄨㄢˇ',東:'ㄉㄨㄥ',楚:'˙ㄔㄨ',樣:'ㄧㄤˋ',氣:'ㄑㄧˋ',淇:'ㄑㄧˊ',淋:'ㄌㄧㄣˊ',清:'ㄑㄧㄥ',準:'ㄓㄨㄣˇ',為:'ㄨㄟˋ',畫:'ㄏㄨㄚˋ',相:'ㄒㄧㄤˋ',知:'ㄓ',短:'ㄉㄨㄢˇ',碼:'ㄇㄚˇ',社:'ㄕㄜˋ',祕:'ㄇㄧˋ',積:'ㄐㄧ',簿:'ㄅㄨˋ',紙:'ㄓˇ',紹:'ㄕㄠˋ',組:'ㄗㄨˇ',聊:'ㄌㄧㄠˊ',肚:'ㄉㄨˋ',被:'ㄅㄟˋ',西:'˙ㄒㄧ',計:'ㄐㄧˋ',訊:'ㄒㄩㄣˋ',訪:'ㄈㄤˇ',說:'ㄕㄨㄛ',變:'ㄅㄧㄢˋ',跟:'ㄍㄣ',道:'ㄉㄠˋ',邊:'ㄅㄧㄢ',那:'ㄋㄚˋ',針:'ㄓㄣ',陽:'ㄧㄤˊ',隨:'ㄙㄨㄟˊ',隻:'ㄓ',雷:'ㄌㄟˊ',麥:'ㄇㄞˋ',簽:'ㄑㄧㄢ',去:'ㄑㄩˋ',紋:'ㄨㄣˊ',粉:'ㄈㄣˇ',愛:'ㄞˋ',心:'ㄒㄧㄣ',吊:'ㄉㄧㄠˋ',拐:'ㄍㄨㄞˇ',杖:'ㄓㄤˋ',杯:'ㄅㄟ',蛋:'ㄉㄢˋ',糕:'ㄍㄠ',甜:'ㄊㄧㄢˊ',兔:'ㄊㄨˋ',狗:'ㄍㄡˇ',狐:'ㄏㄨˊ',狸:'˙ㄌㄧ',牆:'ㄑㄧㄤˊ',雙:'ㄕㄨㄤ',華:'ㄏㄨㄚˊ',麗:'ㄌㄧˋ',盒:'ㄏㄜˊ',俄:'ㄜˊ',羅:'ㄌㄨㄛˊ',斯:'ㄙ',鐘:'ㄓㄨㄥ',婆:'ㄆㄛˊ',鋼:'ㄍㄤ',琴:'ㄑㄧㄣˊ',所:'ㄙㄨㄛˇ',怎:'ㄗㄣˇ',麼:'˙ㄇㄜ',自:'ㄗˋ',己:'ㄐㄧˇ',寫:'ㄒㄧㄝˇ',種:'ㄓㄨㄥˇ',體:'ㄊㄧˇ',躲:'ㄉㄨㄛˇ',站:'ㄓㄢˋ',賽:'ㄙㄞˋ',跑:'ㄆㄠˇ',往:'ㄨㄤˇ',衝:'ㄔㄨㄥ',釣:'ㄉㄧㄠˋ',魚:'ㄩˊ',遊:'ㄧㄡˊ',戲:'ㄒㄧˋ',檔:'ㄉㄤˇ',度:'ㄉㄨˋ',備:'ㄅㄟˋ',份:'ㄈㄣˋ',從:'ㄘㄨㄥˊ',著:'˙ㄓㄜ',掉:'ㄉㄧㄠˋ',怪:'ㄍㄨㄞˋ',器:'ㄑㄧˋ',機:'ㄐㄧ',零:'ㄌㄧㄥˊ',件:'ㄐㄧㄢˋ',修:'ㄒㄧㄡ',理:'ㄌㄧˇ',賓:'ㄅㄧㄣ',連:'ㄌㄧㄢˊ',條:'ㄊㄧㄠˊ',丟:'ㄉㄧㄡ',敗:'ㄅㄞˋ',穿:'ㄔㄨㄢ',衣:'ㄧ',服:'˙ㄈㄨ',身:'ㄕㄣ',泡:'ㄆㄠˋ',像:'ㄒㄧㄤˋ',和:'ㄏㄜˊ',圍:'ㄨㄟˊ',水:'ㄕㄨㄟˇ',旋:'ㄒㄩㄢˊ',木:'ㄇㄨˋ',馬:'ㄇㄚˇ',偶:'ㄡˇ',胡:'ㄏㄨˊ',桃:'ㄊㄠˊ',鉗:'ㄑㄧㄢˊ',箱:'ㄒㄧㄤ',戴:'ㄉㄞˋ',巾:'ㄐㄧㄣ',桶:'ㄊㄨㄥˇ',塗:'ㄊㄨˊ',顯:'ㄒㄧㄢˇ',示:'ㄕˋ',拖:'ㄊㄨㄛ',或:'ㄏㄨㄛˋ',男:'ㄋㄢˊ',女:'ㄋㄩˇ',生:'ㄕㄥ',還:'ㄏㄞˊ',分:'ㄈㄣ',享:'ㄒㄧㄤˇ',螢:'ㄧㄥˊ',幕:'ㄇㄨˋ',轉:'ㄓㄨㄢˇ',橫:'ㄏㄥˊ',製:'ㄓˋ',貼:'ㄊㄧㄝ',框:'ㄎㄨㄤ',綠:'ㄌㄩˋ',白:'ㄅㄞˊ',典:'ㄉㄧㄢˇ',棵:'ㄎㄜ',紅:'ㄏㄨㄥˊ',藍:'ㄌㄢˊ',蝴:'ㄏㄨˊ',蝶:'ㄉㄧㄝˊ',結:'ㄐㄧㄝˊ',跳:'ㄊㄧㄠˋ',視:'ㄕˋ',窗:'ㄔㄨㄤ',辦:'ㄅㄢˋ',法:'ㄈㄚˇ',直:'ㄓˊ',接:'ㄐㄧㄝ',影:'ㄧㄥˇ',像:'ㄒㄧㄤˋ',電:'ㄉㄧㄢˋ',腦:'ㄋㄠˇ',右:'ㄧㄡˋ',鍵:'ㄐㄧㄢˋ',另:'ㄌㄧㄥˋ',移:'ㄧˊ',動:'ㄉㄨㄥˋ',高:'ㄍㄠ',鵝:'ㄜˊ',鷹:'ㄧㄥ',鹿:'ㄌㄨˋ',麋:'ㄇㄧˊ'
 };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -2086,23 +2104,59 @@ const MISSIONS = [
   { key: 'three',   goal: 1,  text: '今天拿到 1 次三顆星' }
 ];
 const MISSION_BELLS = 5;
-const mission = () => {
-  const c = todayChallenge();
-  if (c) return { key: 'challenge', goal: 1, text: `去「${VERSIONS[c.ver].name}」${c.id} 打敗回來的${chalMon(c).name}！`, chal: 1 };
-  return MISSIONS[dayIndex() % MISSIONS.length];
-};
+// stage kinds sorted by what they practise, so the day's three missions ask for different things
+const MISSION_GROUPS = [
+  ['listen', 'hear', 'robot', 'bingo', 'initial'],
+  ['race', 'fish', 'hide', 'whack', 'final', 'snowball', 'gate'],
+  ['spell', 'spell2', 'lastletter', 'pickspell', 'bubble'],
+  ['grammar', 'time', 'mix', 'order'],
+  ['memory', 'colors', 'colors2', 'paint', 'dress'],
+  ['tr1', 'tr2', 'tr3', 'trBoss', 'tr5', 'tr6', 'tr7', 'trBoss2']
+];
+const groupOf = kind => MISSION_GROUPS.findIndex(gr => gr.includes(kind));
+function stageOpenIn(ver, s, p = P()) {
+  const stars = (p.levels[ver] || {}).stars || {}, ok = id => (stars[id] || 0) > 0;
+  return (s.w === 0 || ok(`${s.w}-4`)) && (s.k === 0 || ok(`${s.w + 1}-${s.k}`)) && (s.w < 5 || writeReady(ver));
+}
+// three missions a day: the monster's challenge when there is one, then open stages of different kinds
+function makeMissions(p) {
+  const list = [], used = new Set();
+  const c = todayChallenge(p);
+  if (c && !c.done) {
+    list.push({ key: 'challenge', goal: 1, chal: 1, ver: c.ver, id: c.id, text: `去「${VERSIONS[c.ver].name}」${c.id} 打敗回來的${chalMon(c).name}！` });
+    used.add(groupOf(realKind(STAGES.find(x => x.id === c.id), c.ver)));
+  }
+  const cands = shuffle(Object.keys(VERSIONS).filter(v => p.levels[v]).flatMap(ver =>
+    STAGES.filter(st => stageOpenIn(ver, st, p) && !(c && !c.done && c.ver === ver && c.id === st.id)).map(st => ({ ver, st, kind: realKind(st, ver) }))));
+  for (const x of cands) {
+    if (list.length >= 3) break;
+    const gr = groupOf(x.kind);
+    if (used.has(gr)) continue;
+    used.add(gr);
+    const K = KIND[x.kind] || ['關卡', '', '🎯'];
+    list.push({ key: `s:${x.ver}:${x.st.id}`, goal: 1, ver: x.ver, id: x.st.id, icon: K[2], text: `玩「${VERSIONS[x.ver].name}」${x.st.id} ${K[0]}` });
+  }
+  // a new elf has few stages open: the plain missions fill the rest
+  for (const m of shuffle(MISSIONS)) { if (list.length >= 3) break; list.push({ ...m }); }
+  return list;
+}
 function dailyState() {
   const p = P(), t = todayStr();
-  if (p.daily.date !== t) p.daily = { date: t, correct: 0, played: 0, three: 0, done: false };
+  if (p.daily.date !== t) p.daily = { date: t, correct: 0, played: 0, three: 0 };
+  if (!p.daily.list) {
+    p.daily.list = makeMissions(p); p.daily.got = p.daily.list.map(() => 0);
+    // today's single mission from before was already paid
+    if (p.daily.done) p.daily.got[0] = 1;
+  }
   return p.daily;
 }
 function daily(key) {
   const d = dailyState(); d[key] = (d[key] || 0) + 1;
-  const m = mission();
-  if (!d.done && d[m.key] >= m.goal) {
-    d.done = true; P().bells += MISSION_BELLS; sfx.coin();
-    toast(`🎯 每日任務完成！🔔 +${MISSION_BELLS}`);
-  }
+  d.list.forEach((m, k) => {
+    if (d.got[k] || (d[m.key] || 0) < m.goal) return;
+    d.got[k] = 1; P().bells += MISSION_BELLS; sfx.coin();
+    toast(`🎯 任務完成！🔔 +${MISSION_BELLS}`);
+  });
   save();
 }
 
@@ -2286,13 +2340,16 @@ function renderHome() {
   $('#whoName').innerHTML = zy(p.name);
   $('#whoTag').innerHTML = `<span class="wa">${avatarOf(p)}</span><b>${zy(p.name)}</b>`;
   $('#whoIcon').textContent = avatarOf(p);
-  const m = mission(), d = dailyState(), v = Math.min(d[m.key] || 0, m.goal);
-  $('#missionBox').classList.toggle('chalm', !!m.chal && !d.done);
-  $('#missionBox').innerHTML = `<span class="mi">${m.chal ? chalMon(todayChallenge()).e : '🎯'}</span>
-    <div class="mtext"><b>${zy('今天的任務：' + m.text)}</b>
-      <small>${d.done ? zy('✔ 完成了！明天會有新任務') : zy(`${v} / ${m.goal}　完成可以拿到 🔔 ${MISSION_BELLS}`)}</small></div>
-    <div class="bar-prog"><i style="width:${R(v / m.goal * 100)}%"></i></div>
-    <span class="chip">🔔 <b>${p.bells}</b></span>`;
+  const d = dailyState(), left = d.list.filter((m, k) => !d.got[k]).length, ch = todayChallenge();
+  $('#missionBox').classList.toggle('chalm', d.list.some((m, k) => m.chal && !d.got[k]));
+  $('#missionBox').innerHTML = `<div class="mhead"><b>${zy('🎯 今天的任務')}</b>
+      <small>${zy(left ? `每完成一項，可以拿到 🔔 ${MISSION_BELLS}` : '✔ 全部完成了！明天會有新任務')}</small>
+      <span class="chip">🔔 <b>${p.bells}</b></span></div>
+    <div class="mlist">${d.list.map((m, k) => {
+      const v = Math.min(d[m.key] || 0, m.goal);
+      const icon = d.got[k] ? '✅' : m.chal ? (ch ? chalMon(ch).e : '👾') : m.icon || '⭐';
+      return `<button class="mrow ${d.got[k] ? 'got' : ''}" data-k="${k}"><span class="mi">${icon}</span><span class="mt">${zy(m.text)}</span>${m.goal > 1 && !d.got[k] ? `<small>${v} / ${m.goal}</small>` : ''}</button>`;
+    }).join('')}</div>`;
   $('#vers').innerHTML = Object.entries(VERSIONS).map(([k, V]) => `<div class="vcard"><button class="vbtn" data-v="${k}">
       <span class="vi">${V.icon}</span><span><b>${zy(V.name)}</b></span>
       <span class="vs">⭐ ${p.levels[k] ? totalStars(k) : 0} / ${maxStarsOf(k)}</span></button></div>`).join('')
@@ -2353,7 +2410,13 @@ $('#chestBtn').onclick = () => {
   save(); sfx.win(); toast(text); renderHome();
 };
 $('#whoBtn').onclick = () => show('profiles');
-$('#missionBox').onclick = () => { if (mission().chal && !dailyState().done) goChallenge(); };
+// a mission with a stage takes the child to it on the map
+$('#missionBox').onclick = e => {
+  const b = e.target.closest('.mrow'); if (!b) return;
+  const d = dailyState(), k = +b.dataset.k, m = d.list[k]; if (!m || d.got[k]) return;
+  if (m.chal) { goChallenge(); return; }
+  if (m.ver) { version = m.ver; curWorld = STAGES.find(st => st.id === m.id).w; show('map'); }
+};
 $('#cabinBtn').onclick = () => show('cabin');
 $('#adventBtn').onclick = () => { adventPage = null; show('advent'); };
 $('#bagBtn').onclick = () => { bagVer = null; show('bag'); };
@@ -2521,7 +2584,7 @@ function finish(mistakes, learned) {
     else if (stars > prev) { bells += stars - prev; why.push(`進步到 ${stars} 顆星`); }
     if (prev && !bells && replayOk()) { bells += stars; why.push(`今天的重玩獎勵（${stars} 顆星）`); }
     l.stars[s.id] = Math.max(prev, stars);
-    daily('played'); if (stars === 3) daily('three');
+    daily('played'); daily(`s:${version}:${s.id}`); if (stars === 3) daily('three');
     if (cur.challenge && !cur.challenge.failed) {
       const mon = cur.challenge.mon; p.chal.done = 1; bells += 2; why.push(`打敗了${mon.name}`);
       p.cards = p.cards || {}; const newCard = !p.cards[mon.id]; p.cards[mon.id] = (p.cards[mon.id] || 0) + 1;
@@ -4195,6 +4258,9 @@ Object.keys(ROOM_DECOS).forEach(r => {
 const WALL_COLORS = [['blue', '#a9c4ec'], ['pink', '#f6c6d8'], ['green', '#c8ecd6'], ['yellow', '#fff0a8'], ['purple', '#d8c8f2'],
   ['orange', '#ffd3b0'], ['white', '#fff3dc'], ['brown', '#7a4e2e'], ['red', '#b8434a']];
 const WALL_DEFAULT = { bedroom: '#a9c4ec', kitchen: '#fff3dc', workshop: '#7a4e2e' };
+const WALL_COST = 10;
+const WALL_ZH = { blue: '藍色', pink: '粉紅色', green: '綠色', yellow: '黃色', purple: '紫色', orange: '橘色', white: '白色', brown: '咖啡色', red: '紅色' };
+const wallOwned = (room, c, p = P()) => c === WALL_DEFAULT[room] || ((p.wallOwned || {})[room] || []).includes(c);
 const wallOf = room => ((P() && P().walls) || {})[room] || WALL_DEFAULT[room];
 const curRoom = () => (P() && P().room) || 'living';
 const roomDecos = (room = curRoom()) => room === 'living' ? DECOS : ROOM_DECOS[room];
@@ -4439,17 +4505,91 @@ function placeAll(room, items) {
   const placed = placeAll(room, [...extra, ...pets]);
   (room === 'living' ? DECOS : ROOM_DECOS[room]).push(...placed);
 });
-// people for every room, free: the child picks who is in the picture, so hats and scarves have someone to wear them;
+// people for every room, bought with bells: the child picks who is in the picture, so hats and scarves have someone to wear them;
 // drawn just behind the table and floor things, so a hat dragged onto a person sits on top
-const PEOPLE = [['girl', '女孩', 'girl', '👧'], ['boy', '男孩', 'boy', '👦'], ['mom', '媽媽', 'mom', '👩'], ['dad', '爸爸', 'dad', '👨'],
-  ['grandma', '奶奶', 'grandma', '👵'], ['grandpa', '爺爺', 'grandpa', '👴'], ['baby', '小寶寶', 'baby', '👶'],
-  ['santa', '聖誕老人', 'Santa', '🎅'], ['mrs', '聖誕老太太', 'Mrs. Claus', '🤶'], ['elf', '小精靈', 'elf', '🧝']];
+const PEOPLE = [['girl', '女孩', 'girl'], ['boy', '男孩', 'boy'], ['mom', '媽媽', 'mom'], ['dad', '爸爸', 'dad'],
+  ['grandma', '奶奶', 'grandma'], ['grandpa', '爺爺', 'grandpa'], ['baby', '小寶寶', 'baby'],
+  ['santa', '聖誕老人', 'Santa'], ['mrs', '聖誕老太太', 'Mrs. Claus'], ['elf', '小精靈', 'elf']];
+const PERSON_COST = 15;
 ['living', 'bedroom', 'kitchen', 'yard', 'workshop'].forEach(room => {
   const pre = room === 'living' ? 'l' : room[0];
-  const items = PEOPLE.map(([v, zh, en, emo]) => ({ id: `${pre}_p_${v}`, zh, en, tier: 'p', cost: 0, emo, size: v === 'baby' ? 110 : 150, layer: 2.5, row: 'f', room }));
+  const items = PEOPLE.map(([v, zh, en]) => ({ id: `${pre}_p_${v}`, zh, en, tier: 'p', cost: PERSON_COST, emo: null, person: v, size: 230, layer: 2.5, row: 'f', room }));
+  items.forEach(d => { TALL[d.id] = 1; });
   // standing on the floor with the whole figure in the picture
   (room === 'living' ? DECOS : ROOM_DECOS[room]).push(...placeAll(room, items).map(d => ({ ...d, y: Math.min(d.y, 850) })));
 });
+const PERSON_LOOK = {
+  girl:    { sc: .8, hair: '#7a4424', style: 'pigtails', top: '#e5484d', dress: 70, leg: '#ffffff', shoe: '#c43a3f', collar: '#ffffff', bow: '#ffc53d' },
+  boy:     { sc: .8, hair: '#4a2c18', style: 'short', top: '#2f9a5f', stripe: '#ffffff', pants: '#3b5ba5', shoe: '#6b3f22' },
+  mom:     { sc: 1, hair: '#5a3220', style: 'long', top: '#ff8fb1', dress: 100, leg: '#f7c9a6', shoe: '#8a3a5a', beads: '#ffffff' },
+  dad:     { sc: 1.04, hair: '#2b1a10', style: 'short', top: '#3a6fc4', stripe: '#ffd36b', pants: '#4b4f5c', shoe: '#3a2a1e' },
+  grandma: { sc: .94, hair: '#dcdce4', style: 'bun', top: '#a98bd8', dress: 104, leg: '#e9d8c8', shoe: '#5a3a2a', glasses: true },
+  grandpa: { sc: .96, hair: '#e6e6ec', style: 'bald', top: '#ffffff', vest: '#8a5a35', pants: '#6b5a4a', shoe: '#3a2a1e', glasses: true, stache: true },
+  baby:    { sc: .62, hair: '#c98a4f', style: 'tuft', top: '#ffd56b', pants: '#ffd56b', shoe: '#f2b822', snaps: true }
+};
+// a family member in the same frame as Santa: feet near y 125, head near y -75, k scales it
+function drawPerson(g, x, y, k, who) {
+  if (who === 'santa' || who === 'mrs') { drawClaus(g, x, y, k, who === 'mrs'); return; }
+  if (who === 'elf') { drawElf(g, x, y, k); return; }
+  const L = PERSON_LOOK[who], skin = '#f7c9a6', dark = '#2b2233';
+  const rr = (rx, ry, w, h, r) => { g.beginPath(); if (g.roundRect) g.roundRect(rx, ry, w, h, r); else g.rect(rx, ry, w, h); };
+  const circ = (cx, cy, r) => { g.beginPath(); g.arc(cx, cy, r, 0, 6.283); g.fill(); };
+  const oval = (cx, cy, rx, ry, a = 0) => { g.beginPath(); g.ellipse(cx, cy, rx, ry, a, 0, 6.283); g.fill(); };
+  g.save(); g.translate(x, y); g.scale(k, k);
+  g.fillStyle = 'rgba(0,0,0,.22)'; oval(0, 130, 56 * L.sc, 9);
+  // children and the baby are smaller, standing on the same floor line
+  g.translate(0, 130 * (1 - L.sc)); g.scale(L.sc, L.sc);
+  // hair that falls behind the head and shoulders
+  g.fillStyle = L.hair;
+  if (L.style === 'long') oval(0, -50, 41, 52);
+  if (L.style === 'pigtails') { circ(-38, -60, 15); circ(38, -60, 15); }
+  if (L.style === 'bun') circ(0, -106, 17);
+  // legs and shoes
+  if (L.dress) { g.fillStyle = L.leg; g.fillRect(-18, L.dress - 10, 12, 124 - L.dress); g.fillRect(6, L.dress - 10, 12, 124 - L.dress); }
+  else { g.fillStyle = L.pants; rr(-30, 20, 27, 100, 10); g.fill(); rr(3, 20, 27, 100, 10); g.fill(); }
+  g.fillStyle = L.shoe; oval(-15, 122, 17, 9); oval(15, 122, 17, 9);
+  // clothes
+  g.fillStyle = L.top;
+  if (L.dress) { g.beginPath(); g.moveTo(-30, -46); g.quadraticCurveTo(-44, 10, -54, L.dress); g.lineTo(54, L.dress); g.quadraticCurveTo(44, 10, 30, -46); g.closePath(); g.fill(); }
+  else { rr(-36, -48, 72, 82, 22); g.fill(); }
+  if (L.stripe) { g.fillStyle = L.stripe; g.fillRect(-36, -8, 72, 10); }
+  if (L.vest) { g.fillStyle = L.vest; rr(-36, -48, 26, 82, 14); g.fill(); rr(10, -48, 26, 82, 14); g.fill(); g.fillStyle = '#ffc53d'; circ(-16, -14, 3); circ(-16, 4, 3); }
+  if (L.collar) { g.fillStyle = L.collar; oval(-10, -44, 12, 7, -.3); oval(10, -44, 12, 7, .3); }
+  if (L.beads) { g.fillStyle = L.beads; for (let i = 0; i <= 6; i++) { const a = Math.PI * (.2 + i * .1); circ(17 * Math.cos(a), -48 + 17 * Math.sin(a), 3); } }
+  if (L.snaps) { g.fillStyle = '#ffffff'; circ(0, -16, 3.5); circ(0, 0, 3.5); circ(0, 16, 3.5); }
+  // arms with the sleeves of the top
+  for (const sd of [-1, 1]) {
+    g.save(); g.translate(sd * 34, -42); g.rotate(sd * .22);
+    g.fillStyle = L.top; rr(-11, 0, 22, 58, 11); g.fill();
+    g.fillStyle = skin; circ(0, 64, 10);
+    g.restore();
+  }
+  // neck, ears, head
+  g.fillStyle = skin; g.fillRect(-8, -56, 16, 12); circ(-29, -70, 7); circ(29, -70, 7); circ(0, -74, 30);
+  // hair on top
+  g.fillStyle = L.hair;
+  if (L.style === 'bald') { oval(-27, -72, 7, 13); oval(27, -72, 7, 13); }
+  else if (L.style === 'tuft') { g.beginPath(); g.moveTo(-6, -102); g.quadraticCurveTo(0, -120, 12, -110); g.quadraticCurveTo(2, -108, 5, -102); g.closePath(); g.fill(); }
+  else {
+    g.beginPath(); g.moveTo(-32, -72); g.quadraticCurveTo(-34, -110, 0, -108); g.quadraticCurveTo(34, -110, 32, -72);
+    g.quadraticCurveTo(20, -90, 2, -88); g.quadraticCurveTo(-18, -92, -32, -72); g.fill();
+    if (L.style === 'long') { oval(-30, -60, 9, 24); oval(30, -60, 9, 24); }
+  }
+  if (L.bow) { g.fillStyle = L.bow; circ(-27, -66, 6); circ(27, -66, 6); }
+  // face
+  g.fillStyle = 'rgba(255,120,130,.45)'; circ(-17, -64, 6); circ(17, -64, 6);
+  g.fillStyle = dark; circ(-10, -74, 3.5); circ(10, -74, 3.5);
+  g.strokeStyle = '#b5523d'; g.lineWidth = 3; g.lineCap = 'round'; g.beginPath(); g.arc(0, -65, 8, .3, Math.PI - .3); g.stroke();
+  if (L.glasses) { g.strokeStyle = '#7a6a5a'; g.lineWidth = 2.5; g.beginPath(); g.arc(-10, -74, 8, 0, 6.283); g.moveTo(18, -74); g.arc(10, -74, 8, 0, 6.283); g.moveTo(-2, -75); g.lineTo(2, -75); g.stroke(); }
+  if (L.stache) { g.fillStyle = L.hair; oval(-7, -62, 9, 4.5, .2); oval(7, -62, 9, 4.5, -.2); }
+  g.restore();
+}
+// a small picture of one person, for the picker and the buy question
+function personPic(who) {
+  const cv = document.createElement('canvas'); cv.width = 108; cv.height = 128;
+  drawPerson(cv.getContext('2d'), 54, 62, .42, who);
+  return cv;
+}
 function drawElf(g, x, y, k) {
   const rr = (rx, ry, w, h, r) => { g.beginPath(); if (g.roundRect) g.roundRect(rx, ry, w, h, r); else g.rect(rx, ry, w, h); };
   g.save(); g.translate(x, y); g.scale(k, k);
@@ -4664,6 +4804,7 @@ function drawDeco(g, d) {
   if (d.id === 'elf') { drawElf(g, d.x, d.y, d.size / 260); return; }
   if (d.id === 'nutcracker') { drawNutcracker(g, d.x, d.y, d.size / 260); return; }
   if (d.critter) { drawCritter(g, d.x, d.y, d.size / 200, d.critter); return; }
+  if (d.person) { drawPerson(g, d.x, d.y, d.size / 260, d.person); return; }
   if (CRITTER[d.id]) { drawCritter(g, d.x, d.y, d.size / 200, d.id); return; }
   if (d.id === 'angel') { drawAngel(g, d.x, d.y, d.size / 200); return; }
   if (d.id === 'globe') { drawGlobe(g, d.x, d.y, d.size / 150); return; }
@@ -4846,23 +4987,50 @@ $('#treePick').addEventListener('click', e => {
 function renderWallPick() {
   const room = curRoom(), cur = wallOf(room);
   $('.wallpick').hidden = !WALL_DEFAULT[room];
-  $('#wallPick').innerHTML = WALL_COLORS.map(([w, c]) => `<button class="wc ${c === cur ? 'on' : ''}" data-c="${c}" data-w="${w}" style="--c:${c}" aria-label="${w}"></button>`).join('');
+  $('#wallPick').innerHTML = WALL_COLORS.map(([w, c]) => `<button class="wc ${c === cur ? 'on' : ''} ${wallOwned(room, c) ? '' : 'lock'}" data-c="${c}" data-w="${w}" style="--c:${c}" aria-label="${w}"></button>`).join('');
 }
 $('#wallPick').addEventListener('click', e => {
   const b = e.target.closest('.wc'); if (!b) return;
-  const p = P(); p.walls = { ...(p.walls || {}), [curRoom()]: b.dataset.c }; save();
-  speak(b.dataset.w); renderWallPick(); paintCabin();
+  const p = P(), room = curRoom(), c = b.dataset.c;
+  const use = () => { const q = P(); q.walls = { ...(q.walls || {}), [room]: c }; save(); speak(b.dataset.w); renderWallPick(); paintCabin(); };
+  if (wallOwned(room, c, p)) { use(); return; }
+  askBuy(`<span class="wc" style="--c:${c}"></span>`, `${WALL_ZH[b.dataset.w]}的牆壁`, WALL_COST, () => {
+    const q = P(); q.wallOwned = q.wallOwned || {}; q.wallOwned[room] = [...(q.wallOwned[room] || []), c]; use();
+  });
 });
+// buying something in the cabin: a question first, with what it costs and what the child has
+function askBuy(pic, name, cost, yes) {
+  const p = P();
+  if (p.bells < cost) { sfx.no(); toast(`還差 ${cost - p.bells} 個鈴鐺，才能換${name}`); return; }
+  openModal(`<div class="buypic">${pic}</div><h2>${zy(`要用 🔔 ${cost} 換${name}嗎？`)}</h2>
+    <p>${zy(`你有 🔔 ${p.bells}`)}</p>
+    <div class="row"><button class="btn alt" data-close>${zy('先不要')}</button><button class="btn" id="buyYes">${zy('換！')}</button></div>`);
+  $('#buyYes').onclick = () => {
+    closeModal();
+    const q = P(); if (q.bells < cost) return;
+    q.bells -= cost; $('#bellCount').textContent = q.bells; sfx.coin(); yes(); save();
+  };
+}
 function renderPeoplePick() {
-  const p = P(), off = p.hidden || [];
-  $('#peoplePick').innerHTML = roomDecos().filter(d => d.tier === 'p').map(d =>
-    `<button class="pp ${p.owned.includes(d.id) && !off.includes(d.id) ? 'on' : ''}" data-id="${d.id}" aria-label="${esc(d.en)}"><span class="pe">${d.emo}</span><span>${zy(d.zh)}</span></button>`).join('');
+  const p = P(), off = p.hidden || [], host = $('#peoplePick');
+  host.innerHTML = roomDecos().filter(d => d.tier === 'p').map(d => {
+    const own = p.owned.includes(d.id);
+    return `<button class="pp ${own && !off.includes(d.id) ? 'on' : ''}" data-id="${d.id}" aria-label="${esc(d.en)}"><span class="pv"></span><span>${zy(d.zh)}</span>${own ? '' : `<small>🔔 ${d.cost}</small>`}</button>`;
+  }).join('');
+  host.querySelectorAll('.pp').forEach(b => b.querySelector('.pv').appendChild(personPic(roomDecos().find(d => d.id === b.dataset.id).person)));
 }
 $('#peoplePick').addEventListener('click', e => {
   const b = e.target.closest('.pp'); if (!b) return;
   const p = P(), id = b.dataset.id, d = roomDecos().find(x => x.id === id);
   p.hidden = p.hidden || [];
-  const showing = p.owned.includes(id) && !p.hidden.includes(id);
+  if (!p.owned.includes(id)) {
+    askBuy(`<img src="${personPic(d.person).toDataURL()}" alt="">`, d.zh, d.cost, () => {
+      const q = P(); q.owned.push(id); q.hidden = (q.hidden || []).filter(x => x !== id);
+      bounce[id] = performance.now(); speak(d.en); renderPeoplePick(); paintCabin();
+    });
+    return;
+  }
+  const showing = !p.hidden.includes(id);
   if (showing) { p.hidden = [...p.hidden, id]; sfx.flip(); }
   else {
     if (!p.owned.includes(id)) p.owned.push(id);
