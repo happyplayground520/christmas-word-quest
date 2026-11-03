@@ -1951,41 +1951,72 @@ function buses() {
 }
 function busLevel() { if (sfxBus) sfxBus.gain.value = snd.sfx === 'on' ? VOL[snd.vol] : 0; }
 
-/* ---------- music box: traditional carols (public domain), played note by note ---------- */
+/* ---------- soft background music: traditional carols (public domain) as gentle piano over warm chords ---------- */
 const NOTE_I = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
 const hz = n => { const m = /^([A-G])(#?)(\d)$/.exec(n); return 440 * 2 ** ((NOTE_I[m[1]] + (m[2] ? 1 : 0) + (m[3] - 4) * 12 - 9) / 12); };
-// "note:beats" separated by spaces; R is a rest
+const CHORD = { C: ['C3', 'E3', 'G3'], F: ['F3', 'A3', 'C4'], G: ['G3', 'B3', 'D4'], D: ['D3', 'F#3', 'A3'], E: ['E3', 'G#3', 'B3'], Am: ['A3', 'C4', 'E4'] };
+// "note:beats" separated by spaces; the chords line runs alongside the tune with the same beats
 const SONGS = [
-  { name: 'Jingle Bells', beat: .34, notes:
+  { name: 'Jingle Bells', beat: .5, notes:
     'E5:1 E5:1 E5:2 E5:1 E5:1 E5:2 E5:1 G5:1 C5:1.5 D5:.5 E5:4 F5:1 F5:1 F5:1.5 F5:.5 F5:1 E5:1 E5:1 E5:.5 E5:.5 E5:1 D5:1 D5:1 E5:1 D5:2 G5:2 '
-    + 'E5:1 E5:1 E5:2 E5:1 E5:1 E5:2 E5:1 G5:1 C5:1.5 D5:.5 E5:4 F5:1 F5:1 F5:1 F5:1 F5:1 E5:1 E5:1 E5:.5 E5:.5 G5:1 G5:1 F5:1 D5:1 C5:4' },
-  { name: 'We Wish You a Merry Christmas', beat: .42, notes:
-    'G4:1 C5:1 C5:.5 D5:.5 C5:.5 B4:.5 A4:1 A4:1 A4:1 D5:1 D5:.5 E5:.5 D5:.5 C5:.5 B4:1 G4:1 G4:1 E5:1 E5:.5 F5:.5 E5:.5 D5:.5 C5:1 A4:1 G4:.5 G4:.5 A4:1 D5:1 B4:1 C5:2' },
-  { name: 'Deck the Halls', beat: .36, notes:
+    + 'E5:1 E5:1 E5:2 E5:1 E5:1 E5:2 E5:1 G5:1 C5:1.5 D5:.5 E5:4 F5:1 F5:1 F5:1 F5:1 F5:1 E5:1 E5:1 E5:.5 E5:.5 G5:1 G5:1 F5:1 D5:1 C5:4',
+    chords: 'C:4 C:4 C:4 C:4 F:4 C:4 G:4 G:4 C:4 C:4 C:4 C:4 F:4 C:4 G:4 C:4' },
+  { name: 'We Wish You a Merry Christmas', beat: .55, notes:
+    'G4:1 C5:1 C5:.5 D5:.5 C5:.5 B4:.5 A4:1 A4:1 A4:1 D5:1 D5:.5 E5:.5 D5:.5 C5:.5 B4:1 G4:1 G4:1 E5:1 E5:.5 F5:.5 E5:.5 D5:.5 C5:1 A4:1 G4:.5 G4:.5 A4:1 D5:1 B4:1 C5:3',
+    chords: 'C:1 C:3 F:3 D:3 G:3 E:3 Am:3 F:1 G:2 C:3' },
+  { name: 'Deck the Halls', beat: .5, notes:
     'G5:1.5 F5:.5 E5:1 D5:1 C5:1 D5:1 E5:1 C5:1 D5:.5 E5:.5 F5:.5 D5:.5 E5:1.5 D5:.5 C5:1 B4:1 C5:2 '
     + 'G5:1.5 F5:.5 E5:1 D5:1 C5:1 D5:1 E5:1 C5:1 D5:.5 E5:.5 F5:.5 D5:.5 E5:1.5 D5:.5 C5:1 B4:1 C5:2 '
     + 'D5:1.5 E5:.5 F5:1 D5:1 E5:1.5 F5:.5 G5:1 D5:1 E5:.5 F#5:.5 G5:1 A5:.5 B5:.5 C6:1 B5:1 A5:1 G5:2 '
-    + 'G5:1.5 F5:.5 E5:1 D5:1 C5:1 D5:1 E5:1 C5:1 A5:.5 A5:.5 G5:.5 F5:.5 E5:1.5 D5:.5 C5:1 B4:1 C5:2' },
-  { name: 'Silent Night', beat: .3, notes:
+    + 'G5:1.5 F5:.5 E5:1 D5:1 C5:1 D5:1 E5:1 C5:1 A5:.5 A5:.5 G5:.5 F5:.5 E5:1.5 D5:.5 C5:1 B4:1 C5:2',
+    chords: 'C:4 C:4 G:4 C:1 G:1 C:2 C:4 C:4 G:4 C:1 G:1 C:2 G:4 C:2 G:2 C:2 D:2 G:4 C:4 C:4 F:2 G:2 C:1 G:1 C:2' },
+  { name: 'Silent Night', beat: .4, notes:
     'G4:1.5 A4:.5 G4:1 E4:3 G4:1.5 A4:.5 G4:1 E4:3 D5:2 D5:1 B4:3 C5:2 C5:1 G4:3 '
     + 'A4:2 A4:1 C5:1.5 B4:.5 A4:1 G4:1.5 A4:.5 G4:1 E4:3 A4:2 A4:1 C5:1.5 B4:.5 A4:1 G4:1.5 A4:.5 G4:1 E4:3 '
-    + 'D5:2 D5:1 F5:1.5 D5:.5 B4:1 C5:3 E5:3 C5:1 G4:1 E4:1 G4:1.5 F4:.5 D4:1 C4:6' }
-].map(s => ({ ...s, notes: s.notes.trim().split(/\s+/).map(x => { const [n, b] = x.split(':'); return [n, +b]; }) }));
+    + 'D5:2 D5:1 F5:1.5 D5:.5 B4:1 C5:3 E5:3 C5:1 G4:1 E4:1 G4:1.5 F4:.5 D4:1 C4:6',
+    chords: 'C:6 C:6 G:6 C:6 F:6 C:6 F:6 C:6 G:6 C:6 C:3 G:3 C:6' }
+].map(s => {
+  // one time line of tune notes and chords, in beats from the start of the song
+  const ev = [], line = (str, kind) => { let t = 0; str.trim().split(/\s+/).forEach(x => { const [n, b] = x.split(':'); ev.push({ t, kind, n, b: +b }); t += +b; }); return t; };
+  const len = Math.max(line(s.notes, 'note'), line(s.chords, 'chord'));
+  return { name: s.name, beat: s.beat, len, ev: ev.sort((a, b) => a.t - b.t) };
+});
 
-function boxNote(a, f, t, dur) {
-  // a music-box pluck: the note, a quiet octave above, a fast attack and a long fade
-  [[1, .5], [2, .12], [3, .04]].forEach(([m, v]) => {
-    const o = a.createOscillator(), g = a.createGain();
-    o.type = 'sine'; o.frequency.value = f * m;
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(v, t + .012);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(.6, dur * 2.2) / m);
-    o.connect(g).connect(musicBus); o.start(t); o.stop(t + 2.5);
-  });
+// a room-like echo, made once from fading noise, so the notes blend instead of stopping dead
+let musicIn = null;
+function musicNodes(a) {
+  if (musicIn) return musicIn;
+  musicIn = a.createGain(); musicIn.connect(musicBus);
+  const len = Math.floor(a.sampleRate * 2.6), ir = a.createBuffer(2, len, a.sampleRate);
+  for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 3; }
+  const verb = a.createConvolver(), wet = a.createGain();
+  verb.buffer = ir; wet.gain.value = .45;
+  musicIn.connect(verb).connect(wet).connect(musicBus);
+  return musicIn;
 }
+function voice(a, f, t, { type = 'sine', vol, attack, hold = 0, fade, cut }) {
+  const o = a.createOscillator(), g = a.createGain(), lp = a.createBiquadFilter();
+  o.type = type; o.frequency.value = f;
+  lp.type = 'lowpass'; lp.frequency.value = cut;
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol, t + attack);
+  g.gain.setValueAtTime(vol, t + attack + hold);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + attack + hold + fade);
+  o.connect(lp).connect(g).connect(musicNodes(a)); o.start(t); o.stop(t + attack + hold + fade + .1);
+}
+const pianoNote = (a, f, t, dur) => {
+  // soft piano: rounded tone, gentle touch, rings on a little past its beat
+  voice(a, f, t, { vol: .16, attack: .025, fade: dur * 1.4 + .9, cut: 2400 });
+  voice(a, f, t, { type: 'triangle', vol: .05, attack: .025, fade: dur + .5, cut: 1600 });
+};
+const padChord = (a, name, t, dur) => {
+  // warm chord that swells in and out underneath, with a low root note
+  CHORD[name].forEach(n => voice(a, hz(n), t, { type: 'triangle', vol: .028, attack: .7, hold: Math.max(0, dur - .7), fade: 1.2, cut: 900 }));
+  voice(a, hz(CHORD[name][0]) / 2, t, { vol: .07, attack: .08, fade: dur + .6, cut: 500 });
+};
 const MUSIC_SCREENS = ['profiles', 'home', 'map', 'cabin', 'bag', 'advent', 'parent'];
 const music = {
-  song: Math.floor(Math.random() * SONGS.length), idx: 0, next: 0, timer: 0, on: false,
+  song: Math.floor(Math.random() * SONGS.length), idx: 0, at: 0, timer: 0, on: false,
   update() {
     // the screen that is showing decides: never during a stage, which needs quiet for listening and the microphone
     const want = snd.music === 'on' && !document.hidden && MUSIC_SCREENS.includes(SCREENS.find(s => !$('#' + s).hidden));
@@ -1994,26 +2025,34 @@ const music = {
   },
   start() {
     const a = buses(); if (!a) return;
-    this.on = true; this.next = a.currentTime + .3;
+    // coming back from a stage starts the next carol from its beginning
+    this.on = true; this.idx = 0; this.at = a.currentTime + .4;
     clearTimeout(this.timer); this.tick();
   },
   stop() {
     this.on = false; clearTimeout(this.timer);
+    this.song = (this.song + 1) % SONGS.length;
     if (musicBus && ac) { musicBus.gain.cancelScheduledValues(ac.currentTime); musicBus.gain.setTargetAtTime(0.0001, ac.currentTime, .15); }
   },
   tick() {
     if (!this.on) return;
     const a = ac;
     // hush while English is being spoken, so the words stay clear
-    const level = speechSynthesis.speaking ? 0.0001 : .45 * VOL[snd.vol];
-    musicBus.gain.setTargetAtTime(level, a.currentTime, speechSynthesis.speaking ? .05 : .4);
-    // schedule the notes due in the next second
-    while (this.next < a.currentTime + 1) {
+    const level = speechSynthesis.speaking ? 0.0001 : .95 * VOL[snd.vol];
+    musicBus.gain.setTargetAtTime(level, a.currentTime, speechSynthesis.speaking ? .05 : .5);
+    // schedule what is due in the next second
+    for (;;) {
       const S = SONGS[this.song];
-      if (this.idx >= S.notes.length) { this.song = (this.song + 1) % SONGS.length; this.idx = 0; this.next += 2.5; continue; }
-      const [n, b] = S.notes[this.idx++], dur = b * S.beat;
-      if (n !== 'R') boxNote(a, hz(n), Math.max(this.next, a.currentTime), dur);
-      this.next += dur;
+      if (this.idx >= S.ev.length) {
+        // a quiet pause between carols
+        this.at += S.len * S.beat + 3; this.idx = 0; this.song = (this.song + 1) % SONGS.length; continue;
+      }
+      const e = S.ev[this.idx], t = this.at + e.t * S.beat;
+      if (t > a.currentTime + 1) break;
+      this.idx++;
+      if (t < a.currentTime - .05) continue;
+      if (e.kind === 'note') pianoNote(a, hz(e.n), t, e.b * S.beat);
+      else padChord(a, e.n, t, e.b * S.beat);
     }
     this.timer = setTimeout(() => this.tick(), 250);
   }
