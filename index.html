@@ -4608,6 +4608,57 @@ function drawScarf(g, x, y, size) {
   g.fillStyle = 'rgba(0,0,0,.12)'; g.beginPath(); g.moveTo(-46, 4); g.quadraticCurveTo(0, 26, 46, 4); g.quadraticCurveTo(0, 18, -46, 4); g.fill();
   g.restore();
 }
+// things to wear drawn from the front and in pairs, so they fit on a person's hands, feet and body
+const WEAR_DRAW = { mittens: 1, sneakers: 1, 'ice skates': 1, dress: 1 };
+function drawWear(g, x, y, size, what) {
+  const k = size / 100;
+  const rr = (rx, ry, w, h, r) => { g.beginPath(); if (g.roundRect) g.roundRect(rx, ry, w, h, r); else g.rect(rx, ry, w, h); };
+  g.save(); g.translate(x, y); g.scale(k, k);
+  if (what === 'mittens') {
+    // one for each hand, thumbs pointing in
+    for (const sd of [-1, 1]) {
+      g.save(); g.translate(sd * 32, 0); g.rotate(sd * .12);
+      g.fillStyle = '#e5484d'; rr(-14, -22, 28, 40, 14); g.fill();
+      g.beginPath(); g.ellipse(-sd * 13, -2, 7, 11, -sd * .5, 0, 6.283); g.fill();
+      g.fillStyle = '#ffffff'; rr(-16, 12, 32, 12, 5); g.fill();
+      g.fillStyle = '#ffffff'; g.beginPath(); g.arc(0, -8, 3, 0, 6.283); g.fill();
+      g.restore();
+    }
+  } else if (what === 'sneakers') {
+    // a pair seen from the front, toes forward
+    for (const sd of [-1, 1]) {
+      g.save(); g.translate(sd * 20, 0);
+      g.fillStyle = '#3a7bd5'; rr(-15, -14, 30, 28, 13); g.fill();
+      g.fillStyle = '#ffffff'; rr(-17, 10, 34, 9, 4); g.fill();
+      g.beginPath(); g.ellipse(0, 8, 12, 6, 0, Math.PI, 0); g.fill();
+      g.strokeStyle = '#ffffff'; g.lineWidth = 2.5; g.lineCap = 'round';
+      [-8, -2].forEach(ly => { g.beginPath(); g.moveTo(-6, ly); g.lineTo(6, ly); g.stroke(); });
+      g.restore();
+    }
+  } else if (what === 'ice skates') {
+    // white boots on thin silver blades
+    for (const sd of [-1, 1]) {
+      g.save(); g.translate(sd * 22, 0);
+      g.fillStyle = '#f4f6fb'; rr(-13, -30, 26, 40, 10); g.fill();
+      g.strokeStyle = '#9aa7bd'; g.lineWidth = 2; rr(-13, -30, 26, 40, 10); g.stroke();
+      g.strokeStyle = '#e5484d'; g.lineWidth = 2.5; [-20, -12, -4].forEach(ly => { g.beginPath(); g.moveTo(-6, ly); g.lineTo(6, ly); g.stroke(); });
+      g.fillStyle = '#9aa7bd'; g.fillRect(-7, 10, 4, 8); g.fillRect(3, 10, 4, 8);
+      g.fillStyle = '#c9d3e3'; rr(-17, 17, 34, 5, 2.5); g.fill();
+      g.restore();
+    }
+  } else if (what === 'dress') {
+    // a party dress the size of a body, with a ribbon at the waist
+    g.fillStyle = '#ff7eb6';
+    rr(-19, -42, 38, 32, 9); g.fill();
+    g.beginPath(); g.moveTo(-19, -14); g.quadraticCurveTo(-30, 14, -44, 42); g.quadraticCurveTo(0, 52, 44, 42); g.quadraticCurveTo(30, 14, 19, -14); g.closePath(); g.fill();
+    g.fillStyle = '#ffffff'; g.fillRect(-20, -16, 40, 7);
+    [[-6, -.4], [6, .4]].forEach(([bx, a]) => { g.beginPath(); g.ellipse(bx, -12, 7, 4.5, a, 0, 6.283); g.fill(); });
+    for (let i = 0; i < 5; i++) { g.beginPath(); g.arc(-30 + i * 15, 38, 3, 0, 6.283); g.fill(); }
+  }
+  g.restore();
+}
+// worn things are drawn, in the room and in the shop
+['living', 'bedroom', 'kitchen', 'yard', 'workshop'].forEach(r => roomDecos(r).forEach(d => { if (d.en === 'scarf' || WEAR_DRAW[d.en]) d.emo = null; }));
 // a small picture of one person, for the picker and the buy question
 function personPic(who) {
   const cv = document.createElement('canvas'); cv.width = 108; cv.height = 128;
@@ -4830,6 +4881,7 @@ function drawDeco(g, d) {
   if (d.critter) { drawCritter(g, d.x, d.y, d.size / 200, d.critter); return; }
   if (d.person) { drawPerson(g, d.x, d.y, d.size / 260, d.person); return; }
   if (d.en === 'scarf') { drawScarf(g, d.x, d.y, d.size); return; }
+  if (WEAR_DRAW[d.en]) { drawWear(g, d.x, d.y, d.size, d.en); return; }
   if (CRITTER[d.id]) { drawCritter(g, d.x, d.y, d.size / 200, d.id); return; }
   if (d.id === 'angel') { drawAngel(g, d.x, d.y, d.size / 200); return; }
   if (d.id === 'globe') { drawGlobe(g, d.x, d.y, d.size / 150); return; }
