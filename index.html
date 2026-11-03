@@ -882,6 +882,8 @@ button.chip:active { background: var(--night-2); }
 .weak button { border: none; border-radius: 999px; padding: 6px 14px; background: #ffe9ea; color: var(--ink); font-family: var(--f-word); font-size: 18px; font-weight: 700; }
 .weak button small { color: var(--berry-d); font-family: var(--f-body); font-weight: 400; margin-left: 4px; }
 .psec textarea { width: 100%; min-height: 90px; font-size: 14px; font-family: ui-monospace, Consolas, monospace; border-radius: 12px; border: 2px solid var(--frost-d); padding: 8px; color: var(--ink); background: #fff; color-scheme: light; -webkit-user-select: text; user-select: text; }
+.sndrow { display: flex; flex-wrap: wrap; gap: 10px 22px; }
+.sndrow label { display: flex; align-items: center; gap: 8px; font-weight: 700; }
 .psec select { font: inherit; align-self: flex-start; padding: 8px 12px; border-radius: 12px; border: 2px solid var(--frost-d); background: #fff; color: var(--ink); color-scheme: light; }
 .psec .row { justify-content: flex-start; margin: 0; }
 .psec .btn { min-height: 48px; font-size: 18px; padding: 6px 18px; }
@@ -1896,21 +1898,26 @@ function actx() {
   return ac;
 }
 function tone(f, start, dur, type = 'sine', vol = 0.16) {
-  const a = actx(); if (!a) return;
+  const a = buses(); if (!a) return;
   const o = a.createOscillator(), g = a.createGain(), t = a.currentTime + start;
   o.type = type; o.frequency.value = f;
   g.gain.setValueAtTime(0.0001, t);
   g.gain.exponentialRampToValueAtTime(vol, t + 0.01);
   g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-  o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + 0.05);
+  o.connect(g).connect(sfxBus); o.start(t); o.stop(t + dur + 0.05);
 }
+// a struck bell: the note plus the bright partial that makes it ring like metal
+const bell = (f, t, dur, vol) => { tone(f, t, dur, 'sine', vol); tone(f * 2.76, t, dur * .4, 'sine', vol * .22); };
+// sleigh bells: a quick shake of tiny high jingles
+const sleigh = (t, len, vol = .028) => { for (let k = 0; k < 12; k++) tone(3200 + Math.random() * 2600, t + k * len / 12 + Math.random() * .02, .09, 'triangle', vol); };
 const sfx = {
-  ok()   { tone(1318, 0, .45); tone(1760, .08, .55); tone(2637, .08, .35, 'sine', .04); },
-  no()   { tone(240, 0, .22, 'triangle', .14); tone(190, .12, .28, 'triangle', .12); },
-  flip() { tone(700, 0, .1, 'triangle', .07); },
-  coin() { tone(1568, 0, .12, 'square', .05); tone(2093, .09, .3, 'square', .05); },
+  ok()   { bell(1568, 0, .8, .13); bell(2093, .1, .9, .09); sleigh(.04, .35); },
+  no()   { bell(392, 0, .4, .11); bell(330, .14, .5, .1); },
+  flip() { bell(1760, 0, .2, .06); },
+  coin() { bell(1976, 0, .3, .07); bell(2637, .09, .6, .07); sleigh(.05, .2, .02); },
   crash() { tone(160, 0, .45, 'triangle', .16); [2400, 1900, 1500, 2100, 1200, 1700, 950].forEach((f, i) => tone(f, i * .035, .22, 'square', .035)); },
-  win()  { [784, 988, 1175, 1568].forEach((f, i) => tone(f, i * .14, .6)); },
+  // "jingle bells, jingle bells" with a shake of sleigh bells
+  win()  { [[1319, 0], [1319, .18], [1319, .36], [1319, .72], [1319, .9], [1319, 1.08]].forEach(([f, t], k) => bell(f, t, k % 3 === 2 ? .7 : .35, .1)); sleigh(1.4, .7, .035); },
   // "Jingle Bells" opening (traditional, public domain)
   jingle() {
     const E = 659.25, G = 783.99, C = 523.25, D = 587.33;
@@ -1919,6 +1926,101 @@ const sfx = {
   }
 };
 document.addEventListener('pointerdown', actx, { once: true });
+
+/* ---------- sound settings (per device): background music, effects, volume ---------- */
+const SND_KEY = { music: 'xmas-music', sfx: 'xmas-sfx', vol: 'xmas-vol' };
+const sndGet = (k, d) => { try { return localStorage.getItem(SND_KEY[k]) || d; } catch (e) { return d; } };
+const snd = { music: sndGet('music', 'on'), sfx: sndGet('sfx', 'on'), vol: sndGet('vol', 'm') };
+const VOL = { s: .35, m: .65, l: 1 };
+function sndSet(k, v) {
+  snd[k] = v;
+  try { localStorage.setItem(SND_KEY[k], v); } catch (e) {}
+  if (k === 'sfx' || k === 'vol') busLevel();
+  music.update();
+}
+// effects and music each go through their own volume knob
+let sfxBus = null, musicBus = null;
+function buses() {
+  const a = actx(); if (!a) return null;
+  if (!sfxBus) {
+    sfxBus = a.createGain(); sfxBus.connect(a.destination);
+    musicBus = a.createGain(); musicBus.gain.value = 0.0001; musicBus.connect(a.destination);
+    busLevel();
+  }
+  return a;
+}
+function busLevel() { if (sfxBus) sfxBus.gain.value = snd.sfx === 'on' ? VOL[snd.vol] : 0; }
+
+/* ---------- music box: traditional carols (public domain), played note by note ---------- */
+const NOTE_I = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+const hz = n => { const m = /^([A-G])(#?)(\d)$/.exec(n); return 440 * 2 ** ((NOTE_I[m[1]] + (m[2] ? 1 : 0) + (m[3] - 4) * 12 - 9) / 12); };
+// "note:beats" separated by spaces; R is a rest
+const SONGS = [
+  { name: 'Jingle Bells', beat: .34, notes:
+    'E5:1 E5:1 E5:2 E5:1 E5:1 E5:2 E5:1 G5:1 C5:1.5 D5:.5 E5:4 F5:1 F5:1 F5:1.5 F5:.5 F5:1 E5:1 E5:1 E5:.5 E5:.5 E5:1 D5:1 D5:1 E5:1 D5:2 G5:2 '
+    + 'E5:1 E5:1 E5:2 E5:1 E5:1 E5:2 E5:1 G5:1 C5:1.5 D5:.5 E5:4 F5:1 F5:1 F5:1 F5:1 F5:1 E5:1 E5:1 E5:.5 E5:.5 G5:1 G5:1 F5:1 D5:1 C5:4' },
+  { name: 'We Wish You a Merry Christmas', beat: .42, notes:
+    'G4:1 C5:1 C5:.5 D5:.5 C5:.5 B4:.5 A4:1 A4:1 A4:1 D5:1 D5:.5 E5:.5 D5:.5 C5:.5 B4:1 G4:1 G4:1 E5:1 E5:.5 F5:.5 E5:.5 D5:.5 C5:1 A4:1 G4:.5 G4:.5 A4:1 D5:1 B4:1 C5:2' },
+  { name: 'Deck the Halls', beat: .36, notes:
+    'G5:1.5 F5:.5 E5:1 D5:1 C5:1 D5:1 E5:1 C5:1 D5:.5 E5:.5 F5:.5 D5:.5 E5:1.5 D5:.5 C5:1 B4:1 C5:2 '
+    + 'G5:1.5 F5:.5 E5:1 D5:1 C5:1 D5:1 E5:1 C5:1 D5:.5 E5:.5 F5:.5 D5:.5 E5:1.5 D5:.5 C5:1 B4:1 C5:2 '
+    + 'D5:1.5 E5:.5 F5:1 D5:1 E5:1.5 F5:.5 G5:1 D5:1 E5:.5 F#5:.5 G5:1 A5:.5 B5:.5 C6:1 B5:1 A5:1 G5:2 '
+    + 'G5:1.5 F5:.5 E5:1 D5:1 C5:1 D5:1 E5:1 C5:1 A5:.5 A5:.5 G5:.5 F5:.5 E5:1.5 D5:.5 C5:1 B4:1 C5:2' },
+  { name: 'Silent Night', beat: .3, notes:
+    'G4:1.5 A4:.5 G4:1 E4:3 G4:1.5 A4:.5 G4:1 E4:3 D5:2 D5:1 B4:3 C5:2 C5:1 G4:3 '
+    + 'A4:2 A4:1 C5:1.5 B4:.5 A4:1 G4:1.5 A4:.5 G4:1 E4:3 A4:2 A4:1 C5:1.5 B4:.5 A4:1 G4:1.5 A4:.5 G4:1 E4:3 '
+    + 'D5:2 D5:1 F5:1.5 D5:.5 B4:1 C5:3 E5:3 C5:1 G4:1 E4:1 G4:1.5 F4:.5 D4:1 C4:6' }
+].map(s => ({ ...s, notes: s.notes.trim().split(/\s+/).map(x => { const [n, b] = x.split(':'); return [n, +b]; }) }));
+
+function boxNote(a, f, t, dur) {
+  // a music-box pluck: the note, a quiet octave above, a fast attack and a long fade
+  [[1, .5], [2, .12], [3, .04]].forEach(([m, v]) => {
+    const o = a.createOscillator(), g = a.createGain();
+    o.type = 'sine'; o.frequency.value = f * m;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(v, t + .012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(.6, dur * 2.2) / m);
+    o.connect(g).connect(musicBus); o.start(t); o.stop(t + 2.5);
+  });
+}
+const MUSIC_SCREENS = ['profiles', 'home', 'map', 'cabin', 'bag', 'advent', 'parent'];
+const music = {
+  song: Math.floor(Math.random() * SONGS.length), idx: 0, next: 0, timer: 0, on: false,
+  update() {
+    // the screen that is showing decides: never during a stage, which needs quiet for listening and the microphone
+    const want = snd.music === 'on' && !document.hidden && MUSIC_SCREENS.includes(SCREENS.find(s => !$('#' + s).hidden));
+    if (want && !this.on) this.start();
+    if (!want && this.on) this.stop();
+  },
+  start() {
+    const a = buses(); if (!a) return;
+    this.on = true; this.next = a.currentTime + .3;
+    clearTimeout(this.timer); this.tick();
+  },
+  stop() {
+    this.on = false; clearTimeout(this.timer);
+    if (musicBus && ac) { musicBus.gain.cancelScheduledValues(ac.currentTime); musicBus.gain.setTargetAtTime(0.0001, ac.currentTime, .15); }
+  },
+  tick() {
+    if (!this.on) return;
+    const a = ac;
+    // hush while English is being spoken, so the words stay clear
+    const level = speechSynthesis.speaking ? 0.0001 : .45 * VOL[snd.vol];
+    musicBus.gain.setTargetAtTime(level, a.currentTime, speechSynthesis.speaking ? .05 : .4);
+    // schedule the notes due in the next second
+    while (this.next < a.currentTime + 1) {
+      const S = SONGS[this.song];
+      if (this.idx >= S.notes.length) { this.song = (this.song + 1) % SONGS.length; this.idx = 0; this.next += 2.5; continue; }
+      const [n, b] = S.notes[this.idx++], dur = b * S.beat;
+      if (n !== 'R') boxNote(a, hz(n), Math.max(this.next, a.currentTime), dur);
+      this.next += dur;
+    }
+    this.timer = setTimeout(() => this.tick(), 250);
+  }
+};
+document.addEventListener('visibilitychange', () => music.update());
+// iPad only lets sound start after a touch, so the music begins with the first one
+document.addEventListener('pointerdown', () => music.update(), { once: true });
 
 /* ================= bells, daily mission, advent ================= */
 function replayOk() {
@@ -2040,6 +2142,7 @@ function show(name) {
   }
   ({ profiles: renderProfiles, home: renderHome, map: renderMap, bag: renderBag, cabin: renderCabin, advent: renderAdvent, parent: renderParent }[name] || (() => {}))();
   if (P() && ['home', 'map', 'cabin'].includes(name)) maybeTour(tourKeyFor(name));
+  music.update();
 }
 
 /* ---------- profiles ---------- */
@@ -4989,6 +5092,10 @@ function renderParent() {
       <p>今天已經玩了 <b>${minutes(p, 1)}</b> 分鐘。時間到了會出現「今天的遊戲時間到了」，要家長答一題乘法才能解鎖；正在玩的那一關可以先玩完（最多再 5 分鐘）。結束前 5 分鐘會先提醒。</p>
       <select id="limitSel" aria-label="每天的遊戲時間上限">${[0, 20, 30, 45, 60, 90].map(m => `<option value="${m}" ${(p.limitMin || 0) === m ? 'selected' : ''}>${m ? m + ' 分鐘' : '不限制'}</option>`).join('')}</select>
       ${p.unlock && p.unlock.date === todayStr() ? `<p>今天已經解鎖：${p.unlock.free ? '不限時間' : `多 ${p.unlock.extra} 分鐘`}。</p><div class="row"><button class="btn alt" id="unlockClear">取消今天的解鎖</button></div>` : ''}</div>
+    <div class="psec"><h3>音樂和音效</h3><p>背景音樂是音樂盒演奏的傳統聖誕歌，只在首頁、地圖和小屋播放；關卡裡不播，唸英文時會自動停一下。這些設定只存在這台平板。</p>
+      <div class="sndrow"><label>背景音樂 <select id="musicSel">${[['on', '開'], ['off', '關']].map(([v, t]) => `<option value="${v}" ${snd.music === v ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+        <label>聖誕音效 <select id="sfxSel">${[['on', '開'], ['off', '關']].map(([v, t]) => `<option value="${v}" ${snd.sfx === v ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+        <label>音量 <select id="volSel">${[['s', '小'], ['m', '中'], ['l', '大']].map(([v, t]) => `<option value="${v}" ${snd.vol === v ? 'selected' : ''}>${t}</option>`).join('')}</select></label></div></div>
     <div class="psec"><h3>休息提醒</h3><p>連續玩到設定的時間，麋鹿會溫和地提醒休息（不會強制停止）。</p>
       <select id="remindSel" aria-label="休息提醒">${[15, 20, 30, 0].map(m => `<option value="${m}" ${p.remindMin === m ? 'selected' : ''}>${m ? m + ' 分鐘' : '關閉'}</option>`).join('')}</select></div>
     <div class="psec"><h3>新手導覽</h3><p>第一次打開首頁、地圖、關卡、跟著說和聖誕小屋時，小夥伴會帶孩子看一次怎麼玩。孩子也可以隨時按 ❓ 再看一次。</p>
@@ -5011,6 +5118,9 @@ function renderParent() {
   $('#tourReset').onclick = () => { p.tours = {}; save(); toast('好了！下次打開每一頁都會再介紹一次'); };
   $('#limitSel').onchange = e => { p.limitMin = +e.target.value; save(); };
   if ($('#unlockClear')) $('#unlockClear').onclick = () => { delete p.unlock; save(); renderParent(); };
+  $('#musicSel').onchange = e => sndSet('music', e.target.value);
+  $('#sfxSel').onchange = e => { sndSet('sfx', e.target.value); sfx.ok(); };
+  $('#volSel').onchange = e => { sndSet('vol', e.target.value); sfx.ok(); };
   $('#remindSel').onchange = e => { p.remindMin = +e.target.value; nextRemind = p.remindMin ? sessionSec + p.remindMin * 60 : Infinity; save(); };
   const stamp = () => { p.backupAt = Date.now(); save(); };
   const makeCode = () => { stamp(); $('#bkOut').value = 'XMAS1:' + btoa(unescape(encodeURIComponent(JSON.stringify(p)))); };
