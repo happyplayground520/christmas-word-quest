@@ -43,6 +43,8 @@ body { margin: 0; }
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
+/* a hidden element stays hidden even when its class sets a display */
+[hidden] { display: none !important; }
 html, body { height: 100%; }
 html { background: #0e1c3a; }
 body {
@@ -486,6 +488,44 @@ button.chip:active { background: var(--night-2); }
   background: var(--snow); color: var(--ink); padding: 8px 26px 12px; border-radius: 22px;
   box-shadow: 0 7px 0 var(--frost-d); text-align: center; max-width: 100%;
 }
+/* ---------- speaking side quests ---------- */
+.talkq .tmic { position: absolute; left: -8px; top: -8px; font-size: .45em; background: var(--berry); border-radius: 50%; padding: 4px; line-height: 1; }
+.talkg { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; overflow: auto; padding: 8px; }
+.talkg .tsent { font-size: clamp(20px, 5.4cqh, 40px); padding: 6px 20px 10px; }
+.talkg .sentrow .say { width: 56px; height: 56px; font-size: 24px; }
+@container (max-height: 460px) { .tsnow { transform: scale(.7); margin: -36px -20px; } .talkg { gap: 8px; } }
+.tshow { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.tpic { font-size: clamp(48px, 13cqh, 100px); line-height: 1; animation: bubin .35s cubic-bezier(.3,1.6,.5,1); }
+.tgift { border: none; background: none; font-size: clamp(110px, 30cqh, 200px); line-height: 1; animation: idle 1.6s ease-in-out infinite; }
+.tgift.open { animation: hop .6s; transform: scale(1.15) rotate(-6deg); }
+.tsanta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.tsanta .santaf { font-size: clamp(60px, 14cqh, 110px); }
+.tqq { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.topts { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.tob { border: none; border-radius: 20px; padding: 8px 14px; min-width: 110px; display: flex; flex-direction: column; align-items: center; gap: 2px; background: var(--snow); color: var(--ink); box-shadow: 0 6px 0 var(--frost-d); }
+.tob .te { font-size: clamp(36px, 9cqh, 64px); line-height: 1.1; }
+.tob small { font-family: var(--f-word); font-size: 18px; font-weight: 700; }
+.tob.right { background: #c9f5d9; box-shadow: 0 6px 0 #4bb37a; }
+.tob.wrong { animation: shake .4s; }
+.tlike { width: 100%; display: flex; align-items: center; gap: 24px; justify-content: center; }
+.tlcol { flex: 0 1 640px; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.tsnow { position: relative; width: 130px; height: 240px; flex: none; }
+.tsnow .sp { position: absolute; left: 50%; transform: translateX(-50%) scale(0); transition: transform .45s cubic-bezier(.3,1.6,.5,1); border-radius: 50%; }
+.tsnow .sp.on { transform: translateX(-50%) scale(1); }
+.tsnow .s1 { bottom: 0; width: 110px; height: 110px; background: #fff; box-shadow: inset -10px -10px 0 #dbe6f5; }
+.tsnow .s2 { bottom: 92px; width: 82px; height: 82px; background: #fff; box-shadow: inset -8px -8px 0 #dbe6f5; }
+.tsnow .s3 { bottom: 160px; width: 60px; height: 60px; background: radial-gradient(circle at 35% 40%, #2b2233 0 4px, transparent 5px), radial-gradient(circle at 65% 40%, #2b2233 0 4px, transparent 5px), radial-gradient(circle at 50% 62%, #ff8c1a 0 5px, transparent 6px), #fff; }
+.tsnow .s4 { bottom: 210px; width: 44px; height: 30px; border-radius: 6px 6px 2px 2px; background: #22222c; box-shadow: 0 10px 0 -4px #22222c, 0 4px 0 #e5484d inset; }
+.tsnow .s5 { bottom: 152px; width: 70px; height: 14px; border-radius: 7px; background: #e5484d; }
+.troad { position: relative; width: min(100%, 760px); height: clamp(110px, 26cqh, 170px); border-bottom: 8px solid #f5f9ff; }
+.thouse { position: absolute; bottom: 0; left: calc(10% + var(--i) * 20%); transform: translateX(-50%); font-size: clamp(48px, 12cqh, 80px); line-height: 1; display: flex; flex-direction: column; align-items: center; }
+.thouse .tw { font-size: .55em; min-height: 1em; }
+.thouse.got::after { content: "🎁"; position: absolute; right: -10px; bottom: 0; font-size: .4em; }
+.tsleigh { position: absolute; bottom: 4px; left: calc(10% + var(--i, -.5) * 20%); transform: translateX(-50%); font-size: clamp(40px, 10cqh, 64px); line-height: 1; transition: left .85s ease-in-out; z-index: 1; }
+.tbook { display: flex; gap: 6px; min-height: 48px; }
+.tbook .tpg { width: 44px; height: 48px; display: grid; place-items: center; font-size: 26px; background: #fffaf0; border-radius: 6px; box-shadow: 0 3px 0 #d9c39a; animation: bubin .3s; }
+.tstory { background: #fffaf0; color: var(--ink); border-radius: 18px; padding: 12px 18px; box-shadow: 0 6px 0 #d9c39a; font-family: var(--f-word); font-weight: 700; font-size: clamp(18px, 4cqh, 26px); }
+.tstory p { margin: 4px 0; display: flex; gap: 10px; align-items: center; }
 .gblank { display: inline-block; min-width: 2.4em; border-bottom: 5px solid var(--gold-d); color: var(--berry-d); }
 .gblank.filled { animation: popin .4s; }
 .wopts { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; }
@@ -1794,7 +1834,7 @@ const ZHUYIN = {
   角:'ㄐㄧㄠˇ',話:'ㄏㄨㄚˋ',誰:'ㄕㄟˊ',請:'ㄑㄧㄥˇ',讓:'ㄖㄤˋ',貓:'ㄇㄠ',車:'ㄔㄜ',迪:'ㄉㄧˊ',送:'ㄙㄨㄥˋ',進:'ㄐㄧㄣˋ',
   遞:'ㄉㄧˋ',配:'ㄆㄟˋ',重:'ㄔㄨㄥˊ',金:'ㄐㄧㄣ',鈴:'ㄌㄧㄥˊ',錯:'ㄘㄨㄛˋ',鎮:'ㄓㄣˋ',鐺:'ㄉㄤ',長:'ㄓㄤˇ',門:'ㄇㄣˊ',
   閉:'ㄅㄧˋ',間:'ㄐㄧㄢ',降:'ㄐㄧㄤˋ',限:'ㄒㄧㄢˋ',階:'ㄐㄧㄝ',面:'ㄇㄧㄢˋ',頁:'ㄧㄝˋ',頭:'ㄊㄡˊ',餅:'ㄅㄧㄥˇ',首:'ㄕㄡˇ',
-  住:'ㄓㄨˋ',原:'ㄩㄢˊ',項:'ㄒㄧㄤˋ',紫:'ㄗˇ',孩:'ㄏㄞˊ',爺:'ㄧㄝˊ',橡:'ㄒㄧㄤˋ',步:'ㄅㄨˋ',河:'ㄏㄜˊ',海:'ㄏㄞˇ',豹:'ㄅㄠˋ',主:'ㄓㄨˇ',代:'ㄉㄞˋ',公:'ㄍㄨㄥ',利:'ㄌㄧˋ',刺:'ㄘˋ',力:'ㄌㄧˋ',包:'ㄅㄠ',升:'ㄕㄥ',印:'ㄧㄣˋ',司:'ㄙ',咖:'ㄎㄚ',啡:'ㄈㄟ',噴:'ㄆㄣ',團:'ㄊㄨㄢˊ',士:'ㄕˋ',夾:'ㄐㄧㄚ',尺:'ㄔˇ',巢:'ㄔㄠˊ',巧:'ㄑㄧㄠˇ',帳:'ㄓㄤˋ',彎:'ㄨㄢ',恐:'ㄎㄨㄥˇ',扭:'ㄋㄧㄡˇ',披:'ㄆㄧ',抱:'ㄅㄠˋ',拉:'ㄌㄚ',摩:'ㄇㄛˊ',斑:'ㄅㄢ',枕:'ㄓㄣˇ',柴:'ㄔㄞˊ',梯:'ㄊㄧ',椅:'ㄧˇ',橘:'ㄐㄩˊ',汁:'ㄓ',池:'ㄔˊ',洋:'ㄧㄤˊ',湯:'ㄊㄤ',滑:'ㄏㄨㄚˊ',漂:'ㄆㄧㄠ',灰:'ㄏㄨㄟ',爆:'ㄅㄠˋ',犬:'ㄑㄩㄢˇ',狼:'ㄌㄤˊ',獵:'ㄌㄧㄝˋ',瓜:'ㄍㄨㄚ',碟:'ㄉㄧㄝˊ',磁:'ㄘˊ',篷:'ㄆㄥˊ',籃:'ㄌㄢˊ',米:'ㄇㄧˇ',絲:'ㄙ',緞:'ㄉㄨㄢˋ',義:'ㄧˋ',腳:'ㄐㄧㄠˇ',菇:'ㄍㄨ',萄:'˙ㄊㄠ',落:'ㄌㄨㄛˋ',葉:'ㄧㄝˋ',葡:'ㄆㄨˊ',蕉:'ㄐㄧㄠ',薩:'ㄙㄚˋ',蘑:'ㄇㄛˊ',虎:'ㄏㄨˇ',虹:'ㄏㄨㄥˊ',蜂:'ㄈㄥ',蜜:'ㄇㄧˋ',蝟:'ㄨㄟˋ',螺:'ㄌㄨㄛˊ',輪:'ㄌㄨㄣˊ',運:'ㄩㄣˋ',鍋:'ㄍㄨㄛ',鏡:'ㄐㄧㄥˋ',鞋:'ㄒㄧㄝˊ',頌:'ㄙㄨㄥˋ',飛:'ㄈㄟ',香:'ㄒㄧㄤ',骰:'ㄕㄞˇ',髮:'ㄈㄚˇ',鬧:'ㄋㄠˋ',鯨:'ㄐㄧㄥ',鹽:'ㄧㄢˊ',麵:'ㄇㄧㄢˋ',黃:'ㄏㄨㄤˊ',黑:'ㄏㄟ',龍:'ㄌㄨㄥˊ',提:'ㄊㄧˊ',標:'ㄅㄧㄠ',煙:'ㄧㄢ',籤:'ㄑㄧㄢ',具:'ㄐㄩˋ',刀:'ㄉㄠ',剪:'ㄐㄧㄢˇ',吉:'ㄐㄧˊ',型:'ㄒㄧㄥˊ',城:'ㄔㄥˊ',堡:'ㄅㄠˇ',壺:'ㄏㄨˊ',夜:'ㄧㄝˋ',奶:'ㄋㄞˇ',客:'ㄎㄜˋ',室:'ㄕˋ',廳:'ㄊㄧㄥ',書:'ㄕㄨ',月:'ㄩㄝˋ',模:'ㄇㄛˊ',派:'ㄆㄞˋ',流:'ㄌㄧㄡˊ',牛:'ㄋㄧㄡˊ',獨:'ㄉㄨˊ',獸:'ㄕㄡˋ',箏:'˙ㄓㄥ',箭:'ㄐㄧㄢˋ',籠:'ㄌㄨㄥˊ',縫:'ㄈㄥˊ',罐:'ㄍㄨㄢˋ',臥:'ㄨㄛˋ',茶:'ㄔㄚˊ',草:'ㄘㄠˇ',莓:'ㄇㄟˊ',蔔:'˙ㄅㄛ',蘋:'ㄆㄧㄥˊ',蘿:'ㄌㄨㄛˊ',鎚:'ㄔㄨㄟˊ',鐵:'ㄊㄧㄝˇ',院:'ㄩㄢˋ',雞:'ㄐㄧ',餐:'ㄘㄢ',鬆:'ㄙㄨㄥ',鳥:'ㄋㄧㄠˇ',鼓:'ㄍㄨˇ',鼠:'ㄕㄨˇ',寄:'ㄐㄧˋ',描:'ㄇㄧㄠˊ',筆:'ㄅㄧˇ',霜:'ㄕㄨㄤ',偷:'ㄊㄡ',催:'ㄘㄨㄟ',內:'ㄋㄟˋ',凍:'ㄉㄨㄥˋ',塊:'ㄎㄨㄞˋ',搗:'ㄉㄠˇ',擋:'ㄉㄤˇ',毛:'ㄇㄠˊ',皮:'ㄆㄧˊ',調:'ㄊㄧㄠˊ',走:'ㄗㄡˇ',趕:'ㄍㄢˇ',路:'ㄌㄨˋ',鴉:'ㄧㄚ',世:'ㄕˋ',些:'ㄒㄧㄝ',何:'ㄏㄜˊ',叉:'ㄔㄚ',叭:'˙ㄅㄚ',告:'ㄍㄠˋ',商:'ㄕㄤ',喇:'ㄌㄚˇ',喜:'ㄒㄧˇ',嗨:'ㄏㄞ',圓:'ㄩㄢˊ',域:'ㄩˋ',帶:'ㄉㄞˋ',序:'ㄒㄩˋ',店:'ㄉㄧㄢˋ',案:'ㄢˋ',歡:'ㄏㄨㄢ',烏:'ㄨ',照:'ㄓㄠˋ',界:'ㄐㄧㄝˋ',覺:'ㄐㄩㄝˊ',訴:'ㄙㄨˋ',買:'ㄇㄞˇ',順:'ㄕㄨㄣˋ',龜:'ㄍㄨㄟ',嗎:'˙ㄇㄚ',慢:'ㄇㄢˋ',
+  住:'ㄓㄨˋ',們:'˙ㄇㄣ',冬:'ㄉㄨㄥ',吃:'ㄔ',拆:'ㄔㄞ',末:'ㄇㄛˋ',節:'ㄐㄧㄝˊ',週:'ㄓㄡ',原:'ㄩㄢˊ',項:'ㄒㄧㄤˋ',紫:'ㄗˇ',孩:'ㄏㄞˊ',爺:'ㄧㄝˊ',橡:'ㄒㄧㄤˋ',步:'ㄅㄨˋ',河:'ㄏㄜˊ',海:'ㄏㄞˇ',豹:'ㄅㄠˋ',主:'ㄓㄨˇ',代:'ㄉㄞˋ',公:'ㄍㄨㄥ',利:'ㄌㄧˋ',刺:'ㄘˋ',力:'ㄌㄧˋ',包:'ㄅㄠ',升:'ㄕㄥ',印:'ㄧㄣˋ',司:'ㄙ',咖:'ㄎㄚ',啡:'ㄈㄟ',噴:'ㄆㄣ',團:'ㄊㄨㄢˊ',士:'ㄕˋ',夾:'ㄐㄧㄚ',尺:'ㄔˇ',巢:'ㄔㄠˊ',巧:'ㄑㄧㄠˇ',帳:'ㄓㄤˋ',彎:'ㄨㄢ',恐:'ㄎㄨㄥˇ',扭:'ㄋㄧㄡˇ',披:'ㄆㄧ',抱:'ㄅㄠˋ',拉:'ㄌㄚ',摩:'ㄇㄛˊ',斑:'ㄅㄢ',枕:'ㄓㄣˇ',柴:'ㄔㄞˊ',梯:'ㄊㄧ',椅:'ㄧˇ',橘:'ㄐㄩˊ',汁:'ㄓ',池:'ㄔˊ',洋:'ㄧㄤˊ',湯:'ㄊㄤ',滑:'ㄏㄨㄚˊ',漂:'ㄆㄧㄠ',灰:'ㄏㄨㄟ',爆:'ㄅㄠˋ',犬:'ㄑㄩㄢˇ',狼:'ㄌㄤˊ',獵:'ㄌㄧㄝˋ',瓜:'ㄍㄨㄚ',碟:'ㄉㄧㄝˊ',磁:'ㄘˊ',篷:'ㄆㄥˊ',籃:'ㄌㄢˊ',米:'ㄇㄧˇ',絲:'ㄙ',緞:'ㄉㄨㄢˋ',義:'ㄧˋ',腳:'ㄐㄧㄠˇ',菇:'ㄍㄨ',萄:'˙ㄊㄠ',落:'ㄌㄨㄛˋ',葉:'ㄧㄝˋ',葡:'ㄆㄨˊ',蕉:'ㄐㄧㄠ',薩:'ㄙㄚˋ',蘑:'ㄇㄛˊ',虎:'ㄏㄨˇ',虹:'ㄏㄨㄥˊ',蜂:'ㄈㄥ',蜜:'ㄇㄧˋ',蝟:'ㄨㄟˋ',螺:'ㄌㄨㄛˊ',輪:'ㄌㄨㄣˊ',運:'ㄩㄣˋ',鍋:'ㄍㄨㄛ',鏡:'ㄐㄧㄥˋ',鞋:'ㄒㄧㄝˊ',頌:'ㄙㄨㄥˋ',飛:'ㄈㄟ',香:'ㄒㄧㄤ',骰:'ㄕㄞˇ',髮:'ㄈㄚˇ',鬧:'ㄋㄠˋ',鯨:'ㄐㄧㄥ',鹽:'ㄧㄢˊ',麵:'ㄇㄧㄢˋ',黃:'ㄏㄨㄤˊ',黑:'ㄏㄟ',龍:'ㄌㄨㄥˊ',提:'ㄊㄧˊ',標:'ㄅㄧㄠ',煙:'ㄧㄢ',籤:'ㄑㄧㄢ',具:'ㄐㄩˋ',刀:'ㄉㄠ',剪:'ㄐㄧㄢˇ',吉:'ㄐㄧˊ',型:'ㄒㄧㄥˊ',城:'ㄔㄥˊ',堡:'ㄅㄠˇ',壺:'ㄏㄨˊ',夜:'ㄧㄝˋ',奶:'ㄋㄞˇ',客:'ㄎㄜˋ',室:'ㄕˋ',廳:'ㄊㄧㄥ',書:'ㄕㄨ',月:'ㄩㄝˋ',模:'ㄇㄛˊ',派:'ㄆㄞˋ',流:'ㄌㄧㄡˊ',牛:'ㄋㄧㄡˊ',獨:'ㄉㄨˊ',獸:'ㄕㄡˋ',箏:'˙ㄓㄥ',箭:'ㄐㄧㄢˋ',籠:'ㄌㄨㄥˊ',縫:'ㄈㄥˊ',罐:'ㄍㄨㄢˋ',臥:'ㄨㄛˋ',茶:'ㄔㄚˊ',草:'ㄘㄠˇ',莓:'ㄇㄟˊ',蔔:'˙ㄅㄛ',蘋:'ㄆㄧㄥˊ',蘿:'ㄌㄨㄛˊ',鎚:'ㄔㄨㄟˊ',鐵:'ㄊㄧㄝˇ',院:'ㄩㄢˋ',雞:'ㄐㄧ',餐:'ㄘㄢ',鬆:'ㄙㄨㄥ',鳥:'ㄋㄧㄠˇ',鼓:'ㄍㄨˇ',鼠:'ㄕㄨˇ',寄:'ㄐㄧˋ',描:'ㄇㄧㄠˊ',筆:'ㄅㄧˇ',霜:'ㄕㄨㄤ',偷:'ㄊㄡ',催:'ㄘㄨㄟ',內:'ㄋㄟˋ',凍:'ㄉㄨㄥˋ',塊:'ㄎㄨㄞˋ',搗:'ㄉㄠˇ',擋:'ㄉㄤˇ',毛:'ㄇㄠˊ',皮:'ㄆㄧˊ',調:'ㄊㄧㄠˊ',走:'ㄗㄡˇ',趕:'ㄍㄢˇ',路:'ㄌㄨˋ',鴉:'ㄧㄚ',世:'ㄕˋ',些:'ㄒㄧㄝ',何:'ㄏㄜˊ',叉:'ㄔㄚ',叭:'˙ㄅㄚ',告:'ㄍㄠˋ',商:'ㄕㄤ',喇:'ㄌㄚˇ',喜:'ㄒㄧˇ',嗨:'ㄏㄞ',圓:'ㄩㄢˊ',域:'ㄩˋ',帶:'ㄉㄞˋ',序:'ㄒㄩˋ',店:'ㄉㄧㄢˋ',案:'ㄢˋ',歡:'ㄏㄨㄢ',烏:'ㄨ',照:'ㄓㄠˋ',界:'ㄐㄧㄝˋ',覺:'ㄐㄩㄝˊ',訴:'ㄙㄨˋ',買:'ㄇㄞˇ',順:'ㄕㄨㄣˋ',龜:'ㄍㄨㄟ',嗎:'˙ㄇㄚ',慢:'ㄇㄢˋ',
   久:'ㄐㄧㄡˇ',事:'ㄕˋ',什:'ㄕㄣˊ',介:'ㄐㄧㄝˋ',他:'ㄊㄚ',作:'ㄗㄨㄛˋ',便:'ㄅㄧㄢˋ',候:'˙ㄏㄡ',偵:'ㄓㄣ',克:'ㄎㄜˋ',兌:'ㄉㄨㄟˋ',其:'ㄑㄧˊ',區:'ㄑㄩ',午:'ㄨˇ',只:'ㄓˇ',叫:'ㄐㄧㄠˋ',同:'ㄊㄨㄥˊ',咕:'ㄍㄨ',問:'ㄨㄣˋ',嚕:'ㄌㄨ',因:'ㄧㄣ',園:'ㄩㄢˊ',外:'ㄨㄞˋ',始:'ㄕˇ',密:'ㄇㄧˋ',實:'ㄕˊ',左:'ㄗㄨㄛˇ',師:'ㄕ',幾:'ㄐㄧˇ',張:'ㄓㄤ',念:'ㄋㄧㄢˋ',情:'ㄑㄧㄥˊ',懂:'ㄉㄨㄥˇ',戳:'ㄔㄨㄛ',指:'ㄓˇ',探:'ㄊㄢˋ',推:'ㄊㄨㄟ',改:'ㄍㄞˇ',故:'ㄍㄨˋ',整:'ㄓㄥˇ',數:'ㄕㄨˋ',方:'ㄈㄤ',早:'ㄗㄠˇ',晚:'ㄨㄢˇ',東:'ㄉㄨㄥ',楚:'˙ㄔㄨ',樣:'ㄧㄤˋ',氣:'ㄑㄧˋ',淇:'ㄑㄧˊ',淋:'ㄌㄧㄣˊ',清:'ㄑㄧㄥ',準:'ㄓㄨㄣˇ',為:'ㄨㄟˋ',畫:'ㄏㄨㄚˋ',相:'ㄒㄧㄤˋ',知:'ㄓ',短:'ㄉㄨㄢˇ',碼:'ㄇㄚˇ',社:'ㄕㄜˋ',祕:'ㄇㄧˋ',積:'ㄐㄧ',簿:'ㄅㄨˋ',紙:'ㄓˇ',紹:'ㄕㄠˋ',組:'ㄗㄨˇ',聊:'ㄌㄧㄠˊ',肚:'ㄉㄨˋ',被:'ㄅㄟˋ',西:'˙ㄒㄧ',計:'ㄐㄧˋ',訊:'ㄒㄩㄣˋ',訪:'ㄈㄤˇ',說:'ㄕㄨㄛ',變:'ㄅㄧㄢˋ',跟:'ㄍㄣ',道:'ㄉㄠˋ',邊:'ㄅㄧㄢ',那:'ㄋㄚˋ',針:'ㄓㄣ',陽:'ㄧㄤˊ',隨:'ㄙㄨㄟˊ',隻:'ㄓ',雷:'ㄌㄟˊ',麥:'ㄇㄞˋ',簽:'ㄑㄧㄢ',去:'ㄑㄩˋ',紋:'ㄨㄣˊ',粉:'ㄈㄣˇ',愛:'ㄞˋ',心:'ㄒㄧㄣ',吊:'ㄉㄧㄠˋ',拐:'ㄍㄨㄞˇ',杖:'ㄓㄤˋ',杯:'ㄅㄟ',蛋:'ㄉㄢˋ',糕:'ㄍㄠ',甜:'ㄊㄧㄢˊ',兔:'ㄊㄨˋ',狗:'ㄍㄡˇ',狐:'ㄏㄨˊ',狸:'˙ㄌㄧ',牆:'ㄑㄧㄤˊ',雙:'ㄕㄨㄤ',華:'ㄏㄨㄚˊ',麗:'ㄌㄧˋ',盒:'ㄏㄜˊ',俄:'ㄜˊ',羅:'ㄌㄨㄛˊ',斯:'ㄙ',鐘:'ㄓㄨㄥ',婆:'ㄆㄛˊ',鋼:'ㄍㄤ',琴:'ㄑㄧㄣˊ',所:'ㄙㄨㄛˇ',怎:'ㄗㄣˇ',麼:'˙ㄇㄜ',自:'ㄗˋ',己:'ㄐㄧˇ',寫:'ㄒㄧㄝˇ',種:'ㄓㄨㄥˇ',體:'ㄊㄧˇ',躲:'ㄉㄨㄛˇ',站:'ㄓㄢˋ',賽:'ㄙㄞˋ',跑:'ㄆㄠˇ',往:'ㄨㄤˇ',衝:'ㄔㄨㄥ',釣:'ㄉㄧㄠˋ',魚:'ㄩˊ',遊:'ㄧㄡˊ',戲:'ㄒㄧˋ',檔:'ㄉㄤˇ',度:'ㄉㄨˋ',備:'ㄅㄟˋ',份:'ㄈㄣˋ',從:'ㄘㄨㄥˊ',著:'˙ㄓㄜ',掉:'ㄉㄧㄠˋ',怪:'ㄍㄨㄞˋ',器:'ㄑㄧˋ',機:'ㄐㄧ',零:'ㄌㄧㄥˊ',件:'ㄐㄧㄢˋ',修:'ㄒㄧㄡ',理:'ㄌㄧˇ',賓:'ㄅㄧㄣ',連:'ㄌㄧㄢˊ',條:'ㄊㄧㄠˊ',丟:'ㄉㄧㄡ',敗:'ㄅㄞˋ',穿:'ㄔㄨㄢ',衣:'ㄧ',服:'˙ㄈㄨ',身:'ㄕㄣ',泡:'ㄆㄠˋ',像:'ㄒㄧㄤˋ',和:'ㄏㄜˊ',圍:'ㄨㄟˊ',水:'ㄕㄨㄟˇ',旋:'ㄒㄩㄢˊ',木:'ㄇㄨˋ',馬:'ㄇㄚˇ',偶:'ㄡˇ',胡:'ㄏㄨˊ',桃:'ㄊㄠˊ',鉗:'ㄑㄧㄢˊ',箱:'ㄒㄧㄤ',戴:'ㄉㄞˋ',巾:'ㄐㄧㄣ',桶:'ㄊㄨㄥˇ',塗:'ㄊㄨˊ',顯:'ㄒㄧㄢˇ',示:'ㄕˋ',拖:'ㄊㄨㄛ',或:'ㄏㄨㄛˋ',男:'ㄋㄢˊ',女:'ㄋㄩˇ',生:'ㄕㄥ',還:'ㄏㄞˊ',分:'ㄈㄣ',享:'ㄒㄧㄤˇ',螢:'ㄧㄥˊ',幕:'ㄇㄨˋ',轉:'ㄓㄨㄢˇ',橫:'ㄏㄥˊ',製:'ㄓˋ',貼:'ㄊㄧㄝ',框:'ㄎㄨㄤ',綠:'ㄌㄩˋ',白:'ㄅㄞˊ',典:'ㄉㄧㄢˇ',棵:'ㄎㄜ',紅:'ㄏㄨㄥˊ',藍:'ㄌㄢˊ',蝴:'ㄏㄨˊ',蝶:'ㄉㄧㄝˊ',結:'ㄐㄧㄝˊ',跳:'ㄊㄧㄠˋ',視:'ㄕˋ',窗:'ㄔㄨㄤ',辦:'ㄅㄢˋ',法:'ㄈㄚˇ',直:'ㄓˊ',接:'ㄐㄧㄝ',影:'ㄧㄥˇ',像:'ㄒㄧㄤˋ',電:'ㄉㄧㄢˋ',腦:'ㄋㄠˇ',右:'ㄧㄡˋ',鍵:'ㄐㄧㄢˋ',另:'ㄌㄧㄥˋ',移:'ㄧˊ',動:'ㄉㄨㄥˋ',高:'ㄍㄠ',鵝:'ㄜˊ',鷹:'ㄧㄥ',鹿:'ㄌㄨˋ',麋:'ㄇㄧˊ'
 };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -2468,10 +2508,18 @@ function renderMap() {
   return `<button class="station sidequest ${sOpen ? (sDone ? 'done' : 'next') : 'locked'}" data-side="${sd.id}" style="--x:${pos.side[0]}%;--y:${pos.side[1]}%" aria-label="${sd.name}">
       <span class="orb"><span class="ico">${sd.icon}</span></span><span class="name">${zy(sd.name)}</span>
       ${sOpen ? '' : `<span class="cond">${zy(cond)}</span>`}</button>`; })();
+  const td = talkOf(curWorld), tp = TALK_POS[pos === NODE_POS.tall ? 'tall' : 'wide'], [ax, ay] = pts[1];
+  const talk = !td ? '' : (() => {
+    const o = sideOpen(td), dn = (l.sides[td.id] || 0) > 0;
+    return `<button class="station sidequest talkq ${o ? (dn ? 'done' : 'next') : 'locked'}" data-talk="${curWorld}" style="--x:${tp[0]}%;--y:${tp[1]}%" aria-label="${td.name}">
+      <span class="orb"><span class="ico">${td.icon}</span><span class="tmic">🎤</span></span><span class="name">${zy(td.name)}</span>
+      ${o ? '' : `<span class="cond">${zy(`過了 ${td.after} 就會打開`)}</span>`}</button>`;
+  })();
   $('#mapBox').innerHTML = `<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
       ${segs}
+      ${td ? `<path class="branch" d="M${ax} ${ay} Q${(ax + tp[0]) / 2} ${(ay + tp[1]) / 2 - 6} ${tp[0]} ${tp[1]}" vector-effect="non-scaling-stroke"/>` : ''}
       ${sd ? `<path class="branch" d="M${bx} ${by} Q${(bx + pos.side[0]) / 2 + 8} ${(by + pos.side[1]) / 2} ${pos.side[0]} ${pos.side[1]}" vector-effect="non-scaling-stroke"/>` : ''}
-    </svg>${nodes}${side}<span class="mbuddy" aria-hidden="true">${curBuddySVG()}</span>`;
+    </svg>${nodes}${side}${talk}<span class="mbuddy" aria-hidden="true">${curBuddySVG()}</span>`;
   // the child's elf stands on the stage to play next
   const hereK = next && next.w === curWorld ? next.k : -1;
   if (hereK >= 0) $('#mapBox').insertAdjacentHTML('beforeend', `<span class="elfmark" style="--x:${pts[hereK][0]}%;--y:${pts[hereK][1]}%" aria-hidden="true"><span class="flag">${zy('在這裡！')}</span><span class="elf">${me}</span></span>`);
@@ -2495,12 +2543,14 @@ $('#mapBox').addEventListener('click', e => {
   const b = e.target.closest('.station'); if (!b) return;
   if (b.classList.contains('locked')) {
     sfx.no();
-    if (b.dataset.side) { const sd = SIDES.find(x => x.id === b.dataset.side); toast(sd.stars ? `過了 ${sd.after}、收集 ⭐ ${sd.stars} 顆就能打開` : `先打破 ${sd.after} 的冰門才能打開`); }
+    if (b.dataset.talk) toast(`先過 ${talkOf(+b.dataset.talk).after} 才能打開`);
+    else if (b.dataset.side) { const sd = SIDES.find(x => x.id === b.dataset.side); toast(sd.stars ? `過了 ${sd.after}、收集 ⭐ ${sd.stars} 顆就能打開` : `先打破 ${sd.after} 的冰門才能打開`); }
     else toast('先過前面一關才能打開');
     return;
   }
   if (b.dataset.sstage) startSecret(SSTAGES.find(s => s.id === b.dataset.sstage));
   else if (b.dataset.stage) startStage(STAGES.find(s => s.id === b.dataset.stage));
+  else if (b.dataset.talk) startSide(talkOf(+b.dataset.talk));
   else startSide(SIDES.find(s => s.id === b.dataset.side));
 });
 addEventListener('resize', () => { if (!$('#map').hidden) renderMap(); });
@@ -2567,9 +2617,210 @@ function startStage(s) {
 function startSide(sd) {
   current = { type: 'side', def: sd, kind: sd.id };
   const ctx = openGame(sd.name, sd.hint, WORLDS[sd.w].key);
+  if (sd.talk) return TALK_GAMES[sd.talk](ctx, sd);
   GAMES[sd.id](ctx);
 }
 $('#quitBtn').onclick = () => { stopRun(); show('map'); };
+
+/* ================= speaking side quests: one in each of the first five worlds, a different game in each ================= */
+// sentences grow with the level: short in basic, a describing word or a place in advanced, two parts in the top level
+const TALK_STYLES = [
+  { key: 'gift',   name: '拆禮物說一說', icon: '🎁', hint: '點禮物打開，說說看裡面是什麼' },
+  { key: 'ask',    name: '聖誕老人問一問', icon: '🎅', hint: '聽問題，選出答案，再說出完整的句子' },
+  { key: 'like',   name: '我喜歡什麼？', icon: '⛄', hint: '選一個你喜歡的，說成一句話，雪人就會長出來' },
+  { key: 'sleigh', name: '雪橇送禮物', icon: '🛷', hint: '把禮物送到每一家，跟他們說一句話' },
+  { key: 'story',  name: '說故事時間', icon: '📖', hint: '一頁一頁說故事，做成一本小書' }
+];
+const TALK_POS = { wide: [58, 16], tall: [78, 90] };
+const talkOf = (w, ver = version) => ver === 'secret' || !TALK_STYLES[w] ? null : { id: `talk${w}`, w, after: `${w + 1}-2`, talk: TALK_STYLES[w].key, ...TALK_STYLES[w] };
+const TALK = {
+  gift: {
+    basic: [['✏️', 'This is a pen.'], ['⚽', 'This is a ball.'], ['🐱', 'It is a cat.'], ['📖', 'This is a book.'], ['🧸', 'It is a bear.'],
+      ['⭐', 'It is a star.'], ['🎩', 'This is a hat.'], ['🐶', 'It is a dog.'], ['🍎', 'It is an apple.'], ['🚗', 'This is a car.']],
+    adv: [['🎩', 'This is my red hat.'], ['🧸', 'I have a soft teddy bear.'], ['⚽', 'This is a big ball.'], ['🚗', 'It is a little blue car.'],
+      ['👗', 'She has a pink dress.'], ['📚', 'These are my new books.'], ['🧤', 'These are my warm mittens.'], ['🎈', 'I have a red balloon.'],
+      ['🐱', 'The cat is in the box.'], ['🦆', 'The duck is on the table.']],
+    pro: [['🚲', 'This is a new bike for my brother.'], ['🧣', 'I made this scarf for my grandma.'], ['📖', 'This book is a present for my teacher.'],
+      ['🧸', 'My little sister will love this teddy bear.'], ['🎨', 'I can paint a picture with these colors.'], ['🪁', 'We can fly this kite in the park.'],
+      ['🎹', 'I want to play songs on this piano.'], ['⛸️', 'I will wear these skates on the ice.'], ['🧩', 'We can do this puzzle together.'],
+      ['🎧', 'I listen to music with these headphones.']]
+  },
+  // [question, answer, right picture, two wrong pictures]
+  ask: {
+    basic: [['What color is the snow?', 'It is white.', ['⚪', 'white'], [['🔴', 'red'], ['🟢', 'green']]],
+      ["What color is Santa's hat?", 'It is red.', ['🔴', 'red'], [['🔵', 'blue'], ['🟡', 'yellow']]],
+      ['What is on top of the tree?', 'It is a star.', ['⭐', 'star'], [['🐟', 'fish'], ['🚗', 'car']]],
+      ['What animal pulls the sleigh?', 'It is a reindeer.', ['🦌', 'reindeer'], [['🐷', 'pig'], ['🐟', 'fish']]],
+      ['What do you make with snow?', 'I make a snowman.', ['⛄', 'snowman'], [['🍕', 'pizza'], ['📚', 'book']]],
+      ['What does Santa bring?', 'He brings gifts.', ['🎁', 'gifts'], [['🐛', 'bugs'], ['🧹', 'brooms']]]],
+    adv: [['Where does Santa live?', 'He lives at the North Pole.', ['🧊', 'the North Pole'], [['🏝️', 'the beach'], ['🌋', 'a volcano']]],
+      ['What do reindeer like to eat?', 'They like to eat carrots.', ['🥕', 'carrots'], [['🍕', 'pizza'], ['🍭', 'candy']]],
+      ['Where do we put the star?', 'We put it on the tree.', ['🎄', 'on the tree'], [['🛁', 'in the bath'], ['🚪', 'on the door']]],
+      ['What do you wear when it is cold?', 'I wear a warm coat.', ['🧥', 'a coat'], [['🩳', 'shorts'], ['🩱', 'a swimsuit']]],
+      ['What do we hang by the fireplace?', 'We hang our stockings.', ['🧦', 'stockings'], [['🍌', 'bananas'], ['👟', 'sneakers']]],
+      ['What is the weather like in winter?', 'It is cold and snowy.', ['❄️', 'snowy'], [['☀️', 'hot'], ['🌈', 'rainbow']]]],
+    pro: [['What do you leave for Santa on Christmas Eve?', 'I leave cookies and milk for Santa.', ['🍪', 'cookies and milk'], [['🧦', 'dirty socks'], ['🥦', 'broccoli']]],
+      ['How does Santa visit every house in one night?', 'He flies in his sleigh with the reindeer.', ['🛷', 'a sleigh'], [['🚌', 'a bus'], ['🚲', 'a bike']]],
+      ['What do you say when you get a present?', 'I say thank you to my family.', ['🙏', 'thank you'], [['😴', 'good night'], ['👋', 'goodbye']]],
+      ['Why do we wear gloves in the snow?', 'We wear gloves to keep our hands warm.', ['🧤', 'warm hands'], [['🎨', 'paint'], ['🍦', 'ice cream']]],
+      ['What do you need to build a snowman?', 'I need a lot of snow and a carrot.', ['⛄', 'snow and a carrot'], [['🏖️', 'sand'], ['🧱', 'bricks']]],
+      ['Where do you put the presents on Christmas Eve?', 'We put the presents under the tree.', ['🎄', 'under the tree'], [['🚿', 'in the shower'], ['🚗', 'in the car']]]]
+  },
+  // the child chooses; any choice is right and becomes the sentence
+  like: {
+    basic: [{ q: 'What do you like?', zh: '你喜歡什麼？', tpl: 'I like ___.', opts: [['🐱', 'cats'], ['🐶', 'dogs'], ['🍎', 'apples'], ['🍪', 'cookies'], ['🎈', 'balloons'], ['🐰', 'rabbits']] },
+      { q: 'What do you want to eat?', zh: '你想吃什麼？', tpl: 'I want ___.', opts: [['🍎', 'an apple'], ['🍰', 'cake'], ['🍪', 'a cookie'], ['🍌', 'a banana'], ['🍓', 'strawberries']] },
+      { q: 'What color do you like?', zh: '你喜歡什麼顏色？', tpl: 'I like ___.', opts: [['🔴', 'red'], ['🔵', 'blue'], ['🟢', 'green'], ['🟡', 'yellow'], ['🟣', 'purple']] },
+      { q: 'What can you do?', zh: '你會做什麼？', tpl: 'I can ___.', opts: [['🏃', 'run'], ['🦘', 'jump'], ['🏊', 'swim'], ['🎤', 'sing'], ['💃', 'dance']] },
+      { q: 'What do you have?', zh: '你有什麼？', tpl: 'I have ___.', opts: [['🐶', 'a dog'], ['🐱', 'a cat'], ['🧸', 'a teddy bear'], ['🎈', 'a balloon'], ['📚', 'books']] }],
+    adv: [{ q: 'What do you want for Christmas?', zh: '你聖誕節想要什麼？', tpl: 'I want ___ for Christmas.', opts: [['🧸', 'a teddy bear'], ['🚲', 'a bike'], ['🎨', 'a paint set'], ['🚂', 'a toy train'], ['📚', 'some books']] },
+      { q: 'What is your favorite food?', zh: '你最喜歡吃什麼？', tpl: 'My favorite food is ___.', opts: [['🍕', 'pizza'], ['🍝', 'spaghetti'], ['🍣', 'sushi'], ['🍔', 'burgers'], ['🥟', 'dumplings']] },
+      { q: 'What do you like to do in winter?', zh: '冬天你喜歡做什麼？', tpl: 'I like to ___ in winter.', opts: [['⛄', 'make snowmen'], ['⛸️', 'skate'], ['☕', 'drink hot cocoa'], ['🛷', 'ride a sled']] },
+      { q: 'Who do you love?', zh: '你愛誰？', tpl: 'I love my ___.', opts: [['👩', 'mom'], ['👨', 'dad'], ['👵', 'grandma'], ['👴', 'grandpa'], ['🐶', 'dog']] },
+      { q: 'What is your favorite animal?', zh: '你最喜歡什麼動物？', tpl: 'My favorite animal is the ___.', opts: [['🐼', 'panda'], ['🐧', 'penguin'], ['🦁', 'lion'], ['🐰', 'rabbit'], ['🦒', 'giraffe']] }],
+    pro: [{ q: 'What do you want to do this Christmas?', zh: '這個聖誕節你想做什麼？', tpl: 'This Christmas, I want to ___ with my family.', opts: [['⛸️', 'go ice skating'], ['⛄', 'build a snowman'], ['🍪', 'bake cookies'], ['🎶', 'sing songs'], ['🎬', 'watch a movie']] },
+      { q: 'What will you give your friend?', zh: '你要送朋友什麼？', tpl: 'I will give my friend ___.', opts: [['💌', 'a card'], ['🍫', 'some chocolate'], ['🧸', 'a teddy bear'], ['📖', 'a storybook']] },
+      { q: 'What do you want to be when you grow up?', zh: '長大以後你想做什麼？', tpl: 'When I grow up, I want to be ___.', opts: [['👩‍🏫', 'a teacher'], ['👩‍⚕️', 'a doctor'], ['👩‍🍳', 'a cook'], ['👩‍🚀', 'an astronaut'], ['👩‍🎨', 'an artist']] },
+      { q: 'Why do you like winter?', zh: '你為什麼喜歡冬天？', tpl: 'I like winter because I can ___.', opts: [['⛄', 'make snowmen'], ['🎁', 'open presents'], ['☕', 'drink hot cocoa'], ['⛷️', 'go skiing']] },
+      { q: 'What did you do last weekend?', zh: '上個週末你做了什麼？', tpl: 'Last weekend, I ___ with my family.', opts: [['🏞️', 'went to the park'], ['🍕', 'ate pizza'], ['🎬', 'watched a movie'], ['🛒', 'went shopping']] }]
+  },
+  // who opens the door, and what the child says to them
+  sleigh: {
+    basic: [['👦', 'This is for you.'], ['👧', 'Here is a gift.'], ['👵', 'Merry Christmas, Grandma!'], ['🐱', 'Hello, little cat!'],
+      ['👴', 'Good night, Grandpa!'], ['👩', 'Have a nice day!'], ['👨', 'See you soon!']],
+    adv: [['👦', 'Here is a present for you.'], ['👧', 'This red box is for you.'], ['👵', 'Merry Christmas! Stay warm, Grandma.'],
+      ['👨', 'Santa says hello to you.'], ['🐶', 'Here is a bone for the dog.'], ['👩', 'Please open it on Christmas Day.'], ['👶', 'Here is a toy for the baby.']],
+    pro: [['👦', 'Here is the bike you asked Santa for.'], ['👧', 'Santa read your letter and sent this gift.'], ['👵', 'We hope you have a warm and happy Christmas.'],
+      ['👨', 'Please put this present under your tree.'], ['👩', 'Thank you for the cookies you left for Santa.'], ['🐶', 'Santa brought a new ball for your puppy.'],
+      ['👴', 'Have a merry Christmas and a happy New Year.']]
+  },
+  story: {
+    basic: [[['⛄', 'I see a snowman.'], ['🎩', 'It has a hat.'], ['🥕', 'It has a nose.'], ['🧣', 'It has a red scarf.'], ['😊', 'I like my snowman.']],
+      [['🐶', 'This is my dog.'], ['🦴', 'He has a bone.'], ['❄️', 'He sees the snow.'], ['🏃', 'He can run.'], ['😴', 'Now he is sleepy.']]],
+    adv: [[['🎄', 'We have a big Christmas tree.'], ['⭐', 'Dad puts a star on the top.'], ['🔴', 'I hang red balls on the tree.'], ['🎁', 'Mom puts gifts under the tree.'], ['✨', 'Our tree is so pretty!']],
+      [['🐱', 'My cat is very curious.'], ['🎁', 'She jumps into a gift box.'], ['🎀', 'She plays with the ribbon.'], ['🎄', 'Then she climbs the tree.'], ['😹', 'We all laugh at her.']]],
+    pro: [[['🌙', 'On Christmas Eve, I could not fall asleep.'], ['🔔', 'I heard bells ringing on the roof.'], ['🎅', 'I saw Santa putting gifts under the tree.'], ['🍪', 'He ate the cookies we left for him.'], ['🛷', 'Then he flew away in his sleigh.']],
+      [['❄️', 'It snowed all night in our little town.'], ['⛄', 'In the morning, we built a big snowman.'], ['🧣', 'My sister gave him her old scarf.'], ['☕', 'After that, we drank hot cocoa together.'], ['😊', 'It was the best winter day ever.']]]
+  }
+};
+const talkLv = ctx => ['basic', 'adv', 'pro'].includes(ctx.ver) ? ctx.ver : 'basic';
+const talkSent = s => `<div class="sentrow"><div class="sentence tsent">${esc(s)}</div><button class="say" aria-label="聽">🔊</button></div>`;
+function talkShell(ctx, inner) { ctx.stage.innerHTML = `<div class="talkg">${inner}</div>`; return ctx.stage.querySelector('.talkg'); }
+function showSent(host, s, pic = '') {
+  host.innerHTML = `${pic ? `<div class="tpic">${pic}</div>` : ''}${talkSent(s)}`;
+  host.querySelector('.say').onclick = () => speak(s, SRATE);
+}
+// a picture choice; wrong picks say the picked word
+function talkOpts(host, opts, isRight, onRight, onWrong) {
+  let busy = false;
+  host.innerHTML = opts.map(([e, w], k) => `<button class="tob" data-k="${k}"><span class="te">${e}</span><small>${esc(w)}</small></button>`).join('');
+  host.querySelectorAll('.tob').forEach(b => b.onclick = () => {
+    if (busy) return;
+    const o = opts[+b.dataset.k];
+    if (isRight(o)) { busy = true; b.classList.add('right'); sfx.ok(); hideCheer(); onRight(o); return; }
+    sfx.no(); b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); cheer([[o[1], false, .8]]); onWrong && onWrong();
+  });
+}
+// each sentence goes on the result screen, to hear again
+const talkSay = (ctx, s, next) => { ctx.learned.add(s); sayOrHear(ctx, s, next); };
+const TALK_GAMES = {};
+TALK_GAMES.gift = ctx => {
+  const items = sample(TALK.gift[talkLv(ctx)], 5); let i = 0, busy = false;
+  const box = talkShell(ctx, `<button class="tgift" aria-label="打開禮物">🎁</button><div class="tshow"></div>`);
+  const gift = box.querySelector('.tgift'), show = box.querySelector('.tshow');
+  function round() {
+    setDots(items.length, i);
+    if (i >= items.length) { sfx.win(); later(() => ctx.done(0), 900); return; }
+    gift.hidden = false; gift.classList.remove('open'); busy = false;
+    show.innerHTML = `<p class="sub">${zy('點禮物打開！')}</p>`;
+  }
+  gift.onclick = () => {
+    if (busy) return; busy = true; sfx.flip(); gift.classList.add('open');
+    const [e, s] = items[i];
+    later(() => { gift.hidden = true; sfx.ok(); showSent(show, s, e); i++; later(() => talkSay(ctx, s, round), 500); }, 650);
+  };
+  round();
+};
+TALK_GAMES.ask = ctx => {
+  const qs = sample(TALK.ask[talkLv(ctx)], 5); let i = 0, mistakes = 0;
+  const box = talkShell(ctx, `<div class="tsanta"><span class="santaf">🎅</span><div class="tqq"></div></div><div class="topts"></div><div class="tshow"></div>`);
+  const tq = box.querySelector('.tqq'), opts = box.querySelector('.topts'), show = box.querySelector('.tshow');
+  function round() {
+    setDots(qs.length, i);
+    if (i >= qs.length) { sfx.win(); later(() => ctx.done(mistakes), 900); return; }
+    const [q, a, right, wrongs] = qs[i]; let wrong = false;
+    showSent(tq, q); show.innerHTML = '';
+    later(() => speak(q, SRATE), 300);
+    talkOpts(opts, shuffle([right, ...wrongs]), o => o === right,
+      () => { opts.innerHTML = ''; showSent(show, a, right[0]); i++; later(() => talkSay(ctx, a, round), 500); },
+      () => { if (!wrong) mistakes++; wrong = true; });
+  }
+  round();
+};
+TALK_GAMES.like = ctx => {
+  const rounds = TALK.like[talkLv(ctx)]; let i = 0;
+  const box = talkShell(ctx, `<div class="tlike"><div class="tsnow">${[1, 2, 3, 4, 5].map(k => `<span class="sp s${k}"></span>`).join('')}</div>
+    <div class="tlcol"><div class="tqq"></div><div class="topts"></div><div class="tshow"></div></div></div>`);
+  const tq = box.querySelector('.tqq'), opts = box.querySelector('.topts'), show = box.querySelector('.tshow'), parts = box.querySelectorAll('.sp');
+  function round() {
+    setDots(rounds.length, i);
+    if (i >= rounds.length) { sfx.win(); speak('What a nice snowman!', .9); later(() => ctx.done(0), 1600); return; }
+    const R0 = rounds[i];
+    tq.hidden = false; showSent(tq, R0.q); tq.insertAdjacentHTML('beforeend', `<p class="sub">${zy(R0.zh)}</p>`); show.innerHTML = '';
+    later(() => speak(R0.q, SRATE), 300);
+    talkOpts(opts, sample(R0.opts, 4), () => true, o => {
+      const s = R0.tpl.replace('___', o[1]);
+      opts.innerHTML = ''; tq.hidden = true; showSent(show, s, o[0]); parts[i].classList.add('on'); i++;
+      later(() => talkSay(ctx, s, round), 500);
+    });
+  }
+  round();
+};
+TALK_GAMES.sleigh = ctx => {
+  const items = sample(TALK.sleigh[talkLv(ctx)], 5); let i = 0, busy = false;
+  const box = talkShell(ctx, `<div class="troad"><span class="tsleigh">🛷</span>${items.map((x, k) => `<span class="thouse" style="--i:${k}"><span class="tw"></span>🏠</span>`).join('')}</div>
+    <div class="tshow"></div><button class="btn tgo">${zy('🛷 出發！')}</button>`);
+  const sleigh = box.querySelector('.tsleigh'), houses = box.querySelectorAll('.thouse'), show = box.querySelector('.tshow'), go = box.querySelector('.tgo');
+  function round() {
+    setDots(items.length, i);
+    if (i >= items.length) { sfx.win(); speak('All the gifts are here!', .9); later(() => ctx.done(0), 1600); return; }
+    busy = false; go.hidden = false; show.innerHTML = `<p class="sub">${zy(`送到第 ${i + 1} 家`)}</p>`;
+  }
+  go.onclick = () => {
+    if (busy) return; busy = true; go.hidden = true; sfx.flip();
+    sleigh.style.setProperty('--i', i);
+    const [who, s] = items[i], h = houses[i];
+    later(() => { h.classList.add('open'); h.querySelector('.tw').textContent = who; sfx.ok(); showSent(show, s, who); i++; later(() => { h.classList.add('got'); talkSay(ctx, s, round); }, 500); }, 900);
+  };
+  round();
+};
+TALK_GAMES.story = ctx => {
+  const pages = pickOne(TALK.story[talkLv(ctx)]); let i = 0, busy = false;
+  const box = talkShell(ctx, `<div class="tbook"></div><div class="tshow"></div><button class="btn tgo">${zy('📖 翻下一頁')}</button>`);
+  const book = box.querySelector('.tbook'), show = box.querySelector('.tshow'), go = box.querySelector('.tgo');
+  function round() {
+    setDots(pages.length, i);
+    if (i >= pages.length) {
+      // the whole little book, to hear once more; the child closes it
+      sfx.win(); go.hidden = true;
+      show.innerHTML = `<div class="tstory">${pages.map(([e, s]) => `<p><span>${e}</span>${esc(s)}</p>`).join('')}</div>
+        <div class="row"><button class="btn alt" id="tAll">${zy('🔊 聽整個故事')}</button><button class="btn" id="tEnd">${zy('完成！')}</button></div>`;
+      $('#tAll').onclick = () => speakSeq(pages.map(([, s]) => [s, false, SRATE]));
+      $('#tEnd').onclick = () => ctx.done(0);
+      return;
+    }
+    busy = false; go.hidden = false;
+    if (!i) show.innerHTML = `<p class="sub">${zy('翻開第一頁！')}</p>`;
+  }
+  go.onclick = () => {
+    if (busy) return; busy = true; go.hidden = true; sfx.flip();
+    const [e, s] = pages[i];
+    book.insertAdjacentHTML('beforeend', `<span class="tpg">${e}</span>`);
+    showSent(show, s, e); i++;
+    later(() => talkSay(ctx, s, round), 500);
+  };
+  round();
+};
 
 function starsFor(kind, m) {
   const r = { listen: [0, 2], memory: version === 'basic' ? [3, 7] : [5, 10], colors: [1, 4], colors2: [1, 4], whack: [1, 4], bingo: [2, 4] }[kind] || [1, 3];
