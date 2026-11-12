@@ -2737,9 +2737,9 @@ const TALK = {
 const talkLv = ctx => ['basic', 'adv', 'pro'].includes(ctx.ver) ? ctx.ver : 'basic';
 const talkSent = s => `<div class="sentrow"><div class="sentence tsent">${esc(s)}</div><button class="say" aria-label="聽">🔊</button></div>`;
 function talkShell(ctx, inner) { ctx.stage.innerHTML = `<div class="talkg">${inner}</div>`; return ctx.stage.querySelector('.talkg'); }
-function showSent(host, s, pic = '') {
+function showSent(host, s, pic = '', rate = SRATE) {
   host.innerHTML = `${pic ? `<div class="tpic">${pic}</div>` : ''}${talkSent(s)}`;
-  host.querySelector('.say').onclick = () => speak(s, SRATE);
+  host.querySelector('.say').onclick = () => speak(s, rate);
 }
 // a picture choice; wrong picks say the picked word
 function talkOpts(host, opts, isRight, onRight, onWrong) {
@@ -2753,7 +2753,7 @@ function talkOpts(host, opts, isRight, onRight, onWrong) {
   });
 }
 // each sentence goes on the result screen, to hear again
-const talkSay = (ctx, s, next) => { ctx.learned.add(s); sayOrHear(ctx, s, next); };
+const talkSay = (ctx, s, next, rate) => { ctx.learned.add(s); sayOrHear(ctx, s, next, rate); };
 const TALK_GAMES = {};
 // question review side quest: hear a question and pick the answer, or read an answer and pick its question word
 const QDET = { id: 'qdet', w: 1, after: '2-3', talk: 'qdet', name: '問句小偵探', icon: '🔍', hint: '聽問句找答案，看答案找問句' };
@@ -2776,16 +2776,16 @@ const QSCENES = {
       q: { who: ['Who makes a snowman?', 'My brother makes a snowman.'], what: ['What does he make?', 'He makes a snowman.'], where: ['Where is he?', 'He is in the yard.'], when: ['When does he make a snowman?', 'In winter.'] } }
   ],
   adv: [
-    { who: ['👩', 'Mom'], what: ['🍪', 'Christmas cookies'], where: ['🏠', 'in the kitchen'], when: ['🌅', 'on Saturday morning'],
-      q: { who: ['Who is baking cookies?', 'Mom is baking cookies.'], what: ['What is Mom baking?', 'She is baking Christmas cookies.'], where: ['Where is Mom baking cookies?', 'She is baking them in the kitchen.'], when: ['When does Mom bake cookies?', 'She bakes them on Saturday morning.'] } },
+    { who: ['👩', 'Mom'], what: ['🍪', 'cookies'], where: ['🏠', 'in the kitchen'], when: ['📅', 'on Saturday'],
+      q: { who: ['Who is baking cookies?', 'Mom is baking cookies.'], what: ['What is Mom baking?', 'She is baking cookies.'], where: ['Where is Mom?', 'She is in the kitchen.'], when: ['When does Mom bake?', 'On Saturday.'] } },
     { who: ['🎅', 'Santa'], what: ['🎁', 'presents'], where: ['🎄', 'under the tree'], when: ['🌙', 'on Christmas Eve'],
-      q: { who: ['Who puts presents under the tree?', 'Santa puts them under the tree.'], what: ['What does Santa bring?', 'He brings presents for the children.'], where: ['Where does Santa put the presents?', 'He puts them under the tree.'], when: ['When does Santa come?', 'He comes on Christmas Eve.'] } },
+      q: { who: ['Who has the presents?', 'Santa has the presents.'], what: ['What does Santa bring?', 'He brings presents.'], where: ['Where are the presents?', 'They are under the tree.'], when: ['When does Santa come?', 'On Christmas Eve.'] } },
     { who: ['👧', 'my sister'], what: ['🎹', 'the piano'], where: ['🏫', 'at school'], when: ['🕓', "at four o'clock"],
-      q: { who: ['Who plays the piano?', 'My sister plays the piano.'], what: ['What does your sister play?', 'She plays the piano.'], where: ['Where does she play the piano?', 'She plays it at school.'], when: ['When does she play the piano?', "She plays it at four o'clock."] } },
+      q: { who: ['Who plays the piano?', 'My sister plays the piano.'], what: ['What does she play?', 'She plays the piano.'], where: ['Where is she?', 'She is at school.'], when: ['When does she play?', "At four o'clock."] } },
     { who: ['👴', 'Grandpa'], what: ['📖', 'a storybook'], where: ['🛋️', 'on the sofa'], when: ['🌙', 'at bedtime'],
-      q: { who: ['Who reads a storybook?', 'Grandpa reads a storybook.'], what: ['What does Grandpa read?', 'He reads a storybook.'], where: ['Where does Grandpa read?', 'He reads on the sofa.'], when: ['When does Grandpa read to you?', 'He reads to me at bedtime.'] } },
+      q: { who: ['Who is reading?', 'Grandpa is reading.'], what: ['What does Grandpa read?', 'He reads a storybook.'], where: ['Where is Grandpa?', 'He is on the sofa.'], when: ['When does he read?', 'At bedtime.'] } },
     { who: ['👦', 'my brother'], what: ['⛸️', 'ice skates'], where: ['🧊', 'on the lake'], when: ['❄️', 'in winter'],
-      q: { who: ['Who goes ice skating?', 'My brother goes ice skating.'], what: ['What does he wear on his feet?', 'He wears ice skates.'], where: ['Where does he skate?', 'He skates on the frozen lake.'], when: ['When does he go skating?', 'He goes skating in winter.'] } }
+      q: { who: ['Who can skate?', 'My brother can skate.'], what: ['What does he wear?', 'He wears ice skates.'], where: ['Where does he skate?', 'On the lake.'], when: ['When does he skate?', 'In winter.'] } }
   ],
   pro: [
     { who: ['👩', 'my mom'], what: ['🍪', 'gingerbread cookies'], where: ['🏠', 'in our kitchen'], when: ['🌅', 'every Sunday morning'],
@@ -2804,6 +2804,8 @@ TALK_GAMES.qdet = ctx => {
   const scenes = QSCENES[talkLv(ctx)], kinds = ['who', 'what', 'where', 'when'];
   // six rounds: every question word comes up, hearing a question and reading an answer take turns
   const plan = [...shuffle(kinds), ...sample(kinds, 2)].map((k, n) => ({ k, sc: pickOne(scenes), find: n % 2 ? 'question' : 'answer' }));
+  // slower than the usual voice, so short words like in, on and at can be heard
+  const R = SRATE * .8;
   let i = 0, mistakes = 0;
   const box = talkShell(ctx, `<div class="qscene"></div><div class="tqq"></div><div class="topts"></div><div class="tshow"></div>`);
   const scene = box.querySelector('.qscene'), tq = box.querySelector('.tqq'), opts = box.querySelector('.topts'), show = box.querySelector('.tshow');
@@ -2816,16 +2818,16 @@ TALK_GAMES.qdet = ctx => {
     show.innerHTML = ''; tq.hidden = false;
     if (find === 'answer') {
       // hear the question, find the answer that fits its question word
-      showSent(tq, q); tq.insertAdjacentHTML('beforeend', `<p class="sub">${zy('聽問題，選出對的答案')}</p>`);
-      later(() => speak(q, SRATE), 300);
+      showSent(tq, q, '', R); tq.insertAdjacentHTML('beforeend', `<p class="sub">${zy('聽問題，選出對的答案')}</p>`);
+      later(() => speak(q, R), 300);
       talkOpts(opts, shuffle(kinds.map(x => sc[x])), o => o === sc[k],
-        () => { opts.innerHTML = ''; tq.hidden = true; showSent(show, a, sc[k][0]); i++; later(() => talkSay(ctx, `${q} ${a}`, round), 500); }, miss);
+        () => { opts.innerHTML = ''; tq.hidden = true; showSent(show, a, sc[k][0], R); i++; later(() => talkSay(ctx, `${q} ${a}`, round, R), 500); }, miss);
     } else {
       // read the answer, find which question it answers
-      showSent(tq, a); tq.insertAdjacentHTML('beforeend', `<p class="sub">${zy('這句話在回答哪一種問題？')}</p>`);
-      later(() => speak(a, SRATE), 300);
+      showSent(tq, a, '', R); tq.insertAdjacentHTML('beforeend', `<p class="sub">${zy('這句話在回答哪一種問題？')}</p>`);
+      later(() => speak(a, R), 300);
       talkOpts(opts, kinds.map(x => [QDET_WORDS[x][0], QDET_WORDS[x][1]]), o => o[1] === QDET_WORDS[k][1],
-        () => { opts.innerHTML = ''; tq.hidden = true; showSent(show, q, QDET_WORDS[k][0]); i++; later(() => talkSay(ctx, `${q} ${a}`, round), 500); }, miss);
+        () => { opts.innerHTML = ''; tq.hidden = true; showSent(show, q, QDET_WORDS[k][0], R); i++; later(() => talkSay(ctx, `${q} ${a}`, round, R), 500); }, miss);
       opts.querySelectorAll('.tob').forEach((b, n) => b.insertAdjacentHTML('beforeend', `<span class="qzh">${zy(QDET_WORDS[kinds[n]][2])}</span>`));
     }
   }
@@ -6253,7 +6255,7 @@ function recStop(cb) {
 // [times the room's own noise, lowest level that counts, highest level the bar may ask for]
 const SENS = { high: [1.5, .006, .025], mid: [2, .01, .04], low: [3, .02, .07] };
 
-function sayAlong(text, cb) {
+function sayAlong(text, cb, rate0 = SRATE) {
   const r = run; if (!r) return;
   const alive = () => r === run && r.alive;
   const ov = document.createElement('div'); ov.className = 'sayover';
@@ -6295,7 +6297,7 @@ function sayAlong(text, cb) {
       maybeTour('say2', 300);
     });
   };
-  const voice = (rate = SRATE) => {
+  const voice = (rate = rate0) => {
     talking = true; if (phase !== 'end') setStat('聽一聽…');
     speakThen(text, rate, ms => {
       talking = false;
@@ -6371,7 +6373,7 @@ function sayAlong(text, cb) {
     const b = e.target.closest('[data-a]'); if (!b) return;
     const a = b.dataset.a;
     if (a === 'again' && !talking) voice();
-    if (a === 'slow' && !talking) voice(SRATE * .75);
+    if (a === 'slow' && !talking) voice(rate0 * .75);
     if (a === 'go' && phase === 'ready' && !talking) startTurn();
     if (a === 'skip' && phase === 'listen') finishTurn();
     if (a === 'redo') restart();
@@ -6391,11 +6393,11 @@ function sFinishRound(ctx, q, wrong, sentence, next) {
   later(() => sayOrHear(ctx, sentence, next), 700);
 }
 // saying every sentence in a row tires a young child: every other one is only read aloud to listen to
-function sayOrHear(ctx, sentence, next) {
+function sayOrHear(ctx, sentence, next, rate = SRATE) {
   ctx.sayN = (ctx.sayN || 0) + 1;
-  if (ctx.sayN % 2) { sayAlong(sentence, next); return; }
+  if (ctx.sayN % 2) { sayAlong(sentence, next, rate); return; }
   toast('👂 聽一聽這句');
-  speakThen(sentence, SRATE, () => later(next, 700));
+  speakThen(sentence, rate, () => later(next, 700));
 }
 // gift box in a colour; size 'big' | 'small' | ''
 const giftHTML = (c, size = '') => `<span class="gift ${size}" style="--g:${COLOR[c]};--r:${c === 'yellow' || c === 'orange' ? '#e5484d' : '#ffc53d'}"></span>`;
