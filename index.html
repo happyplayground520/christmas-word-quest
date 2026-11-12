@@ -1408,6 +1408,11 @@ button.chip:active { background: var(--night-2); }
 .smallc { flex: none; display: flex; flex-direction: column; align-items: center; background: var(--gold-l); color: var(--ink); border-radius: 24px; padding: 8px 22px 12px; box-shadow: 0 7px 0 var(--gold-d); }
 .smallc .sc { font-family: var(--f-word); font-weight: 700; font-size: clamp(70px, 18cqh, 130px); line-height: 1.1; }
 .smallc small { font-size: clamp(30px, 6cqh, 46px); }
+.lpick { display: flex; gap: clamp(10px, 2.5vw, 22px); }
+.lpick .lp { border: none; width: clamp(80px, 18cqh, 130px); aspect-ratio: 1; border-radius: 24px; background: var(--snow); color: var(--ink); box-shadow: 0 7px 0 var(--frost-d);
+  font-family: var(--f-word); font-weight: 700; font-size: clamp(56px, 13cqh, 96px); line-height: 1; }
+.lpick .lp.right { background: #c9f5d9; box-shadow: 0 7px 0 #4bb37a; }
+.lpick .lp.wrong { animation: shake .4s; }
 .carrow { font-size: clamp(30px, 6cqh, 48px); color: var(--snow); }
 .gtag { position: relative; padding: 16px 20px 16px 60px; border-radius: 18px 60px 60px 18px; background: #fff7e0; box-shadow: 0 8px 0 #d9b56b; transition: transform 1s ease-in, opacity 1s; }
 .gtag .hole { position: absolute; left: 22px; top: 50%; width: 22px; height: 22px; margin-top: -11px; border-radius: 50%; background: var(--night); box-shadow: 0 0 0 4px #e5484d; }
@@ -1722,7 +1727,7 @@ const KIND = {
   final:   ['點亮聖誕樹', '答對一題，聖誕樹就多一個裝飾', '🎄'],
   tr1:     ['雪地描字', '從綠色的起點，跟著小雪花描字母', '🛷'],
   tr2:     ['點亮燈串', '每寫好一筆，燈串就亮一顆', '💡'],
-  tr3:     ['薑餅人糖霜', '用糖霜在餅乾上寫字母', '🍪'],
+  tr3:     ['大寫找小寫', '看大寫字母，找出或寫出它的小寫', '🔠'],
   trBoss:  ['寫信給聖誕老人', '把單字寫在信上，寄給聖誕老人', '💌'],
   tr5:     ['冰上溜冰', '小企鵝會跟著你的手指，描出大寫字母', '⛸️'],
   tr6:     ['煙火字母', '寫好一個大寫字母，就會放煙火', '🎆'],
@@ -7979,7 +7984,7 @@ function traceBoard(host, text, cb = {}) {
     if (!alive || k >= all.length) return;
     e.preventDefault();
     const pts = target(), at = toSvg(e);
-    if (near(at, pts[0]) > 48) { gCur.querySelector('.tstart')?.classList.remove('wiggle'); void svg.offsetWidth; gCur.querySelector('.tstart')?.classList.add('wiggle'); tone(300, 0, .08, 'triangle', .05); return; }
+    if (near(at, pts[0]) > 48) { gCur.querySelector('.tstart')?.classList.remove('wiggle'); void svg.offsetWidth; gCur.querySelector('.tstart')?.classList.add('wiggle'); return; }
     if (pts.length === 1) { finishStroke(); return; }   // a dot: one tap
     drawing = { pts, idx: 0, ink: [at], off: false };
     ink.setAttribute('points', `${at[0]},${at[1]}`);
@@ -8004,7 +8009,7 @@ function traceBoard(host, text, cb = {}) {
     const reach = Math.max(18, Math.min(46, d.pts.length * 8 * .22));
     if (!d.off && d.idx >= d.pts.length - 2 && near(d.ink[d.ink.length - 1], d.pts[d.pts.length - 1]) < reach) finishStroke();
     else {
-      misses++; ink.classList.add('miss'); sfx.no();
+      misses++; ink.classList.add('miss');
       setTimeout(() => { ink.setAttribute('points', ''); ink.classList.remove('miss'); }, 350);
       cb.onMiss && cb.onMiss(all[k].L.ch);
     }
@@ -8039,7 +8044,7 @@ function traceLetters(ctx, letters, opt) {
     later(() => speakSeq([[ch, false, .7], [ch + ' is for ' + word, false, .75]]), 300);
     const b = traceBoard(opt.host, ch, {
       onMove: opt.onMove, onStroke: opt.onStroke, hint: opt.hint,
-      onMiss: () => { mistakes++; cheer(); },
+      onMiss: () => { mistakes++; },
       onDone: m => {
         record('✎trace:' + ch, m > 0); sfx.ok(); hideCheer();
         opt.onLetter && opt.onLetter(ch, word, e);
@@ -8052,13 +8057,16 @@ function traceLetters(ctx, letters, opt) {
   next();
 }
 
+// small letters that are easy to mix up with each one
+const LOOKALIKE = { a: 'oe', b: 'dp', c: 'oe', d: 'bq', e: 'ca', f: 'tj', g: 'qy', h: 'nk', i: 'lj', j: 'ig', k: 'hx', l: 'it', m: 'nw',
+  n: 'mh', o: 'ac', p: 'qb', q: 'pd', r: 'nv', s: 'zc', t: 'lf', u: 'nv', v: 'uw', w: 'vm', x: 'kz', y: 'gv', z: 'sx' };
 const TGAMES = {
   // the sled slides along the snow wherever the finger goes
   tr1(ctx) {
     ctx.stage.innerHTML = `<div class="trg snowy"><div class="tpic"></div><div class="tbox"><span class="sled">🛷</span></div></div>`;
     const box = ctx.stage.querySelector('.tbox'), sled = box.querySelector('.sled'), pic = ctx.stage.querySelector('.tpic');
     const holder = document.createElement('div'); holder.className = 'thost'; box.prepend(holder);
-    traceLetters(ctx, pickLetters('round', 5), {
+    traceLetters(ctx, pickLetters('round', 4), {
       host: holder,
       onMove: (at, svg) => { const r = svg.getBoundingClientRect(), b = box.getBoundingClientRect(), vb = svg.viewBox.baseVal;
         sled.style.left = (r.left - b.left + at[0] / vb.width * r.width) + 'px'; sled.style.top = (r.top - b.top + at[1] / vb.height * r.height) + 'px'; sled.classList.add('on'); },
@@ -8068,7 +8076,7 @@ const TGAMES = {
   },
   // every stroke lights the next bulb on the string
   tr2(ctx) {
-    const letters = pickLetters('straight', 5), total = sum(letters.map(c => GLYPH[c].length));
+    const letters = pickLetters('straight', 4), total = sum(letters.map(c => GLYPH[c].length));
     ctx.stage.innerHTML = `<div class="trg"><div class="bulbs">${Array.from({ length: total }, (_, k) => `<i style="--c:${BULB_COLS[k % BULB_COLS.length]}"></i>`).join('')}</div><div class="thost"></div><div class="tpic"></div></div>`;
     const bulbs = [...ctx.stage.querySelectorAll('.bulbs i')], pic = ctx.stage.querySelector('.tpic');
     let lit = 0;
@@ -8079,15 +8087,37 @@ const TGAMES = {
       onAll: m => { ctx.stage.querySelector('.bulbs').classList.add('party'); sfx.win(); later(() => speak('The lights are on!', 0.9), 200); later(() => ctx.done(m), 2000); }
     });
   },
-  // icing on a big gingerbread cookie; each letter adds a dancing gingerbread friend
+  // the capital is shown; choosing its small letter among look-alikes and writing it take turns, so there is less writing
   tr3(ctx) {
-    ctx.stage.innerHTML = `<div class="trg"><div class="cookie"><div class="thost"></div></div><div class="gmen"></div></div>`;
-    const men = ctx.stage.querySelector('.gmen');
-    traceLetters(ctx, pickLetters('humps', 5), {
-      host: ctx.stage.querySelector('.thost'),
-      onLetter: (ch, word, e) => { men.insertAdjacentHTML('beforeend', `<span class="gman"><b>${ch}</b></span>`); },
-      onAll: m => { men.classList.add('dance'); sfx.win(); later(() => speak('Yummy! Great job!', 0.9), 200); later(() => ctx.done(m), 2200); }
-    });
+    ctx.stage.innerHTML = `<div class="trg"><div class="caserow"><div class="smallc"><span class="sc"></span><small></small></div><span class="carrow">➜</span><div class="thost"></div></div><div class="gmen"></div></div>`;
+    const sc = ctx.stage.querySelector('.sc'), sw2 = ctx.stage.querySelector('.smallc small'), host = ctx.stage.querySelector('.thost'), men = ctx.stage.querySelector('.gmen');
+    const letters = pickLetters('humps', 4); let i = 0, mistakes = 0;
+    const got = ch => {
+      men.insertAdjacentHTML('beforeend', `<span class="gman"><b>${ch}</b></span>`); sfx.ok(); hideCheer();
+      later(() => speakSeq([[`Big ${ch.toUpperCase()}`, false, .75], [`small ${ch}`, false, .75]]), 200);
+      i++; later(next, 2200);
+    };
+    function next() {
+      setDots(letters.length, i);
+      if (i >= letters.length) { men.classList.add('dance'); sfx.win(); later(() => speak('Big and small, you know them all!', 0.9), 200); later(() => ctx.done(mistakes), 2200); return; }
+      const ch = letters[i], up = ch.toUpperCase();
+      sc.textContent = up; sw2.textContent = LETTER_WORD[ch][1];
+      if (i % 2 === 0) {
+        const opts = shuffle([ch, ...LOOKALIKE[ch]]); let wrong = false;
+        host.innerHTML = `<div class="lpick">${opts.map(c => `<button class="lp" data-c="${c}">${c}</button>`).join('')}</div>`;
+        later(() => speak(`Big ${up}. Find the small ${ch}.`, .75), 300);
+        host.querySelectorAll('.lp').forEach(b => b.onclick = () => {
+          if (b.disabled) return;
+          if (b.dataset.c === ch) { host.querySelectorAll('.lp').forEach(x => { x.disabled = true; }); b.classList.add('right'); got(ch); return; }
+          if (!wrong) mistakes++; wrong = true; sfx.no();
+          b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); speak(b.dataset.c, .7);
+        });
+      } else {
+        later(() => speak(`Big ${up}. Write a small ${ch}.`, .75), 300);
+        traceBoard(host, ch, { onMiss: () => { mistakes++; }, onDone: m => { record('✎trace:' + ch, m > 0); got(ch); } });
+      }
+    }
+    next();
   },
 
   // ---- intermediate: capital letters and longer words ----
@@ -8151,7 +8181,7 @@ const TGAMES = {
       const w = words[i];
       later(() => speak(w, .7), 300);
       traceBoard(host, w, {
-        onMiss: () => { mistakes++; cheer(); },
+        onMiss: () => { mistakes++; },
         onDone: m => {
           record('✎trace:' + w, m > 0); sfx.ok(); hideCheer();
           gifts.insertAdjacentHTML('beforeend', `<span class="gft">🎁<small>${EMO[w]} ${esc(w)}</small></span>`);
@@ -8179,7 +8209,7 @@ const TGAMES = {
       pic.innerHTML = `<span class="tpe">${EMO[w]}</span>`;
       later(() => speak(w, .7), 300);
       traceBoard(host, w, {
-        onMiss: () => { mistakes++; cheer(); },
+        onMiss: () => { mistakes++; },
         onDone: m => {
           record('✎trace:' + w, m > 0); sfx.ok(); hideCheer();
           line.insertAdjacentHTML('beforeend', `<span>${EMO[w]} ${esc(w)}</span>`);
