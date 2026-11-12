@@ -6194,6 +6194,8 @@ function utter(text, zh, rate) {
   u.lang = zh ? 'zh-TW' : 'en-US';
   const v = zh ? voiceZh : voiceEn; if (v) u.voice = v;
   u.rate = rate || (zh ? .95 : SRATE); u.pitch = zh ? 1.15 : 1.1;
+  // short place and time words (in, on, at, under) get lost at the usual speed: such sentences are read slower
+  if (!zh && /\b(in|on|at|under)\b/i.test(text)) u.rate = Math.min(u.rate, SRATE * .8);
   return u;
 }
 // say it, then cb(ms the voice took)
