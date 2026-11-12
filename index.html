@@ -1731,7 +1731,7 @@ const KIND = {
   trBoss:  ['寫信給聖誕老人', '把單字寫在信上，寄給聖誕老人', '💌'],
   tr5:     ['冰上溜冰', '小企鵝會跟著你的手指，描出大寫字母', '⛸️'],
   tr6:     ['煙火字母', '寫好一個大寫字母，就會放煙火', '🎆'],
-  tr7:     ['大小寫配對', '看小寫字母，寫出它的大寫', '🔠'],
+  tr7:     ['大小寫配對', '看小寫字母，找出或寫出它的大寫', '🔠'],
   trBoss2: ['禮物標籤', '把單字寫在禮物標籤上，禮物就會送到樹下', '🏷️']
 };
 const ADV_TOPIC = ['aan', 'isare', 'thisthat', 'heshe', 'prep'];
@@ -8060,6 +8060,8 @@ function traceLetters(ctx, letters, opt) {
 // small letters that are easy to mix up with each one
 const LOOKALIKE = { a: 'oe', b: 'dp', c: 'oe', d: 'bq', e: 'ca', f: 'tj', g: 'qy', h: 'nk', i: 'lj', j: 'ig', k: 'hx', l: 'it', m: 'nw',
   n: 'mh', o: 'ac', p: 'qb', q: 'pd', r: 'nv', s: 'zc', t: 'lf', u: 'nv', v: 'uw', w: 'vm', x: 'kz', y: 'gv', z: 'sx' };
+// capital letters that are easy to mix up with each one
+const CAP_LOOKALIKE = { O: 'QC', C: 'GO', G: 'CO', Q: 'OG', S: 'ZC', U: 'VJ', J: 'UL', D: 'OB', P: 'RB', B: 'PD', R: 'PB' };
 const TGAMES = {
   // the sled slides along the snow wherever the finger goes
   tr1(ctx) {
@@ -8126,7 +8128,7 @@ const TGAMES = {
     ctx.stage.innerHTML = `<div class="trg icy"><div class="tpic"></div><div class="tbox"><span class="sled">🐧</span></div></div>`;
     const box = ctx.stage.querySelector('.tbox'), pen = box.querySelector('.sled'), pic = ctx.stage.querySelector('.tpic');
     const holder = document.createElement('div'); holder.className = 'thost'; box.prepend(holder);
-    traceLetters(ctx, pickLetters('capLine', 5), {
+    traceLetters(ctx, pickLetters('capLine', 4), {
       host: holder,
       onMove: (at, svg) => { const r = svg.getBoundingClientRect(), b = box.getBoundingClientRect(), vb = svg.viewBox.baseVal;
         pen.style.left = (r.left - b.left + at[0] / vb.width * r.width) + 'px'; pen.style.top = (r.top - b.top + at[1] / vb.height * r.height) + 'px'; pen.classList.add('on'); },
@@ -8148,25 +8150,46 @@ const TGAMES = {
       [0, 180, 360].forEach(t => setTimeout(() => tone(500 + Math.random() * 600, 0, .25, 'triangle', .06), t));
       setTimeout(() => { fw.innerHTML = ''; }, 1600);
     };
-    traceLetters(ctx, pickLetters('capSlant', 5), {
+    traceLetters(ctx, pickLetters('capSlant', 4), {
       host: ctx.stage.querySelector('.thost'),
       onLetter: (ch, word, e) => { burst(); pic.innerHTML = `<span class="tpe">${e}</span><b>${esc(word)}</b>`; },
       onAll: m => { burst(); sfx.win(); later(() => speak('Happy New Year! Great writing!', 0.9), 200); later(() => ctx.done(m), 1900); }
     });
   },
-  // the small letter is shown; the child writes its capital with only the start to help
+  // the small letter is shown; choosing its capital among look-alikes and writing it (only the start to help) take turns
   tr7(ctx) {
     ctx.stage.innerHTML = `<div class="trg"><div class="caserow"><div class="smallc"><span class="sc"></span><small></small></div><span class="carrow">➜</span><div class="thost"></div></div>
-      <button class="btn alt hintb">${zy('💡 看提示')}</button></div>`;
-    const sc = ctx.stage.querySelector('.sc'), sw2 = ctx.stage.querySelector('.smallc small'), hintB = ctx.stage.querySelector('.hintb');
-    let board = null;
+      <button class="btn alt hintb" hidden>${zy('💡 看提示')}</button></div>`;
+    const sc = ctx.stage.querySelector('.sc'), sw2 = ctx.stage.querySelector('.smallc small'), host = ctx.stage.querySelector('.thost'), hintB = ctx.stage.querySelector('.hintb');
+    const letters = pickLetters('capRound', 4); let i = 0, mistakes = 0, board = null;
     hintB.onclick = () => { if (board) { board.showGuide(); hintB.hidden = true; } };
-    traceLetters(ctx, pickLetters('capRound', 5), {
-      host: ctx.stage.querySelector('.thost'), hint: 'start',
-      onBoard: (b, ch) => { board = b; hintB.hidden = false; sc.textContent = ch.toLowerCase(); sw2.textContent = LETTER_WORD[ch.toLowerCase()][1]; later(() => speak(`Small ${ch.toLowerCase()}. Write a big ${ch}.`, .75), 1300); },
-      onMiss: () => {},
-      onAll: m => { sfx.win(); later(() => speak('Big and small, you know them all!', 0.9), 200); later(() => ctx.done(m), 1500); }
-    });
+    const got = ch => {
+      hintB.hidden = true; sfx.ok(); hideCheer();
+      later(() => speakSeq([[`small ${ch.toLowerCase()}`, false, .75], [`Big ${ch}`, false, .75]]), 200);
+      i++; later(next, 2200);
+    };
+    function next() {
+      setDots(letters.length, i);
+      if (i >= letters.length) { sfx.win(); later(() => speak('Big and small, you know them all!', 0.9), 200); later(() => ctx.done(mistakes), 1500); return; }
+      const ch = letters[i], lo = ch.toLowerCase();
+      sc.textContent = lo; sw2.textContent = LETTER_WORD[lo][1]; board = null;
+      if (i % 2 === 0) {
+        const opts = shuffle([ch, ...CAP_LOOKALIKE[ch]]); let wrong = false;
+        host.innerHTML = `<div class="lpick">${opts.map(c => `<button class="lp" data-c="${c}">${c}</button>`).join('')}</div>`;
+        later(() => speak(`Small ${lo}. Find the big ${ch}.`, .75), 300);
+        host.querySelectorAll('.lp').forEach(b => b.onclick = () => {
+          if (b.disabled) return;
+          if (b.dataset.c === ch) { host.querySelectorAll('.lp').forEach(x => { x.disabled = true; }); b.classList.add('right'); got(ch); return; }
+          if (!wrong) mistakes++; wrong = true; sfx.no();
+          b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); speak(b.dataset.c, .7);
+        });
+      } else {
+        later(() => speak(`Small ${lo}. Write a big ${ch}.`, .75), 300);
+        board = traceBoard(host, ch, { hint: 'start', onMiss: () => { mistakes++; }, onDone: m => { record('✎trace:' + ch, m > 0); got(ch); } });
+        hintB.hidden = false;
+      }
+    }
+    next();
   },
   // boss: write words on gift tags; each tag puts a present under the tree
   trBoss2(ctx) {
