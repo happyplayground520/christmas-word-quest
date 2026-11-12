@@ -489,6 +489,8 @@ button.chip:active { background: var(--night-2); }
   box-shadow: 0 7px 0 var(--frost-d); text-align: center; max-width: 100%;
 }
 /* ---------- speaking side quests ---------- */
+.qscene { display: flex; gap: 14px; font-size: clamp(30px, 7cqh, 48px); line-height: 1; padding: 4px 16px; border-radius: 999px; background: rgba(245,248,255,.14); }
+.tob .qzh { font-size: 14px; color: var(--ink-2); }
 .talkq .tmic { position: absolute; left: -8px; top: -8px; font-size: .45em; background: var(--berry); border-radius: 50%; padding: 4px; line-height: 1; }
 .talkg { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; overflow: auto; padding: 8px; }
 .talkg .tsent { font-size: clamp(20px, 5.4cqh, 40px); padding: 6px 20px 10px; }
@@ -2170,6 +2172,16 @@ function makeMissions(p) {
     list.push({ key: 'challenge', goal: 1, chal: 1, ver: c.ver, id: c.id, text: `去「${VERSIONS[c.ver].name}」${c.id} 打敗回來的${chalMon(c).name}！` });
     used.add(groupOf(realKind(STAGES.find(x => x.id === c.id), c.ver)));
   }
+  const qc = [];
+  Object.keys(VERSIONS).filter(v => p.levels[v]).forEach(ver => {
+    if ((p.levels[ver].stars['2-3'] || 0) > 0) qc.push({ key: `side:${ver}:${QDET.id}`, goal: 1, ver, side: QDET.id, icon: QDET.icon, text: `玩「${VERSIONS[ver].name}」${QDET.name}` });
+  });
+  if (secretOn(p)) {
+    const ss = (p.levels.secret || { stars: {} }).stars;
+    SSTAGES.filter(st => st.a === 1 && (st.k === 0 || (ss[`s2-${st.k}`] || 0) > 0))
+      .forEach(st => qc.push({ key: `s:secret:${st.id}`, goal: 1, sec: 1, id: st.id, icon: st.icon, text: `去「祕密任務」玩「${st.name}」` }));
+  }
+  if (qc.length && list.length < 3) list.push(pickOne(qc));
   const cands = shuffle(Object.keys(VERSIONS).filter(v => p.levels[v]).flatMap(ver =>
     STAGES.filter(st => stageOpenIn(ver, st, p) && !(c && !c.done && c.ver === ver && c.id === st.id)).map(st => ({ ver, st, kind: realKind(st, ver) }))));
   for (const x of cands) {
@@ -2187,8 +2199,10 @@ function makeMissions(p) {
 function dailyState() {
   const p = P(), t = todayStr();
   if (p.daily.date !== t) p.daily = { date: t, correct: 0, played: 0, three: 0 };
+  // a list made before the question missions existed is made again, unless a mission on it is already done
+  if (p.daily.list && !p.daily.qv && !p.daily.got.some(Boolean)) delete p.daily.list;
   if (!p.daily.list) {
-    p.daily.list = makeMissions(p); p.daily.got = p.daily.list.map(() => 0);
+    p.daily.list = makeMissions(p); p.daily.got = p.daily.list.map(() => 0); p.daily.qv = 1;
     // today's single mission from before was already paid
     if (p.daily.done) p.daily.got[0] = 1;
   }
@@ -2459,6 +2473,8 @@ $('#missionBox').onclick = e => {
   const b = e.target.closest('.mrow'); if (!b) return;
   const d = dailyState(), k = +b.dataset.k, m = d.list[k]; if (!m || d.got[k]) return;
   if (m.chal) { goChallenge(); return; }
+  if (m.sec) { version = 'secret'; curWorld = SSTAGES.find(st => st.id === m.id).a; show('map'); return; }
+  if (m.side) { version = m.ver; curWorld = QDET.w; show('map'); return; }
   if (m.ver) { version = m.ver; curWorld = STAGES.find(st => st.id === m.id).w; show('map'); }
 };
 $('#cabinBtn').onclick = () => show('cabin');
@@ -2515,11 +2531,19 @@ function renderMap() {
       <span class="orb"><span class="ico">${td.icon}</span><span class="tmic">🎤</span></span><span class="name">${zy(td.name)}</span>
       ${o ? '' : `<span class="cond">${zy(`過了 ${td.after} 就會打開`)}</span>`}</button>`;
   })();
+  const qd = curWorld === QDET.w ? QDET : null, qp = QDET_POS[pos === NODE_POS.tall ? 'tall' : 'wide'], [qx, qy] = pts[2];
+  const qnode = !qd ? '' : (() => {
+    const o = sideOpen(qd), dn = (l.sides[qd.id] || 0) > 0;
+    return `<button class="station sidequest talkq ${o ? (dn ? 'done' : 'next') : 'locked'}" data-qdet="1" style="--x:${qp[0]}%;--y:${qp[1]}%" aria-label="${qd.name}">
+      <span class="orb"><span class="ico">${qd.icon}</span><span class="tmic">❓</span></span><span class="name">${zy(qd.name)}</span>
+      ${o ? '' : `<span class="cond">${zy(`過了 ${qd.after} 就會打開`)}</span>`}</button>`;
+  })();
   $('#mapBox').innerHTML = `<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
       ${segs}
+      ${qd ? `<path class="branch" d="M${qx} ${qy} Q${(qx + qp[0]) / 2} ${(qy + qp[1]) / 2 + 6} ${qp[0]} ${qp[1]}" vector-effect="non-scaling-stroke"/>` : ''}
       ${td ? `<path class="branch" d="M${ax} ${ay} Q${(ax + tp[0]) / 2} ${(ay + tp[1]) / 2 - 6} ${tp[0]} ${tp[1]}" vector-effect="non-scaling-stroke"/>` : ''}
       ${sd ? `<path class="branch" d="M${bx} ${by} Q${(bx + pos.side[0]) / 2 + 8} ${(by + pos.side[1]) / 2} ${pos.side[0]} ${pos.side[1]}" vector-effect="non-scaling-stroke"/>` : ''}
-    </svg>${nodes}${side}${talk}<span class="mbuddy" aria-hidden="true">${curBuddySVG()}</span>`;
+    </svg>${nodes}${side}${talk}${qnode}<span class="mbuddy" aria-hidden="true">${curBuddySVG()}</span>`;
   // the child's elf stands on the stage to play next
   const hereK = next && next.w === curWorld ? next.k : -1;
   if (hereK >= 0) $('#mapBox').insertAdjacentHTML('beforeend', `<span class="elfmark" style="--x:${pts[hereK][0]}%;--y:${pts[hereK][1]}%" aria-hidden="true"><span class="flag">${zy('在這裡！')}</span><span class="elf">${me}</span></span>`);
@@ -2543,13 +2567,15 @@ $('#mapBox').addEventListener('click', e => {
   const b = e.target.closest('.station'); if (!b) return;
   if (b.classList.contains('locked')) {
     sfx.no();
-    if (b.dataset.talk) toast(`先過 ${talkOf(+b.dataset.talk).after} 才能打開`);
+    if (b.dataset.qdet) toast(`先過 ${QDET.after} 才能打開`);
+    else if (b.dataset.talk) toast(`先過 ${talkOf(+b.dataset.talk).after} 才能打開`);
     else if (b.dataset.side) { const sd = SIDES.find(x => x.id === b.dataset.side); toast(sd.stars ? `過了 ${sd.after}、收集 ⭐ ${sd.stars} 顆就能打開` : `先打破 ${sd.after} 的冰門才能打開`); }
     else toast('先過前面一關才能打開');
     return;
   }
   if (b.dataset.sstage) startSecret(SSTAGES.find(s => s.id === b.dataset.sstage));
   else if (b.dataset.stage) startStage(STAGES.find(s => s.id === b.dataset.stage));
+  else if (b.dataset.qdet) startSide(QDET);
   else if (b.dataset.talk) startSide(talkOf(+b.dataset.talk));
   else startSide(SIDES.find(s => s.id === b.dataset.side));
 });
@@ -2724,6 +2750,82 @@ function talkOpts(host, opts, isRight, onRight, onWrong) {
 // each sentence goes on the result screen, to hear again
 const talkSay = (ctx, s, next) => { ctx.learned.add(s); sayOrHear(ctx, s, next); };
 const TALK_GAMES = {};
+// question review side quest: hear a question and pick the answer, or read an answer and pick its question word
+const QDET = { id: 'qdet', w: 1, after: '2-3', talk: 'qdet', name: '問句小偵探', icon: '🔍', hint: '聽問句找答案，看答案找問句' };
+const QDET_POS = { wide: [34, 86], tall: [14, 66] };
+const QDET_WORDS = { who: ['👤', 'Who', '誰'], what: ['🎁', 'What', '什麼'], where: ['📍', 'Where', '哪裡'], when: ['⏰', 'When', '什麼時候'] };
+// each little scene answers all four questions: [short answer] and [question, full answer]
+const QSCENES = {
+  basic: [
+    { who: ['👩', 'Mom'], what: ['🍪', 'cookies'], where: ['🏠', 'in the kitchen'], when: ['🌅', 'in the morning'],
+      q: { who: ['Who makes cookies?', 'Mom makes cookies.'], what: ['What does Mom make?', 'She makes cookies.'], where: ['Where is Mom?', 'She is in the kitchen.'], when: ['When does Mom make cookies?', 'In the morning.'] } },
+    { who: ['🎅', 'Santa'], what: ['🎁', 'gifts'], where: ['🏘️', 'on the roof'], when: ['🌙', 'at night'],
+      q: { who: ['Who is on the roof?', 'Santa is on the roof.'], what: ['What does Santa have?', 'He has gifts.'], where: ['Where is Santa?', 'He is on the roof.'], when: ['When does Santa come?', 'At night.'] } },
+    { who: ['👧', 'my sister'], what: ['🎈', 'a balloon'], where: ['🌳', 'at the park'], when: ['☀️', 'in the afternoon'],
+      q: { who: ['Who has a balloon?', 'My sister has a balloon.'], what: ['What does she have?', 'She has a balloon.'], where: ['Where is she?', 'She is at the park.'], when: ['When does she go to the park?', 'In the afternoon.'] } },
+    { who: ['👨', 'Dad'], what: ['🚗', 'a car'], where: ['🏫', 'at school'], when: ['🌅', 'in the morning'],
+      q: { who: ['Who drives a car?', 'Dad drives a car.'], what: ['What does Dad drive?', 'He drives a car.'], where: ['Where is Dad?', 'He is at school.'], when: ['When does Dad go to school?', 'In the morning.'] } },
+    { who: ['👵', 'Grandma'], what: ['🧣', 'a scarf'], where: ['🛋️', 'on the sofa'], when: ['🌙', 'at night'],
+      q: { who: ['Who has a scarf?', 'Grandma has a scarf.'], what: ['What does Grandma have?', 'She has a scarf.'], where: ['Where is Grandma?', 'She is on the sofa.'], when: ['When is Grandma on the sofa?', 'At night.'] } },
+    { who: ['👦', 'my brother'], what: ['⛄', 'a snowman'], where: ['🏡', 'in the yard'], when: ['❄️', 'in winter'],
+      q: { who: ['Who makes a snowman?', 'My brother makes a snowman.'], what: ['What does he make?', 'He makes a snowman.'], where: ['Where is he?', 'He is in the yard.'], when: ['When does he make a snowman?', 'In winter.'] } }
+  ],
+  adv: [
+    { who: ['👩', 'Mom'], what: ['🍪', 'Christmas cookies'], where: ['🏠', 'in the kitchen'], when: ['🌅', 'on Saturday morning'],
+      q: { who: ['Who is baking cookies?', 'Mom is baking cookies.'], what: ['What is Mom baking?', 'She is baking Christmas cookies.'], where: ['Where is Mom baking cookies?', 'She is baking them in the kitchen.'], when: ['When does Mom bake cookies?', 'She bakes them on Saturday morning.'] } },
+    { who: ['🎅', 'Santa'], what: ['🎁', 'presents'], where: ['🎄', 'under the tree'], when: ['🌙', 'on Christmas Eve'],
+      q: { who: ['Who puts presents under the tree?', 'Santa puts them under the tree.'], what: ['What does Santa bring?', 'He brings presents for the children.'], where: ['Where does Santa put the presents?', 'He puts them under the tree.'], when: ['When does Santa come?', 'He comes on Christmas Eve.'] } },
+    { who: ['👧', 'my sister'], what: ['🎹', 'the piano'], where: ['🏫', 'at school'], when: ['🕓', "at four o'clock"],
+      q: { who: ['Who plays the piano?', 'My sister plays the piano.'], what: ['What does your sister play?', 'She plays the piano.'], where: ['Where does she play the piano?', 'She plays it at school.'], when: ['When does she play the piano?', "She plays it at four o'clock."] } },
+    { who: ['👴', 'Grandpa'], what: ['📖', 'a storybook'], where: ['🛋️', 'on the sofa'], when: ['🌙', 'at bedtime'],
+      q: { who: ['Who reads a storybook?', 'Grandpa reads a storybook.'], what: ['What does Grandpa read?', 'He reads a storybook.'], where: ['Where does Grandpa read?', 'He reads on the sofa.'], when: ['When does Grandpa read to you?', 'He reads to me at bedtime.'] } },
+    { who: ['👦', 'my brother'], what: ['⛸️', 'ice skates'], where: ['🧊', 'on the lake'], when: ['❄️', 'in winter'],
+      q: { who: ['Who goes ice skating?', 'My brother goes ice skating.'], what: ['What does he wear on his feet?', 'He wears ice skates.'], where: ['Where does he skate?', 'He skates on the frozen lake.'], when: ['When does he go skating?', 'He goes skating in winter.'] } }
+  ],
+  pro: [
+    { who: ['👩', 'my mom'], what: ['🍪', 'gingerbread cookies'], where: ['🏠', 'in our kitchen'], when: ['🌅', 'every Sunday morning'],
+      q: { who: ['Who bakes cookies for your family?', 'My mom bakes cookies for the whole family.'], what: ['What does your mom bake?', 'She bakes gingerbread cookies with my sister.'], where: ['Where does she bake them?', 'She bakes them in our warm kitchen.'], when: ['When does she bake them?', 'She bakes them every Sunday morning before lunch.'] } },
+    { who: ['🎅', 'Santa'], what: ['🎁', 'presents'], where: ['🏠', 'down the chimney'], when: ['🌙', 'at midnight'],
+      q: { who: ['Who comes down the chimney?', 'Santa comes down the chimney with a big bag.'], what: ['What does Santa leave for the children?', 'He leaves presents and a little note.'], where: ['Where does Santa come into the house?', 'He comes in down the chimney.'], when: ['When does Santa visit the houses?', 'He visits them at midnight on Christmas Eve.'] } },
+    { who: ['👨', 'my dad'], what: ['⛄', 'a snowman'], where: ['🏡', 'in the front yard'], when: ['❄️', 'after the first snow'],
+      q: { who: ['Who helped you build the snowman?', 'My dad helped me build a big snowman.'], what: ['What did you build?', 'We built a snowman with a carrot nose.'], where: ['Where did you build it?', 'We built it in the front yard.'], when: ['When did you build it?', 'We built it after the first snow of the year.'] } },
+    { who: ['👵', 'my grandma'], what: ['🧣', 'a red scarf'], where: ['🔥', 'by the fireplace'], when: ['🌙', 'every evening'],
+      q: { who: ['Who is knitting a scarf?', 'My grandma is knitting a scarf for me.'], what: ['What is she knitting?', 'She is knitting a long red scarf.'], where: ['Where does she sit when she knits?', 'She sits by the fireplace.'], when: ['When does she knit?', 'She knits every evening after dinner.'] } },
+    { who: ['👧', 'my best friend'], what: ['💌', 'a Christmas card'], where: ['🏫', 'at school'], when: ['📅', 'last Friday'],
+      q: { who: ['Who gave you a card?', 'My best friend gave me a Christmas card.'], what: ['What did she give you?', 'She gave me a Christmas card with a star.'], where: ['Where did she give it to you?', 'She gave it to me at school.'], when: ['When did she give it to you?', 'She gave it to me last Friday.'] } }
+  ]
+};
+TALK_GAMES.qdet = ctx => {
+  const scenes = QSCENES[talkLv(ctx)], kinds = ['who', 'what', 'where', 'when'];
+  // six rounds: every question word comes up, hearing a question and reading an answer take turns
+  const plan = [...shuffle(kinds), ...sample(kinds, 2)].map((k, n) => ({ k, sc: pickOne(scenes), find: n % 2 ? 'question' : 'answer' }));
+  let i = 0, mistakes = 0;
+  const box = talkShell(ctx, `<div class="qscene"></div><div class="tqq"></div><div class="topts"></div><div class="tshow"></div>`);
+  const scene = box.querySelector('.qscene'), tq = box.querySelector('.tqq'), opts = box.querySelector('.topts'), show = box.querySelector('.tshow');
+  function round() {
+    setDots(plan.length, i);
+    if (i >= plan.length) { sfx.win(); speak('Great detective work!', .9); later(() => ctx.done(mistakes), 1600); return; }
+    const { k, sc, find } = plan[i], [q, a] = sc.q[k]; let wrong = false;
+    const miss = () => { if (!wrong) mistakes++; wrong = true; };
+    scene.innerHTML = kinds.map(x => `<span>${sc[x][0]}</span>`).join('');
+    show.innerHTML = ''; tq.hidden = false;
+    if (find === 'answer') {
+      // hear the question, find the answer that fits its question word
+      showSent(tq, q); tq.insertAdjacentHTML('beforeend', `<p class="sub">${zy('聽問題，選出對的答案')}</p>`);
+      later(() => speak(q, SRATE), 300);
+      talkOpts(opts, shuffle(kinds.map(x => sc[x])), o => o === sc[k],
+        () => { opts.innerHTML = ''; tq.hidden = true; showSent(show, a, sc[k][0]); i++; later(() => talkSay(ctx, `${q} ${a}`, round), 500); }, miss);
+    } else {
+      // read the answer, find which question it answers
+      showSent(tq, a); tq.insertAdjacentHTML('beforeend', `<p class="sub">${zy('這句話在回答哪一種問題？')}</p>`);
+      later(() => speak(a, SRATE), 300);
+      talkOpts(opts, kinds.map(x => [QDET_WORDS[x][0], QDET_WORDS[x][1]]), o => o[1] === QDET_WORDS[k][1],
+        () => { opts.innerHTML = ''; tq.hidden = true; showSent(show, q, QDET_WORDS[k][0]); i++; later(() => talkSay(ctx, `${q} ${a}`, round), 500); }, miss);
+      opts.querySelectorAll('.tob').forEach((b, n) => b.insertAdjacentHTML('beforeend', `<span class="qzh">${zy(QDET_WORDS[kinds[n]][2])}</span>`));
+    }
+  }
+  round();
+};
 TALK_GAMES.gift = ctx => {
   const items = sample(TALK.gift[talkLv(ctx)], 5); let i = 0, busy = false;
   const box = talkShell(ctx, `<button class="tgift" aria-label="打開禮物">🎁</button><div class="tshow"></div>`);
@@ -2851,7 +2953,7 @@ function finish(mistakes, learned) {
     if (!prev) { bells += 2; why.push('第一次完成支線'); }
     else if (replayOk()) { bells++; why.push('今天的重玩獎勵'); }
     l.sides[cur.def.id] = prev + 1;
-    daily('played');
+    daily('played'); daily(`side:${version}:${cur.def.id}`);
   }
   p.bells += bells; save();
   if (chestState().ready) why.push('星星寶箱可以打開了');
@@ -2864,13 +2966,14 @@ function finish(mistakes, learned) {
   let sub = '這一關學到的單字，點一下再聽一次：';
   if (cur.type === 'stage' && isGate(cur.def)) sub = `冰門打破了！「${WORLDS[cur.def.w + 1].name}」打開了！`;
   if (cur.type === 'stage' && cur.def.kind === 'final') sub = '聖誕樹亮起來了！禮物全部找回來了 🎅';
+  if (cur.type === 'side' && cur.def.talk) sub = '這一關說過的句子，點一下再聽一次：';
   if (cur.type === 'secret') sub = cur.def.boss ? '🎉 這一區的最後一關過了！說過的句子，點一下再聽一次：' : '這一關說過的句子，點一下再聽一次：';
   $('#rSub').innerHTML = zy(sub);
   $('#rBells').innerHTML = bells ? zy(`🔔 +${bells}（${why.join('、')}）`) : zy(why.length ? why.join('、') : '今天的重玩獎勵拿完了，明天再來喔！');
   const newFriend = after.joined.length > before.joined.length;
   const grew = newFriend || after.cur.idx !== before.cur.idx;
   $('#rGrow').innerHTML = grew ? `<div class="rgrow"><span class="ge">${buddySVG(after.cur.kind, after.cur.idx)}</span><span>${zy(newFriend ? `新朋友「${after.cur.name}」來了！` : `你的夥伴長大了！現在是「${after.cur.name}」`)}</span></div>` : '';
-  $('#rWords').innerHTML = cur.type === 'secret' ? [...learned].slice(0, 8).map(t => `<button class="wchip schip" data-w="${esc(t)}">${esc(t)}</button>`).join('') : [...learned].map(findWord).filter(Boolean)
+  $('#rWords').innerHTML = cur.type === 'secret' || cur.def.talk ? [...learned].slice(0, 8).map(t => `<button class="wchip schip" data-w="${esc(t)}">${esc(t)}</button>`).join('') : [...learned].map(findWord).filter(Boolean)
     .map(it => `<button class="wchip" data-w="${esc(it.w)}">${face(it)}${esc(it.w)}</button>`).join('');
   const btns = [`<button class="btn alt" id="againBtn">${zy('再玩一次')}</button>`];
   const hasNext = cur.type === 'secret' ? nextS && nextS.a === cur.def.a && sStageOpen(nextS) : nextS && nextS.w === cur.def.w && stageOpen(nextS);
